@@ -144,12 +144,12 @@ class VissimSignalGroup(object):
         self.id = objectContainer.AttValue("No")
         self.min_green = objectContainer.AttValue("MinGreen")
         self.type = objectContainer.AttValue("Type")
+        self.signal_controller = objectContainer.AttValue("SC")
         # self.amber = objectContainer.AttValue("Amber")
         # self.controlled_by_com = objectContainer.AttValue("ContrByCOM")
         # self.green_flashing_time = objectContainer.AttValue("GreenFlsh")
         # self.min_red = objectContainer.AttValue("MinRed")
         # self.red_amber_time = objectContainer.AttValue("RedAmber")
-        # self.signal_controller = objectContainer.AttValue("SC")
         # self.current_signal_stage = objectContainer.AttValue("SigState")
         # self.signal_stage_runtime = objectContainer.AttValue("tSigState")
 
@@ -160,6 +160,4 @@ class VissimSignalGroup(object):
         self.links = set
 
     def links(self):
-        if self.links == None:
-            return []
         return self.links
