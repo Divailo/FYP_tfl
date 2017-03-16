@@ -17,7 +17,8 @@ print "== START OF SCRIPT =="
 # create Vissim COM object
 Vissim = com.Dispatch("Vissim.Vissim")
 # version-specific object: Vissim = com.Dispatch("Vissim.Vissim.9")
-Vissim.LoadNet("C:\Users\Ivaylo\Desktop\Examples\PTV Headquarters - Left-hand\Headquarters 14 LH.inpx")
+# Vissim.LoadNet("C:\Users\Ivaylo\Desktop\Examples\PTV Headquarters - Left-hand\Headquarters 14 LH.inpx")
+Vissim.LoadNet("C:\Users\Public\Documents\PTV Vision\PTV Vissim 9\Examples Demo\Roundabout London.UK\Roundabout London.inpx")
 
 # collection = Vissim.Net.SignalControllers.ItemByKey(1).SGs.GetAll()
 
@@ -43,10 +44,10 @@ for sc in signalControllerCollection:
         # print "Amber: " + str(sg.AttValue("Amber"))
         # print "ContrByCOM: " + str(sg.AttValue("ContrByCOM"))
         # print "GreenFlsh: " + str(sg.AttValue("GreenFlsh"))
-        # print "MinGreen: " + str(sg.AttValue("MinGreen"))
-        # print "MinRed: " + str(sg.AttValue("MinRed"))
+        print "Singal Group MinGreen: " + str(sg.AttValue("MinGreen"))
+        print "Singal Group MinRed: " + str(sg.AttValue("MinRed"))
         # print "Name: " + str(sg.AttValue("Name"))
-        print "No: " + str(sg.AttValue("No"))
+        print "Singal Group No: " + str(sg.AttValue("No"))
         # print "RedAmber: " + str(sg.AttValue("RedAmber"))
         # print "SC: " + str(sg.AttValue("SC"))
         # print "SigState: " + str(sg.AttValue("SigState"))
@@ -55,11 +56,18 @@ for sc in signalControllerCollection:
         # print "\n"
         # counter = counter + 1
         signal_heads_collection = sg.SigHeads.GetAll()
+        links = []
 
         for sh in signal_heads_collection:
-            print "Link: " + str(sh.Lane.Link.AttValue("No"))
-            print "Signal group: " + str(sh.AttValue("SG"))
+            shLink = str(sh.Lane.Link.AttValue("No"))
+            print "Signal Heaad Link: " + shLink
+            links.append(shLink)
+            # print "Signal Heaad Key: " + str(sh.AttValue("No"))
+            # print "Signal Head's group: " + str(sh.AttValue("SG"))
 
+        uniquelinks = set(links)
+        vissim_signal_group_object.setLinks(uniquelinks)
+        print "Signal group from links:" + vissim_signal_group_object.links
         print "= END OF SIGNAL GROUP = \n"
 
 print "= END OF SIGNAL CONTROLLER ="

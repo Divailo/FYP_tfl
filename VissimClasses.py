@@ -60,11 +60,11 @@ class VissimSignalController(object):
     """
 
     def __init__(self, objectContainer):
-        self.active = objectContainer.AttValue("Active")
+        # self.active = objectContainer.AttValue("Active")
         self.id = objectContainer.AttValue("No")
         self.type = objectContainer.AttValue("Type")
-        self.progfile = objectContainer.AttValue("ProgFile")
-        self.progid = objectContainer.AttValue("ProgNo")
+        # self.progfile = objectContainer.AttValue("ProgFile")
+        # self.progid = objectContainer.AttValue("ProgNo")
         self.supply_file_1 = objectContainer.AttValue("SupplyFile1")
         self.supply_file_2 = objectContainer.AttValue("SupplyFile2")
 
@@ -98,13 +98,13 @@ class VissimSignalController(object):
         else:
             return None
 
-    def progid(self):
-        return self.progid
+    # def progid(self):
+    #     return self.progid
 
     # def progfile(self):
     #     return self.progfile
-    def active(self):
-        return self.active
+    # def active(self):
+    #     return self.active
 
 
 
@@ -140,18 +140,26 @@ class VissimSignalGroup(object):
     """
 
     def __init__(self, objectContainer):
-        self.amber = objectContainer.AttValue("Amber")
-        self.controlled_by_com = objectContainer.AttValue("ContrByCOM")
-        self.green_flashing_time = objectContainer.AttValue("GreenFlsh")
-        self.min_green = objectContainer.AttValue("MinGreen")
-        self.min_red = objectContainer.AttValue("MinRed")
         self.name = objectContainer.AttValue("Name")
         self.id = objectContainer.AttValue("No")
-        self.red_amber_time = objectContainer.AttValue("RedAmber")
-        self.signal_controller = objectContainer.AttValue("SC")
-        self.current_signal_stage = objectContainer.AttValue("SigState")
-        self.signal_stage_runtime = objectContainer.AttValue("tSigState")
+        self.min_green = objectContainer.AttValue("MinGreen")
         self.type = objectContainer.AttValue("Type")
+        # self.amber = objectContainer.AttValue("Amber")
+        # self.controlled_by_com = objectContainer.AttValue("ContrByCOM")
+        # self.green_flashing_time = objectContainer.AttValue("GreenFlsh")
+        # self.min_red = objectContainer.AttValue("MinRed")
+        # self.red_amber_time = objectContainer.AttValue("RedAmber")
+        # self.signal_controller = objectContainer.AttValue("SC")
+        # self.current_signal_stage = objectContainer.AttValue("SigState")
+        # self.signal_stage_runtime = objectContainer.AttValue("tSigState")
 
     def key(self):
         return self.id
+
+    def setLinks(self, set):
+        self.links = set
+
+    def links(self):
+        if self.links == None:
+            return []
+        return self.links
