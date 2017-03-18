@@ -3,8 +3,10 @@ import win32com.client as com
 # import gui library
 from Tkinter import Tk
 import tkFileDialog
+
 import os
 # import threading
+import json
 import sys
 import VissimClasses
 
@@ -47,9 +49,17 @@ Vissim.LoadNet(inpx_file)
 
 signalControllerCollection = Vissim.Net.SignalControllers.GetAll()
 
+
 for sc in signalControllerCollection:
 
     vissim_signal_controller_object = VissimClasses.VissimSignalController(sc)
+
+    sc_data = {}
+    sc_data['id'] = str(vissim_signal_controller_object.id)
+    sc_data['type'] = str(vissim_signal_controller_object.type)
+    if(str(vissim_signal_controller_object.type) == 'VAP'):
+        sc_data['vap_file'] = str(vissim_signal_controller_object.supply_file_1)
+        sc_data['pua_file'] = str(vissim_signal_controller_object.supply_file_2)
 
     # key = sg.AttValue("No")
     # type = sg.AttValue("Type")
@@ -58,11 +68,18 @@ for sc in signalControllerCollection:
     print "Signal Controller Supply File 1: " + str(vissim_signal_controller_object.supply_file_1)
     print "Signal Controller Supply File 2: " + str(vissim_signal_controller_object.supply_file_2)
 
+    sgs = []
     # counter = 0
     sgCollection = sc.SGs.GetAll()
     for sg in sgCollection:
         vissim_signal_group_object = VissimClasses.VissimSignalGroup(sg)
         #
+
+
+        sg_data = {}
+        sg_data['id'] = str(sg.AttValue("No"))
+        sg_data['min_green'] = str(sg.AttValue("MinGreen"))
+
         print "Singal Group MinGreen: " + str(sg.AttValue("MinGreen"))
         print "Singal Group No: " + str(sg.AttValue("No"))
         # print "Singal Group MinRed: " + str(sg.AttValue("MinRed"))
@@ -92,21 +109,29 @@ for sc in signalControllerCollection:
         unique_links = set(links)
         vissim_signal_group_object.setLinks(unique_links)
         print "Signal group from links:" + str(vissim_signal_group_object.links)
+
+        links_data = []
+        counter = 0
+        for link in unique_links:
+            counter = counter + 1
+            sg_data['Link '+ str(counter)] = str(link)
+
+        sgs.append(sg_data)
+
         print "= END OF SIGNAL GROUP = \n"
+
+sc_data['signal_groups'] = sgs
 
 print "= END OF SIGNAL CONTROLLER ="
 
+json_data = json.dumps(sc_data)
+
+f = open('out.txt', 'w')
+f.write(str(json_data))
+f.close()
+
 close_program("")
 
-# command = raw_input("Load sample? y/n \n")
-#
-# if command.lower() == "n":
-#     print "== END OF SCRIPT =="
-#     Vissim = None
-#     sys.exit(0)
-# else:
-#     Vissim.LoadNet("C:\Users\Ivaylo\Desktop\Examples\PTV Headquarters - Left-hand\Headquarters 14 LH.inpx")
-#
 # command = raw_input("Run Simulation? y/n \n")
 # if command.lower() == "y":
 #     print "Running simulation"
