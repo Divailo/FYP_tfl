@@ -1,8 +1,23 @@
 #import com library
 import win32com.client as com
+# import gui library
+from Tkinter import Tk
+import tkFileDialog
+import os
 # import threading
 import sys
 import VissimClasses
+
+def ask_for_model():
+    Tk().withdraw()  # we don't want a full GUI, so keep the root window from appearing
+    filename = tkFileDialog.askopenfilename()  # show an "Open" dialog box and return the path to the selected file
+    return os.path.abspath(filename)
+
+def close_program(message):
+    global Vissim
+    Vissim = None
+    print "== END OF SCRIPT =="
+    sys.exit()
 
 # def getInput():
 #     global  Vissim
@@ -14,11 +29,19 @@ import VissimClasses
 #         sys.exit(0)
 
 print "== START OF SCRIPT =="
+
+inpx_file = ask_for_model()
+if inpx_file == None or inpx_file[-5:] != '.inpx':
+    close_program("")
+
+
+
 # create Vissim COM object
 Vissim = com.Dispatch("Vissim.Vissim")
 # version-specific object: Vissim = com.Dispatch("Vissim.Vissim.9")
 # Vissim.LoadNet("C:\Users\Ivaylo\Desktop\Examples\PTV Headquarters - Left-hand\Headquarters 14 LH.inpx")
-Vissim.LoadNet("C:\Users\Public\Documents\PTV Vision\PTV Vissim 9\Examples Demo\Roundabout London.UK\Roundabout London.inpx")
+# Vissim.LoadNet("C:\Users\Public\Documents\PTV Vision\PTV Vissim 9\Examples Demo\Roundabout London.UK\Roundabout London.inpx")
+Vissim.LoadNet(inpx_file)
 
 # collection = Vissim.Net.SignalControllers.ItemByKey(1).SGs.GetAll()
 
@@ -40,13 +63,13 @@ for sc in signalControllerCollection:
     for sg in sgCollection:
         vissim_signal_group_object = VissimClasses.VissimSignalGroup(sg)
         #
+        print "Singal Group MinGreen: " + str(sg.AttValue("MinGreen"))
+        print "Singal Group No: " + str(sg.AttValue("No"))
+        # print "Singal Group MinRed: " + str(sg.AttValue("MinRed"))
         # print "Amber: " + str(sg.AttValue("Amber"))
         # print "ContrByCOM: " + str(sg.AttValue("ContrByCOM"))
         # print "GreenFlsh: " + str(sg.AttValue("GreenFlsh"))
-        print "Singal Group MinGreen: " + str(sg.AttValue("MinGreen"))
-        print "Singal Group MinRed: " + str(sg.AttValue("MinRed"))
         # print "Name: " + str(sg.AttValue("Name"))
-        print "Singal Group No: " + str(sg.AttValue("No"))
         # print "RedAmber: " + str(sg.AttValue("RedAmber"))
         # print "SC: " + str(sg.AttValue("SC"))
         # print "SigState: " + str(sg.AttValue("SigState"))
@@ -73,8 +96,7 @@ for sc in signalControllerCollection:
 
 print "= END OF SIGNAL CONTROLLER ="
 
-print "== END OF SCRIPT =="
-
+close_program("")
 
 # command = raw_input("Load sample? y/n \n")
 #

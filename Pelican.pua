@@ -1,0 +1,34 @@
+$SIGNAL_GROUPS
+$
+   V1  1
+   P2  2
+
+$STAGES
+Stage        Signal group
+$
+Stage_1      V1
+red	     	 P2	
+Stage_2      P2
+red          V1
+
+$STARTING_STAGE
+$
+Stage_1
+
+$INTERSTAGE1
+Length [s]	: 12
+From Stage  : 1
+To Stage   	: 2
+$
+          V1    -127     0
+          P2      5     127
+
+$INTERSTAGE2
+Length [s]      : 16
+From Stage      : 2
+To Stage        : 1
+$
+          V1      0     127
+          P2     -127    0
+
+$END
