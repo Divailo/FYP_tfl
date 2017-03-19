@@ -14,6 +14,35 @@ def ask_for_model():
     filename = tkFileDialog.askopenfilename()  # show an "Open" dialog box and return the path to the selected file
     return os.path.abspath(filename)
 
+def _does_string_contain_substring(originalstring, substring_to_look):
+    if originalstring.find(substring_to_look) == -1:
+        return False
+    return True
+
+def _get_actual_content_to_extract(file, key):
+    # print "Filepath: " + filepath
+
+    ACTUAL_CONTENT_SEPARATOR = "$"
+    line = ""
+    while line != key:
+        line = file.readline().strip()
+
+    while line != ACTUAL_CONTENT_SEPARATOR:
+        line = file.readline().strip()
+
+    lines = []
+    while True:
+        line = file.readline().strip()
+        if _does_string_contain_substring(line, '$') == False:
+            line = re.sub(' +',' ',line)
+            lines.append(line)
+            # print "Added line: " + line
+        else:
+            break
+
+    return lines
+
+# Closes the COM connection and exits the program
 def close_program(message):
     global Vissim
     Vissim = None
@@ -23,41 +52,23 @@ def close_program(message):
     print "\n == END OF SCRIPT =="
     sys.exit()
 
-# def read_until_actual_content_is_reached(file):
-
-
 # Opens a file and finds all the local (the ones used in the pua file) and global (the ones used in the model) ids of signal groups
 def read_and_map_signalgroups_from_pua(filepath):
-    map = {}
-    # print "Filepath: " + filepath
-    f = open(filepath)
-
     SIGNAL_GROUPS_KEY = "$SIGNAL_GROUPS"
-    ACTUAL_CONTENT_SEPARATOR = "$"
-    line = ""
-    while line != SIGNAL_GROUPS_KEY:
-        line = f.readline().strip()
+    opened_file = open(filepath)
 
-    while line != ACTUAL_CONTENT_SEPARATOR:
-        line = f.readline().strip()
+    lines_to_read = _get_actual_content_to_extract(opened_file, SIGNAL_GROUPS_KEY)
 
-    lines_to_read = []
-    while True:
-        line = f.readline().strip()
-        if line.find('$') == -1:
-            line = re.sub(' +',' ',line)
-            array_split = line.split(" ")
-            if len(array_split) == 2:
-                map[array_split[0]] = array_split[1]
-                lines_to_read.append(line)
-                print "Added line: " + line
-        else:
-            break
+    map = {}
+    for line in lines_to_read:
+        array_split = line.split(" ")
+        if len(array_split) == 2:
+            map[array_split[0]] = array_split[1]
 
     # for key, value in map.items():
     #     print key + " : " + value
-    #
-    # print "END OF MAP SIGNAL GROUPS TO IDS"
+
+    print "END OF MAP SIGNAL GROUPS TO IDS"
 
 def get_pua_stages(filepath):
     # TODO
@@ -65,9 +76,24 @@ def get_pua_stages(filepath):
 
     green_stages = {}
 
+# Returns integer, representing the first stage of the signal controller
 def get_starting_stage_from_pua(filepath):
-    STARTING_STAGE_KEY = "STARTING_STAGE"
+    STARTING_STAGE_KEY = "$STARTING_STAGE"
+    opened_file = open(filepath)
+    lines = _get_actual_content_to_extract(opened_file, STARTING_STAGE_KEY)
+    STAGE_PREFIX = "Stage_"
 
+    for line in lines:
+        if _does_string_contain_substring(line, STAGE_PREFIX) == True:
+            stage_number = int(line.replace(STAGE_PREFIX, ''))
+            # print stage_number
+            print "END OF FIND STARTING STAGE"
+            return stage_number
+
+    return -1
+
+
+# def get_phases_in_stages(filepath):
 
 def get_interstages_from_pua(filepth):
     # TODO
@@ -114,6 +140,7 @@ for sc in signalControllerCollection:
         sc_data['vap_file'] = str(vissim_signal_controller_object.supply_file_1)
         sc_data['pua_file'] = str(vissim_signal_controller_object.supply_file_2)
         read_and_map_signalgroups_from_pua(sc_data['pua_file'])
+        sc_data['initial_stage'] = get_starting_stage_from_pua(sc_data['pua_file'])
 
     # key = sg.AttValue("No")
     # type = sg.AttValue("Type")
