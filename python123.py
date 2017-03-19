@@ -1,13 +1,13 @@
-#import com library
-import win32com.client as com
-# import gui library
-from Tkinter import Tk
-import tkFileDialog
+import win32com.client as com # com library
+from Tkinter import Tk # gui library
+import tkFileDialog # file dialog library
+import re # regex library
+import os # all kinds of shit library
+# import threading # library for threads
+import json # json library
+import sys # all kinds of shit library x2
 
-import os
-# import threading
-import json
-import sys
+
 import VissimClasses
 
 def ask_for_model():
@@ -21,13 +21,61 @@ def close_program(message):
     print "== END OF SCRIPT =="
     sys.exit()
 
+# Opens a file and finds all the local (the ones used in the pua file) and global (the ones used in the model) ids of signal groups
+def read_and_map_signalgroups_from_pua(filepath):
+    map = {}
+    # print "Filepath: " + filepath
+    f = open(filepath)
+
+    SIGNAL_GROUPS_KEY = "$SIGNAL_GROUPS"
+    ACTUAL_CONTENT_SEPARATOR = "$"
+    line = ""
+    while line != SIGNAL_GROUPS_KEY:
+        line = f.readline().strip()
+
+    while line != ACTUAL_CONTENT_SEPARATOR:
+        line = f.readline().strip()
+
+    lines_to_read = []
+    while True:
+        line = f.readline().strip()
+        if line.find('$') == -1:
+            line = re.sub(' +',' ',line)
+            array_split = line.split(" ")
+            if len(array_split) == 2:
+                map[array_split[0]] = array_split[1]
+                lines_to_read.append(line)
+                print "Added line: " + line
+        else:
+            break
+
+    # for key, value in map.items():
+    #     print key + " : " + value
+    #
+    # print "END OF MAP SIGNAL GROUPS TO IDS"
+
+def get_pua_stages(filepath):
+    # TODO
+    STAGES_KEY = "$STAGES"
+
+    green_stages = {}
+
+def get_starting_stage_from_pua(filepath):
+    # TODO
+    return 0
+
+def get_interstages_from_pua(filepth):
+    # TODO
+    return 0
+
+
 # def getInput():
 #     global  Vissim
 #     command = raw_input("TELL ME SOMETHING")
 #     if command.lower() == "close":
 #         Vissim.Simulation.Stop()
 #         Vissim = None
-#         print "== END OF SCRIPT =="
+#         print "== END OF SCRIPT =="``
 #         sys.exit(0)
 
 print "== START OF SCRIPT =="
@@ -60,6 +108,7 @@ for sc in signalControllerCollection:
     if(str(vissim_signal_controller_object.type) == 'VAP'):
         sc_data['vap_file'] = str(vissim_signal_controller_object.supply_file_1)
         sc_data['pua_file'] = str(vissim_signal_controller_object.supply_file_2)
+        read_and_map_signalgroups_from_pua(sc_data['pua_file'])
 
     # key = sg.AttValue("No")
     # type = sg.AttValue("Type")
@@ -129,6 +178,7 @@ json_data = json.dumps(sc_data)
 f = open('out.txt', 'w')
 f.write(str(json_data))
 f.close()
+
 
 close_program("")
 
