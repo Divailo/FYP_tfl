@@ -75,6 +75,7 @@ def read_and_map_signalgroups_from_pua(filepath):
 
     return map
 
+# Gets which phases are green when stage is reached
 def get_pua_stages(filepath):
     STAGES_KEY = "$STAGES"
     opened_file = open(filepath)
