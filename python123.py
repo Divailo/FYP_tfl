@@ -7,7 +7,6 @@ import os # all kinds of shit library
 import json # json library
 import sys # all kinds of shit library x2
 
-
 import VissimClasses
 
 def ask_for_model():
@@ -18,8 +17,14 @@ def ask_for_model():
 def close_program(message):
     global Vissim
     Vissim = None
-    print "== END OF SCRIPT =="
+    # Display error message in console if any
+    if message != "":
+        print "ERROR MESSAGE: " + message
+    print "\n == END OF SCRIPT =="
     sys.exit()
+
+# def read_until_actual_content_is_reached(file):
+
 
 # Opens a file and finds all the local (the ones used in the pua file) and global (the ones used in the model) ids of signal groups
 def read_and_map_signalgroups_from_pua(filepath):
@@ -61,8 +66,8 @@ def get_pua_stages(filepath):
     green_stages = {}
 
 def get_starting_stage_from_pua(filepath):
-    # TODO
-    return 0
+    STARTING_STAGE_KEY = "STARTING_STAGE"
+
 
 def get_interstages_from_pua(filepth):
     # TODO
