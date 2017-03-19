@@ -161,3 +161,9 @@ class VissimSignalGroup(object):
 
     def links(self):
         return self.links
+
+    def set_local_pua_id(self, id):
+        self.pua_id = id
+
+    def local_pua_id(self):
+        return self.pua_id

@@ -65,18 +65,50 @@ def read_and_map_signalgroups_from_pua(filepath):
     for line in lines_to_read:
         array_split = line.split(" ")
         if len(array_split) == 2:
-            map[array_split[0]] = array_split[1]
+            map[array_split[1]] = array_split[0]
 
+    # Debugging purpose
     # for key, value in map.items():
     #     print key + " : " + value
 
     print "END OF MAP SIGNAL GROUPS TO IDS"
 
-def get_pua_stages(filepath):
-    # TODO
-    STAGES_KEY = "$STAGES"
+    return map
 
-    green_stages = {}
+def get_pua_stages(filepath):
+    STAGES_KEY = "$STAGES"
+    opened_file = open(filepath)
+    lines = _get_actual_content_to_extract(opened_file, STAGES_KEY)
+    STAGE_PREFIX = "Stage_"
+    RED_KEY = "red"
+
+    green_map = {}
+    # stage_pointer = -1
+
+    for line in lines:
+        if _does_string_contain_substring(line, STAGE_PREFIX) == True:
+            string_split = line.split(" ")
+            stage_pointer = int(re.search(r'\d+', line).group())
+            # stage_pointer = line.replace(STAGE_PREFIX, '')
+            for signal_group in string_split[1:]:
+                # if the array of the signal group green stages is not initialized
+                if not signal_group in green_map:
+                    green_map[signal_group] = []
+                # add a green stage to the signal
+                green_map[signal_group].append(stage_pointer)
+
+        # if _does_string_contain_substring(line, RED_KEY):
+        #     string_split = line.split(" ")
+        #     if len(string_split) > 1:
+
+    # Debugging purpose
+    # for key, value in green_map.items():
+    #     print key + " : " + str(value)
+
+    print "END OF GET STAGES"
+
+    return green_map
+
 
 # Returns integer, representing the first stage of the signal controller
 def get_starting_stage_from_pua(filepath):
@@ -135,14 +167,18 @@ for sc in signalControllerCollection:
 
     vissim_signal_controller_object = VissimClasses.VissimSignalController(sc)
 
+    pua_to_global_ids = {}
+    pua_stages = {}
+
     sc_data = {}
     sc_data['id'] = str(vissim_signal_controller_object.id)
     sc_data['type'] = str(vissim_signal_controller_object.type)
     if(str(vissim_signal_controller_object.type) == 'VAP'):
         sc_data['vap_file'] = str(vissim_signal_controller_object.supply_file_1)
         sc_data['pua_file'] = str(vissim_signal_controller_object.supply_file_2)
-        read_and_map_signalgroups_from_pua(sc_data['pua_file'])
         sc_data['initial_stage'] = get_starting_stage_from_pua(sc_data['pua_file'])
+        pua_to_global_ids = read_and_map_signalgroups_from_pua(sc_data['pua_file'])
+        pua_stages = get_pua_stages(sc_data['pua_file'])
 
     # key = sg.AttValue("No")
     # type = sg.AttValue("Type")
@@ -198,6 +234,14 @@ for sc in signalControllerCollection:
         for link in unique_links:
             counter = counter + 1
             sg_data['Link '+ str(counter)] = str(link)
+
+        sg_no = str(sg.AttValue("No"))
+        if sg_no in pua_to_global_ids:
+            local_key = str(pua_to_global_ids[sg_no])
+            green_stages = []
+            if local_key in pua_stages:
+                green_stages = pua_stages[local_key]
+            sg_data['phase_in_stage'] = green_stages
 
         sgs.append(sg_data)
 
