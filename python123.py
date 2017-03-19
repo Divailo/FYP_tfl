@@ -9,8 +9,10 @@ import sys # all kinds of shit library x2
 
 import VissimClasses
 
+# initializes a file chooser to load the desired model
 def ask_for_model():
     Tk().withdraw()  # we don't want a full GUI, so keep the root window from appearing
+    # FILEOPENOPTIONS = dict(filetypes = [('PTV Vissim network files','*.inpx'),('All files', '*.*')])
     filename = tkFileDialog.askopenfilename()  # show an "Open" dialog box and return the path to the selected file
     return os.path.abspath(filename)
 
