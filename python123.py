@@ -21,7 +21,7 @@ def _does_string_contain_substring(originalstring, substring_to_look):
         return False
     return True
 
-def _get_actual_content_to_extract(file, key):
+def _get_actual_content_to_extract_in_pua(file, key):
     # print "Filepath: " + filepath
 
     ACTUAL_CONTENT_SEPARATOR = "$"
@@ -59,7 +59,7 @@ def read_and_map_signalgroups_from_pua(filepath):
     SIGNAL_GROUPS_KEY = "$SIGNAL_GROUPS"
     opened_file = open(filepath)
 
-    lines_to_read = _get_actual_content_to_extract(opened_file, SIGNAL_GROUPS_KEY)
+    lines_to_read = _get_actual_content_to_extract_in_pua(opened_file, SIGNAL_GROUPS_KEY)
 
     map = {}
     for line in lines_to_read:
@@ -79,7 +79,7 @@ def read_and_map_signalgroups_from_pua(filepath):
 def get_pua_stages(filepath):
     STAGES_KEY = "$STAGES"
     opened_file = open(filepath)
-    lines = _get_actual_content_to_extract(opened_file, STAGES_KEY)
+    lines = _get_actual_content_to_extract_in_pua(opened_file, STAGES_KEY)
     STAGE_PREFIX = "Stage_"
     RED_KEY = "red"
 
@@ -90,7 +90,6 @@ def get_pua_stages(filepath):
         if _does_string_contain_substring(line, STAGE_PREFIX) == True:
             string_split = line.split(" ")
             stage_pointer = int(re.search(r'\d+', line).group())
-            # stage_pointer = line.replace(STAGE_PREFIX, '')
             for signal_group in string_split[1:]:
                 # if the array of the signal group green stages is not initialized
                 if not signal_group in green_map:
@@ -115,7 +114,7 @@ def get_pua_stages(filepath):
 def get_starting_stage_from_pua(filepath):
     STARTING_STAGE_KEY = "$STARTING_STAGE"
     opened_file = open(filepath)
-    lines = _get_actual_content_to_extract(opened_file, STARTING_STAGE_KEY)
+    lines = _get_actual_content_to_extract_in_pua(opened_file, STARTING_STAGE_KEY)
     STAGE_PREFIX = "Stage_"
 
     for line in lines:
@@ -135,6 +134,28 @@ def get_interstages_from_pua(filepth):
     return 0
 
 
+def get_cycle_length_from_vap(filepath):
+    CYCLE_LENGTH_KEY = "CycleLength"
+    file = open(filepath)
+    line = ""
+    while _does_string_contain_substring(line, CYCLE_LENGTH_KEY) == False:
+        line = file.readline().strip()
+
+    cycle_length = -1
+    try:
+        key, value = line.split("=")
+    except ValueError:
+        print "Failed to split the cycle_length line in VAP"
+    else:
+        cycle_length = int(re.search(r'\d+', value).group())
+
+    print cycle_length
+    print "END OF FINDING CYCLE LENGTH"
+
+    return cycle_length
+
+
+
 # def getInput():
 #     global  Vissim
 #     command = raw_input("TELL ME SOMETHING")
@@ -144,20 +165,28 @@ def get_interstages_from_pua(filepth):
 #         print "== END OF SCRIPT =="``
 #         sys.exit(0)
 
-print "== START OF SCRIPT =="
+print " == START OF SCRIPT =="
 
 inpx_file = ask_for_model()
-if inpx_file == None or inpx_file[-5:] != '.inpx':
-    close_program("")
+if inpx_file is None:
+    close_program("Please choose a file")
+
+if inpx_file[-5:] != ".inpx":
+    close_program("Please choose .inpx file")
 
 
 
 # create Vissim COM object
 Vissim = com.Dispatch("Vissim.Vissim")
+
+if Vissim is None:
+    close_program("Vissim program not found. It might be because the program is not installed on the machine")
+
 # version-specific object: Vissim = com.Dispatch("Vissim.Vissim.9")
 # Vissim.LoadNet("C:\Users\Ivaylo\Desktop\Examples\PTV Headquarters - Left-hand\Headquarters 14 LH.inpx")
 # Vissim.LoadNet("C:\Users\Public\Documents\PTV Vision\PTV Vissim 9\Examples Demo\Roundabout London.UK\Roundabout London.inpx")
 Vissim.LoadNet(inpx_file)
+
 
 # collection = Vissim.Net.SignalControllers.ItemByKey(1).SGs.GetAll()
 
@@ -175,11 +204,16 @@ for sc in signalControllerCollection:
     sc_data['id'] = str(vissim_signal_controller_object.id)
     sc_data['type'] = str(vissim_signal_controller_object.type)
     if(str(vissim_signal_controller_object.type) == 'VAP'):
+        # test TFL files
+        # sc_data['vap_file'] = "C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap"
+        # sc_data['pua_file'] = "C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.pua"
         sc_data['vap_file'] = str(vissim_signal_controller_object.supply_file_1)
         sc_data['pua_file'] = str(vissim_signal_controller_object.supply_file_2)
         sc_data['initial_stage'] = get_starting_stage_from_pua(sc_data['pua_file'])
         pua_to_global_ids = read_and_map_signalgroups_from_pua(sc_data['pua_file'])
         pua_stages = get_pua_stages(sc_data['pua_file'])
+        # specific for TFL models, will return -1 if it works with different models
+        sc_data['cycle_length'] = get_cycle_length_from_vap(sc_data['vap_file'])
 
     # key = sg.AttValue("No")
     # type = sg.AttValue("Type")
