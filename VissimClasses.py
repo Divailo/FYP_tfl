@@ -59,18 +59,18 @@ class VissimSignalController(object):
             - Value type tables: These contain the data types from the control logic which are to be shown in the Signal Control Detector Record or in the Signal Times Table window, as well as the display type. If the control consists of several modules, you must specify the associated *.wtt file for each module
     """
 
+    _alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
+                 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
+                 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    _counter = -1
+
     def __init__(self, objectContainer):
         # self.active = objectContainer.AttValue("Active")
         self.id = objectContainer.AttValue("No")
         self.type = objectContainer.AttValue("Type")
-        # self.progfile = objectContainer.AttValue("ProgFile")
-        # self.progid = objectContainer.AttValue("ProgNo")
+        self._configurename(objectContainer.AttValue("Name"))
         self.supply_file_1 = objectContainer.AttValue("SupplyFile1")
         self.supply_file_2 = objectContainer.AttValue("SupplyFile2")
-
-    # does not work for some reason
-    # def type(self):
-    #     return self.type
 
     def id(self):
         return self.id
@@ -79,6 +79,19 @@ class VissimSignalController(object):
     # consistency much!
     def key(self):
         return self.id
+
+    # Gives it some name, so it better looking PDDL can be constructed
+    def _configurename(self, name):
+        if name != "":
+            self.name = name
+        else:
+            self._counter = self._counter + 1
+            self.name = "Junction_"
+            # so the program supports unlimited amount of signal controllers -> after Z , it goes to AA
+            aretheretoomanyjunctions = self._counter / len(self._alphabet) - 1
+            if aretheretoomanyjunctions >= 0:
+                self.name = self.name + self._alphabet[aretheretoomanyjunctions]
+            self.name = self.name + self._alphabet[self._counter % len(self._alphabet)]
 
     def vapfile(self):
         if self.type == "VAP":

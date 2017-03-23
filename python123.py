@@ -1,12 +1,13 @@
 import win32com.client as com # com library
 from Tkinter import Tk # gui library
 import tkFileDialog # file dialog library
-import re # regex library
 import os # all kinds of shit library
 # import threading # library for threads
 import json # json library
 import sys # all kinds of shit library x2
 
+import puahelper
+import vaphelper
 import VissimClasses
 
 # initializes a file chooser to load the desired model
@@ -15,34 +16,6 @@ def ask_for_model():
     # FILEOPENOPTIONS = dict(filetypes = [('PTV Vissim network files','*.inpx'),('All files', '*.*')])
     filename = tkFileDialog.askopenfilename()  # show an "Open" dialog box and return the path to the selected file
     return os.path.abspath(filename)
-
-def _does_string_contain_substring(originalstring, substring_to_look):
-    if originalstring.find(substring_to_look) == -1:
-        return False
-    return True
-
-def _get_actual_content_to_extract_in_pua(file, key):
-    # print "Filepath: " + filepath
-
-    ACTUAL_CONTENT_SEPARATOR = "$"
-    line = ""
-    while line != key:
-        line = file.readline().strip()
-
-    while line != ACTUAL_CONTENT_SEPARATOR:
-        line = file.readline().strip()
-
-    lines = []
-    while True:
-        line = file.readline().strip()
-        if _does_string_contain_substring(line, '$') == False:
-            line = re.sub(' +',' ',line)
-            lines.append(line)
-            # print "Added line: " + line
-        else:
-            break
-
-    return lines
 
 # Closes the COM connection and exits the program
 def close_program(message):
@@ -54,107 +27,11 @@ def close_program(message):
     print "\n == END OF SCRIPT =="
     sys.exit()
 
-# Opens a file and finds all the local (the ones used in the pua file) and global (the ones used in the model) ids of signal groups
-def read_and_map_signalgroups_from_pua(filepath):
-    SIGNAL_GROUPS_KEY = "$SIGNAL_GROUPS"
-    opened_file = open(filepath)
-
-    lines_to_read = _get_actual_content_to_extract_in_pua(opened_file, SIGNAL_GROUPS_KEY)
-
-    map = {}
-    for line in lines_to_read:
-        array_split = line.split(" ")
-        if len(array_split) == 2:
-            map[array_split[1]] = array_split[0]
-
-    # Debugging purpose
-    # for key, value in map.items():
-    #     print key + " : " + value
-
-    print "END OF MAP SIGNAL GROUPS TO IDS"
-
-    return map
-
-# Gets which phases are green when stage is reached
-def get_pua_stages(filepath):
-    STAGES_KEY = "$STAGES"
-    opened_file = open(filepath)
-    lines = _get_actual_content_to_extract_in_pua(opened_file, STAGES_KEY)
-    STAGE_PREFIX = "Stage_"
-    RED_KEY = "red"
-
-    green_map = {}
-    # stage_pointer = -1
-
-    for line in lines:
-        if _does_string_contain_substring(line, STAGE_PREFIX) == True:
-            string_split = line.split(" ")
-            stage_pointer = int(re.search(r'\d+', line).group())
-            for signal_group in string_split[1:]:
-                # if the array of the signal group green stages is not initialized
-                if not signal_group in green_map:
-                    green_map[signal_group] = []
-                # add a green stage to the signal
-                green_map[signal_group].append(stage_pointer)
-
-        # if _does_string_contain_substring(line, RED_KEY):
-        #     string_split = line.split(" ")
-        #     if len(string_split) > 1:
-
-    # Debugging purpose
-    # for key, value in green_map.items():
-    #     print key + " : " + str(value)
-
-    print "END OF GET STAGES"
-
-    return green_map
-
-
-# Returns integer, representing the first stage of the signal controller
-def get_starting_stage_from_pua(filepath):
-    STARTING_STAGE_KEY = "$STARTING_STAGE"
-    opened_file = open(filepath)
-    lines = _get_actual_content_to_extract_in_pua(opened_file, STARTING_STAGE_KEY)
-    STAGE_PREFIX = "Stage_"
-
-    for line in lines:
-        if _does_string_contain_substring(line, STAGE_PREFIX) == True:
-            stage_number = int(line.replace(STAGE_PREFIX, ''))
-            # print stage_number
-            print "END OF FIND STARTING STAGE"
-            return stage_number
-
-    return -1
-
-
 # def get_phases_in_stages(filepath):
 
 def get_interstages_from_pua(filepth):
     # TODO
     return 0
-
-
-def get_cycle_length_from_vap(filepath):
-    CYCLE_LENGTH_KEY = "CycleLength"
-    file = open(filepath)
-    line = ""
-    while _does_string_contain_substring(line, CYCLE_LENGTH_KEY) == False:
-        line = file.readline().strip()
-
-    cycle_length = -1
-    try:
-        key, value = line.split("=")
-    except ValueError:
-        print "Failed to split the cycle_length line in VAP"
-    else:
-        cycle_length = int(re.search(r'\d+', value).group())
-
-    print cycle_length
-    print "END OF FINDING CYCLE LENGTH"
-
-    return cycle_length
-
-
 
 # def getInput():
 #     global  Vissim
@@ -202,18 +79,20 @@ for sc in signalControllerCollection:
 
     sc_data = {}
     sc_data['id'] = str(vissim_signal_controller_object.id)
+    sc_data['name'] = str(vissim_signal_controller_object.name)
     sc_data['type'] = str(vissim_signal_controller_object.type)
     if(str(vissim_signal_controller_object.type) == 'VAP'):
         # test TFL files
-        # sc_data['vap_file'] = "C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap"
+        sc_data['vap_file'] = "C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap"
         # sc_data['pua_file'] = "C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.pua"
-        sc_data['vap_file'] = str(vissim_signal_controller_object.supply_file_1)
+        # sc_data['vap_file'] = str(vissim_signal_controller_object.supply_file_1)
         sc_data['pua_file'] = str(vissim_signal_controller_object.supply_file_2)
-        sc_data['initial_stage'] = get_starting_stage_from_pua(sc_data['pua_file'])
-        pua_to_global_ids = read_and_map_signalgroups_from_pua(sc_data['pua_file'])
-        pua_stages = get_pua_stages(sc_data['pua_file'])
+        sc_data['curr_stage'] = puahelper.get_starting_stage_from_pua(sc_data['pua_file'])
+        pua_to_global_ids = puahelper.read_and_map_signalgroups_from_pua(sc_data['pua_file'])
+        pua_stages = puahelper.get_pua_stages(sc_data['pua_file'])
+        sc_data['max_stage'] = len(pua_stages)
         # specific for TFL models, will return -1 if it works with different models
-        sc_data['cycle_length'] = get_cycle_length_from_vap(sc_data['vap_file'])
+        sc_data['cycle_length'] = vaphelper.get_cycle_length_from_vap(sc_data['vap_file'])
 
     # key = sg.AttValue("No")
     # type = sg.AttValue("Type")
