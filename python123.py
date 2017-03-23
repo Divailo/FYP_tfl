@@ -33,15 +33,6 @@ def get_interstages_from_pua(filepth):
     # TODO
     return 0
 
-# def getInput():
-#     global  Vissim
-#     command = raw_input("TELL ME SOMETHING")
-#     if command.lower() == "close":
-#         Vissim.Simulation.Stop()
-#         Vissim = None
-#         print "== END OF SCRIPT =="``
-#         sys.exit(0)
-
 print " == START OF SCRIPT =="
 
 inpx_file = ask_for_model()
@@ -63,9 +54,6 @@ if Vissim is None:
 # Vissim.LoadNet("C:\Users\Ivaylo\Desktop\Examples\PTV Headquarters - Left-hand\Headquarters 14 LH.inpx")
 # Vissim.LoadNet("C:\Users\Public\Documents\PTV Vision\PTV Vissim 9\Examples Demo\Roundabout London.UK\Roundabout London.inpx")
 Vissim.LoadNet(inpx_file)
-
-
-# collection = Vissim.Net.SignalControllers.ItemByKey(1).SGs.GetAll()
 
 signalControllerCollection = Vissim.Net.SignalControllers.GetAll()
 
@@ -171,14 +159,4 @@ f = open('out.txt', 'w')
 f.write(str(json_data))
 f.close()
 
-
 close_program("")
-
-# command = raw_input("Run Simulation? y/n \n")
-# if command.lower() == "y":
-#     print "Running simulation"
-#     Vissim.Simulation.RunContinuous()
-
-
-#Close COM "Server"
-# Vissim = None
