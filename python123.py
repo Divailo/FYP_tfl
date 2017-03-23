@@ -3,7 +3,7 @@ from Tkinter import Tk # gui library
 import tkFileDialog # file dialog library
 # import threading # library for threads
 import json # json library
-import sys # all kinds of shit library x2
+import sys # all kinds of shit library
 
 import puahelper
 import vaphelper
