@@ -1,7 +1,6 @@
 import win32com.client as com # com library
 from Tkinter import Tk # gui library
 import tkFileDialog # file dialog library
-import os # all kinds of shit library
 # import threading # library for threads
 import json # json library
 import sys # all kinds of shit library x2
@@ -15,7 +14,7 @@ def ask_for_model():
     Tk().withdraw()  # we don't want a full GUI, so keep the root window from appearing
     # FILEOPENOPTIONS = dict(filetypes = [('PTV Vissim network files','*.inpx'),('All files', '*.*')])
     filename = tkFileDialog.askopenfilename()  # show an "Open" dialog box and return the path to the selected file
-    return os.path.abspath(filename)
+    return filename.replace("/", "\\")
 
 # Closes the COM connection and exits the program
 def close_program(message):
