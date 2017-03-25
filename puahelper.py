@@ -10,32 +10,37 @@ STARTING_STAGE_KEY = "$STARTING_STAGE"
 
 
 def _get_actual_content_to_extract_in_pua(file, key):
-    # print "Filepath: " + filepath
 
     global ACTUAL_CONTENT_SEPARATOR
 
     line = ""
     while line != key:
-        line = file.readline().strip()
-        # Key not found
-        if line is None:
+        try:
+            line = file.next().strip()
+        except StopIteration:
+            # End of file reached
             return []
 
     while line != ACTUAL_CONTENT_SEPARATOR:
-        line = file.readline().strip()
-        # Key not found
-        if line is None:
+        try:
+            line = file.next().strip()
+        except StopIteration:
+            # End of file reached
             return []
 
     lines = []
+
     while True:
-        line = file.readline().strip()
-        if stringhelper.does_string_contain_substring(line, ACTUAL_CONTENT_SEPARATOR) == False:
-            line = re.sub(' +',' ',line)
-            lines.append(line)
-            # print "Added line: " + line
-        else:
-            break
+        try:
+            line = file.next().strip()
+            if stringhelper.does_string_contain_substring(line, ACTUAL_CONTENT_SEPARATOR) == False:
+                line = re.sub(' +',' ',line)
+                lines.append(line)
+            else:
+                break
+        except StopIteration:
+            # End of file reached
+            return lines
 
     return lines
 
@@ -49,6 +54,10 @@ def read_and_map_signalgroups_from_pua(filepath):
     map = {}
     for line in lines_to_read:
         array_split = line.split(" ")
+        # if " " is actually a tab
+        if stringhelper.does_string_contain_substring(array_split[0], "\t"):
+            array_split = line.split("\t")
+
         if len(array_split) == 2:
             map[array_split[1]] = array_split[0]
 
@@ -56,12 +65,13 @@ def read_and_map_signalgroups_from_pua(filepath):
     # for key, value in map.items():
     #     print key + " : " + value
 
+    opened_file.close()
     print "END OF MAP SIGNAL GROUPS TO IDS"
 
     return map
 
 # Gets which phases are green when stage is reached
-def get_pua_stages(filepath):
+def get_phases_in_stages(filepath):
 
     global STAGES_KEY
 
@@ -71,11 +81,13 @@ def get_pua_stages(filepath):
     RED_KEY = "red"
 
     green_map = {}
-    # stage_pointer = -1
 
     for line in lines:
         if stringhelper.does_string_contain_substring(line, STAGE_PREFIX) == True:
             string_split = line.split(" ")
+            if stringhelper.does_string_contain_substring(string_split[0], "\t"):
+                string_split = line.split("\t")
+
             stage_pointer = int(re.search(r'\d+', line).group())
             for signal_group in string_split[1:]:
                 # if the array of the signal group green stages is not initialized
@@ -93,6 +105,7 @@ def get_pua_stages(filepath):
     #     print key + " : " + str(value)
 
     print "END OF GET STAGES"
+    opened_file.close()
 
     return green_map
 
@@ -110,5 +123,7 @@ def get_starting_stage_from_pua(filepath):
             # print stage_number
             print "END OF FIND STARTING STAGE"
             return stage_number
+
+    opened_file.close()
 
     return -1

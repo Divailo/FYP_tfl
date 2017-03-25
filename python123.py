@@ -56,7 +56,7 @@ Vissim.LoadNet(inpx_file)
 
 signalControllerCollection = Vissim.Net.SignalControllers.GetAll()
 
-
+sc_data = {}
 for sc in signalControllerCollection:
 
     vissim_signal_controller_object = VissimClasses.VissimSignalController(sc)
@@ -64,20 +64,27 @@ for sc in signalControllerCollection:
     pua_to_global_ids = {}
     pua_stages = {}
 
-    sc_data = {}
     sc_data['id'] = str(vissim_signal_controller_object.id)
     sc_data['name'] = str(vissim_signal_controller_object.name)
     sc_data['type'] = str(vissim_signal_controller_object.type)
     if(str(vissim_signal_controller_object.type) == 'VAP'):
+
         # test TFL files
         sc_data['vap_file'] = "C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap"
         # sc_data['pua_file'] = "C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.pua"
+        # sc_data['pua_file'] = "D:\\PyCharmProjects\\tests\\goodpuafile.pua"
+
+        # actual data
         # sc_data['vap_file'] = str(vissim_signal_controller_object.supply_file_1)
         sc_data['pua_file'] = str(vissim_signal_controller_object.supply_file_2)
         sc_data['curr_stage'] = puahelper.get_starting_stage_from_pua(sc_data['pua_file'])
         pua_to_global_ids = puahelper.read_and_map_signalgroups_from_pua(sc_data['pua_file'])
-        pua_stages = puahelper.get_pua_stages(sc_data['pua_file'])
-        sc_data['max_stage'] = len(pua_stages)
+        pua_stages = puahelper.get_phases_in_stages(sc_data['pua_file'])
+
+        if len(pua_stages)>0:
+            sc_data['max_stage'] = len(pua_stages)
+        else:
+            sc_data['max_stage'] = -1
         # specific for TFL models, will return -1 if it works with different models
         sc_data['cycle_length'] = vaphelper.get_cycle_length_from_vap(sc_data['vap_file'])
 
@@ -93,8 +100,6 @@ for sc in signalControllerCollection:
     sgCollection = sc.SGs.GetAll()
     for sg in sgCollection:
         vissim_signal_group_object = VissimClasses.VissimSignalGroup(sg)
-        #
-
 
         sg_data = {}
         sg_data['id'] = str(sg.AttValue("No"))
@@ -102,17 +107,6 @@ for sc in signalControllerCollection:
 
         print "Singal Group MinGreen: " + str(sg.AttValue("MinGreen"))
         print "Singal Group No: " + str(sg.AttValue("No"))
-        # print "Singal Group MinRed: " + str(sg.AttValue("MinRed"))
-        # print "Amber: " + str(sg.AttValue("Amber"))
-        # print "ContrByCOM: " + str(sg.AttValue("ContrByCOM"))
-        # print "GreenFlsh: " + str(sg.AttValue("GreenFlsh"))
-        # print "Name: " + str(sg.AttValue("Name"))
-        # print "RedAmber: " + str(sg.AttValue("RedAmber"))
-        # print "SC: " + str(sg.AttValue("SC"))
-        # print "SigState: " + str(sg.AttValue("SigState"))
-        # print "tSigState: " + str(sg.AttValue("tSigState"))
-        # print "Type: " + str(sg.AttValue("Type"))
-        # print "\n"
 
         # Crawl through the signal heads so the from link are found
         signal_heads_collection = sg.SigHeads.GetAll()
@@ -122,7 +116,6 @@ for sc in signalControllerCollection:
             shLink = str(sh.Lane.Link.AttValue("No"))
             print "Signal Heaad Link: " + shLink
             links.append(shLink)
-            # print "Signal Heaad Key: " + str(sh.AttValue("No"))
             # print "Signal Head's group: " + str(sh.AttValue("SG"))
 
         # Using set so unique values are ensured
