@@ -16,6 +16,8 @@
 
 - ~~Max green time??? - Don't thnik about it~~
 
+- Supports only elements separated by either spaces or tabs, not both. Might be solved by going through each element. If it contains \t, make two elements out of it
+
 # Functions to test
 
 ask_for_model()
