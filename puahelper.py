@@ -76,8 +76,6 @@ def read_and_map_signalgroups_from_pua(filepath):
 # Gets which phases are green when stage is reached
 def get_phases_in_stages(filepath):
     lines = _get_actual_content_to_extract_in_pua(filepath, STAGES_KEY)
-    RED_KEY = "red"
-
     green_map = {}
 
     for line in lines:
