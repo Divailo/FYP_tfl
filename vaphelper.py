@@ -49,7 +49,6 @@ def _extract_section_for_key(filepath, key):
     file.close()
     return lines
 
-# TODO: try to escape comment lines
 # Looks for a single line that contains CycleLength
 def get_cycle_length_from_vap(filepath):
     lines = _extract_section_for_key(filepath, CONSTANT_SECTION_KEY)
@@ -76,9 +75,10 @@ def get_cycle_length_from_vap(filepath):
 
     return cycle_length
 
+
+# TODO
 # Looks for a single line
 def get_stage_lenghts_from_vap(filepath):
-    # TODO
     lines = _extract_section_for_key(filepath, ARRAY_SECTION_KEY)
     found_line = ""
     for line in lines:

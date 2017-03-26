@@ -22,7 +22,7 @@ class VapHelperTest(unittest.TestCase):
     #
 
     # Tests the vaphelper functions when handling files with the desired keys but no values provided
-    # Should return error codes : -1
+    # Should return error codes : -1 or empty object/arrays
     def test_no_value_for_cyclelength(self):
         _filepath = os.path.abspath('vap_with_keys_no_values.vap')
         cycle_length = vaphelper.get_cycle_length_from_vap(_filepath)
@@ -36,17 +36,51 @@ class VapHelperTest(unittest.TestCase):
 
     #
 
-    # Tests the vaphelper functions when the file has the data required, but it is commented out
-    # def test_correct_cyclelength_in_comments(self):
-    #     _filepath = os.path.abspath('vap_commented_good.vap')
-    #     cycle_length = vaphelper.get_cycle_length_from_vap(_filepath)
-    #     self.assertEqual(cycle_length, 72)
+    # Tests the vaphelper functions when the file has data keys and values, but are not inside the required sections
+    # That's why nothing should be returned
+    # Should return error codes : -1 or empty objects/arrays
+    def test_correct_cyclelength_in_comments(self):
+        _filepath = os.path.abspath('vap_with_keys_values_no_section.vap')
+        cycle_length = vaphelper.get_cycle_length_from_vap(_filepath)
+        self.assertEqual(cycle_length, -1)
+
+    def test_correct_plans_in_comments(self):
+        _filepath = os.path.abspath('vap_with_keys_values_no_section.vap')
+        plans = vaphelper.get_stage_lenghts_from_vap(_filepath)
+        self.assertEqual(len(plans), 0)
+        self.assertEqual(plans, [])
+
     #
-    # def test_correct_plans_in_comments(self):
-    #     _filepath = os.path.abspath('vap_commented_good.vap')
-    #     plans = vaphelper.get_stage_lenghts_from_vap(_filepath)
-    #     self.assertEqual(len(plans), 0)
-    #     self.assertEqual(plans, [])
+
+    # Tests the vaphelper functions when the file has the data required, but it is commented out
+    # Should return error codes : -1 or empty objects/arrays
+    def test_correct_cyclelength_in_comments(self):
+        _filepath = os.path.abspath('vap_commented_bad.vap')
+        cycle_length = vaphelper.get_cycle_length_from_vap(_filepath)
+        self.assertEqual(cycle_length, -1)
+
+    def test_correct_plans_in_comments(self):
+        _filepath = os.path.abspath('vap_commented_bad.vap')
+        plans = vaphelper.get_stage_lenghts_from_vap(_filepath)
+        self.assertEqual(len(plans), 0)
+        self.assertEqual(plans, [])
+
+    #
+
+    # Tests the vaphelper functions when the file has double of the data required, one commented, one not
+    # In the specific test the values that have to be returned are:
+    # CycleLength = 40
+    # Plans = [4, 16, 28, 40]
+    def test_correct_cyclelength_in_comments(self):
+        _filepath = os.path.abspath('vap_commented_good.vap')
+        cycle_length = vaphelper.get_cycle_length_from_vap(_filepath)
+        self.assertEqual(cycle_length, 40)
+
+    def test_correct_plans_in_comments(self):
+        _filepath = os.path.abspath('vap_commented_good.vap')
+        plans = vaphelper.get_stage_lenghts_from_vap(_filepath)
+        self.assertEqual(len(plans), 0)
+        self.assertEqual(plans, [])
 
     #
 
