@@ -7,7 +7,7 @@ import sys # all kinds of shit library
 
 import puahelper
 import vaphelper
-import VissimClasses
+import vissimclasses
 
 # initializes a file chooser to load the desired model
 def ask_for_model():
@@ -59,7 +59,7 @@ signalControllerCollection = Vissim.Net.SignalControllers.GetAll()
 sc_data = {}
 for sc in signalControllerCollection:
 
-    vissim_signal_controller_object = VissimClasses.VissimSignalController(sc)
+    vissim_signal_controller_object = vissimclasses.VissimSignalController(sc)
 
     pua_to_global_ids = {}
     pua_stages = {}
@@ -99,7 +99,7 @@ for sc in signalControllerCollection:
     # counter = 0
     sgCollection = sc.SGs.GetAll()
     for sg in sgCollection:
-        vissim_signal_group_object = VissimClasses.VissimSignalGroup(sg)
+        vissim_signal_group_object = vissimclasses.VissimSignalGroup(sg)
 
         sg_data = {}
         sg_data['id'] = str(sg.AttValue("No"))
