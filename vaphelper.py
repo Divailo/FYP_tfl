@@ -66,7 +66,7 @@ def get_cycle_length_from_vap(filepath):
     try:
         key, value = foundline.split("=")
     except ValueError:
-        print "Failed to split the cycle_length line in VAP"
+        print "Failed to split the cycle_length line in VAP: " + foundline
     else:
         cycle_length = int(re.search(r'\d+', value).group())
 

@@ -13,6 +13,7 @@ STARTING_STAGE_KEY = "$STARTING_STAGE"
 # Starts extracting the lines to look for after seeing a $
 # Finishes extracting lines to read when sees another $
 # returns collection of lines to read from
+# on error (structure not satisfied) returns empty array
 def _get_actual_content_to_extract_in_pua(filepath, key):
     file = open(filepath)
 
@@ -48,7 +49,6 @@ def _get_actual_content_to_extract_in_pua(filepath, key):
             file.close()
             return lines
 
-    file.close()
     return lines
 
 # Opens a file and finds all the local (the ones used in the pua file) and global (the ones used in the model) ids of signal groups
