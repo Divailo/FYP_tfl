@@ -53,10 +53,10 @@ def read_and_map_signalgroups_from_pua(filepath):
 
     map = {}
     for line in lines_to_read:
+        # Civil war
+        line = line.replace('\t',' ')
+
         array_split = line.split(" ")
-        # if " " is actually a tab
-        if stringhelper.does_string_contain_substring(array_split[0], "\t"):
-            array_split = line.split("\t")
 
         if len(array_split) == 2:
             map[array_split[1]] = array_split[0]
@@ -84,9 +84,10 @@ def get_phases_in_stages(filepath):
 
     for line in lines:
         if stringhelper.does_string_contain_substring(line, STAGE_PREFIX) == True:
+            # Civil war
+            line = line.replace('\t',' ')
+
             string_split = line.split(" ")
-            if stringhelper.does_string_contain_substring(string_split[0], "\t"):
-                string_split = line.split("\t")
 
             stage_pointer = int(re.search(r'\d+', line).group())
             for signal_group in string_split[1:]:
