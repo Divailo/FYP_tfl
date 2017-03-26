@@ -5,6 +5,7 @@ import stringhelper
 CYCLE_LENGTH_KEY = "CycleLength"
 PLAN_ARRAY_KEY = "Plan"
 
+# TODO: tyrsi ARRAY
 # Looks for a single line that contains CycleLength
 def get_cycle_length_from_vap(filepath):
     global CYCLE_LENGTH_KEY
@@ -33,6 +34,7 @@ def get_cycle_length_from_vap(filepath):
 
     return cycle_length
 
+# TODO: tyrsi ARRAY
 # Looks for a single line thet
 def get_stage_lenghts_from_vap(filepath):
     global PLAN_ARRAY_KEY
