@@ -3,7 +3,7 @@ import puahelper  # class to be tested
 import os.path  # to get path of the file being tested
 
 
-class puhelpertest(unittest.TestCase):
+class PuaHelperTest(unittest.TestCase):
     # Tests for unbreakable loops
     # The provided file to test with contains absolutely no content
     # Should return empty objects or error codes (-1)
