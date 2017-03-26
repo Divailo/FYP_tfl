@@ -86,7 +86,7 @@ class PuaHelperTest(unittest.TestCase):
 
     #
 
-    # Tests if the functions return the correct content when the data is doubled (first in comments, then actual good content)
+    # Tests if the functions return the correct content on double (first in comments, then actual good content)
     # Expected results
     # 3 signal groups: A->1; B->2; C->3;
     # 3 stages: 1->A; 2->B; 3->C
@@ -103,7 +103,7 @@ class PuaHelperTest(unittest.TestCase):
     def test_getstages_commented_goodfile(self):
         _filepath = os.path.abspath('commented_goodpuafile.pua')
         phases_in_stages = puahelper.get_phases_in_stages(_filepath)
-        self.assertEqual(len(phases_in_stages),3)
+        self.assertEqual(len(phases_in_stages), 3)
         self.assertEqual(phases_in_stages['A'], [1])
         self.assertEqual(phases_in_stages['B'], [2])
         self.assertEqual(phases_in_stages['C'], [3])
@@ -133,7 +133,7 @@ class PuaHelperTest(unittest.TestCase):
     def test_getstages_correctvalues_tabs(self):
         _filepath = os.path.abspath('goodpuafile.pua')
         phases_in_stages = puahelper.get_phases_in_stages(_filepath)
-        self.assertEqual(len(phases_in_stages),3)
+        self.assertEqual(len(phases_in_stages), 3)
         self.assertEqual(phases_in_stages['A'], [1])
         self.assertEqual(phases_in_stages['B'], [2])
         self.assertEqual(phases_in_stages['C'], [3])
