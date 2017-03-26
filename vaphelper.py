@@ -8,7 +8,7 @@ ARRAY_SECTION_KEY = "ARRAY"
 SECTION_END_KEY = ';'
 
 CYCLE_LENGTH_KEY = "CycleLength"
-PLAN_ARRAY_KEY = "Plan"
+PLAN_ARRAY_KEY = "Plan["
 
 # checks if the line is end of the section by checking if the line is or ends with ';'
 def _check_for_end_of_section(line):
@@ -26,7 +26,7 @@ def _extract_section_for_key(filepath, key):
             line = file.next().strip()
         except StopIteration:
             # End of file reached
-            print "KEY: " + key + "NOT FOUND IN " + file.name
+            print "Key not found: " + key + " , in file" + file.name
             file.close()
             return []
 
@@ -40,7 +40,7 @@ def _extract_section_for_key(filepath, key):
                 file.close()
                 return lines
             else:
-                lines.append(line)
+                lines.append(stringhelper.escape_vap_comments(line))
         except StopIteration:
             # End of file reached
             file.close()
@@ -76,7 +76,16 @@ def get_cycle_length_from_vap(filepath):
 
     return cycle_length
 
-# Looks for a single line thet
+# Looks for a single line
 def get_stage_lenghts_from_vap(filepath):
     # TODO
+    lines = _extract_section_for_key(filepath, ARRAY_SECTION_KEY)
+    found_line = ""
+    for line in lines:
+        ignore_whitespace_line = line.replace("\s","")
+        if stringhelper.does_string_contain_substring(ignore_whitespace_line,PLAN_ARRAY_KEY):
+            found_line = line
+            print "Found line: " + found_line
+            break
+
     return []
