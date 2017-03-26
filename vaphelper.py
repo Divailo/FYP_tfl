@@ -2,6 +2,7 @@ import re # regex library
 
 import stringhelper
 
+# Constants
 CONSTANT_SECTION_KEY = "CONST"
 ARRAY_SECTION_KEY = "ARRAY"
 SECTION_END_KEY = ';'

@@ -2,13 +2,17 @@ import re # regex library
 
 import stringhelper
 
+# Constants
 ACTUAL_CONTENT_SEPARATOR = "$"
 SIGNAL_GROUPS_KEY = "$SIGNAL_GROUPS"
 STAGES_KEY = "$STAGES"
 STAGE_PREFIX = "Stage_"
 STARTING_STAGE_KEY = "$STARTING_STAGE"
 
-
+# Looks for a section which starts with the provided key
+# Starts extracting the lines to look for after seeing a $
+# Finishes extracting lines to read when sees another $
+# returns collection of lines to read from
 def _get_actual_content_to_extract_in_pua(filepath, key):
     file = open(filepath)
 
