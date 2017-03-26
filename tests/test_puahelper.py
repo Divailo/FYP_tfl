@@ -45,7 +45,7 @@ class PuaHelperTest(unittest.TestCase):
         starting_stage = puahelper.get_starting_stage_from_pua(_filepath)
         self.assertEqual(starting_stage, -1)
 
-        #
+    #
 
     # Tests if the functions return no content
     # on a file that is correctly formatted but has no actual content
@@ -64,6 +64,54 @@ class PuaHelperTest(unittest.TestCase):
         _filepath = os.path.abspath('emptycontentpuafile.pua')
         starting_stage = puahelper.get_starting_stage_from_pua(_filepath)
         self.assertEqual(starting_stage, -1)
+
+    #
+
+    # Tests if the functions return no content when the data is in a comments section
+
+    def test_readandmap_commented_nocontent(self):
+        _filepath = os.path.abspath('commented_badpuafile.pua')
+        mapped_objects = puahelper.read_and_map_signalgroups_from_pua(_filepath)
+        self.assertEqual(mapped_objects, {})
+
+    def test_getstages_commented_nocontent(self):
+        _filepath = os.path.abspath('commented_badpuafile.pua')
+        phases_in_stages = puahelper.get_phases_in_stages(_filepath)
+        self.assertEqual(phases_in_stages, {})
+
+    def test_getstartingstage_commented_nocontent(self):
+        _filepath = os.path.abspath('commented_badpuafile.pua')
+        starting_stage = puahelper.get_starting_stage_from_pua(_filepath)
+        self.assertEqual(starting_stage, -1)
+
+    #
+
+    # Tests if the functions return the correct content when the data is doubled (first in comments, then actual good content)
+    # Expected results
+    # 3 signal groups: A->1; B->2; C->3;
+    # 3 stages: 1->A; 2->B; 3->C
+    # Startgin Stage = 1
+
+    def test_readandmap_commented_goodfile(self):
+        _filepath = os.path.abspath('commented_goodpuafile.pua')
+        mapped_objects = puahelper.read_and_map_signalgroups_from_pua(_filepath)
+        self.assertEqual(len(mapped_objects), 3)
+        self.assertEqual(mapped_objects['1'], 'A')
+        self.assertEqual(mapped_objects['2'], 'B')
+        self.assertEqual(mapped_objects['3'], 'C')
+
+    def test_getstages_commented_goodfile(self):
+        _filepath = os.path.abspath('commented_goodpuafile.pua')
+        phases_in_stages = puahelper.get_phases_in_stages(_filepath)
+        self.assertEqual(len(phases_in_stages),3)
+        self.assertEqual(phases_in_stages['A'], [1])
+        self.assertEqual(phases_in_stages['B'], [2])
+        self.assertEqual(phases_in_stages['C'], [3])
+
+    def test_getstartingstage_commented_goodfile(self):
+        _filepath = os.path.abspath('commented_goodpuafile.pua')
+        starting_stage = puahelper.get_starting_stage_from_pua(_filepath)
+        self.assertEqual(starting_stage, 1)
 
     #
 
