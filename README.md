@@ -16,7 +16,12 @@
 
 - ~~Max green time??? - Don't thnik about it~~
 
-- Supports only elements separated by either spaces or tabs, not both. Might be solved by going through each element. If it contains \t, make two elements out of it
+- ~~Supports both tabs and spaces bt replacing tabs with spaces~~
+
+- Handle no such file I guess
+
+- := used when using variables?? Would not support shit like that
+
 
 # Functions to test
 
