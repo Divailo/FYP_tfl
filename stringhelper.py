@@ -6,4 +6,4 @@ def does_string_contain_substring(originalstring, substring_to_look):
     return True
 
 def escape_vap_comments(tobeeditted):
-    return re.sub(r"(\/\*){1}(.)*(\*\/){1}",r"", tobeeditted)
+    return re.sub(r"(\/\*){1}([^\*\/])+(\*\/){1}",r"", tobeeditted)
