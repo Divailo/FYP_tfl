@@ -84,6 +84,23 @@ class VapHelperTest(unittest.TestCase):
 
     #
 
+    # Tests the vaphelper functions when the desired data is between comment sections
+    # In the specific test the values that have to be returned are:
+    # CycleLength = 72
+    # Plans = [9, 24, 56, 72]
+    def test_cyclelength_correct_documented(self):
+        _filepath = os.path.abspath('goodvapfile_documented.vap')
+        cycle_length = vaphelper.get_cycle_length_from_vap(_filepath)
+        self.assertEqual(cycle_length, 72)
+
+    def test__plans_correct_documented(self):
+        _filepath = os.path.abspath('goodvapfile_documented.vap')
+        plans = vaphelper.get_stage_lenghts_from_vap(_filepath)
+        self.assertEqual(len(plans), 0)
+        self.assertEqual(plans, [])
+
+    #
+
     # Tests the vaphelper functions when handling correctly structured files
     # In the specific test the values that have to be returned are:
     # CycleLength = 72
