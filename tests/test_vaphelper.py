@@ -70,7 +70,7 @@ class VapHelperTest(unittest.TestCase):
     # Tests the vaphelper functions when the file has double of the data required, one commented, one not
     # In the specific test the values that have to be returned are:
     # CycleLength = 40
-    # Plans = [4, 16, 28, 40]
+    # Plans = [4, 16, 28]
     def test_cyclelength_correct_with_comments(self):
         _filepath = os.path.abspath('commented_goodvapfile.vap')
         cycle_length = vaphelper.get_cycle_length_from_vap(_filepath)
@@ -79,15 +79,15 @@ class VapHelperTest(unittest.TestCase):
     def test__plans_correct_with_comments(self):
         _filepath = os.path.abspath('commented_goodvapfile.vap')
         plans = vaphelper.get_stage_lenghts_from_vap(_filepath)
-        self.assertEqual(len(plans), 0)
-        self.assertEqual(plans, [])
+        self.assertEqual(len(plans), 3)
+        self.assertEqual(plans, [4,16,28])
 
     #
 
     # Tests the vaphelper functions when the desired data is between comment sections
     # In the specific test the values that have to be returned are:
     # CycleLength = 72
-    # Plans = [9, 24, 56, 72]
+    # Plans = [9, 24, 56]
     def test_cyclelength_correct_documented(self):
         _filepath = os.path.abspath('goodvapfile_documented.vap')
         cycle_length = vaphelper.get_cycle_length_from_vap(_filepath)
@@ -96,15 +96,15 @@ class VapHelperTest(unittest.TestCase):
     def test__plans_correct_documented(self):
         _filepath = os.path.abspath('goodvapfile_documented.vap')
         plans = vaphelper.get_stage_lenghts_from_vap(_filepath)
-        self.assertEqual(len(plans), 0)
-        self.assertEqual(plans, [])
+        self.assertEqual(len(plans), 3)
+        self.assertEqual(plans, [9,24,56])
 
     #
 
     # Tests the vaphelper functions when handling correctly structured files
     # In the specific test the values that have to be returned are:
     # CycleLength = 72
-    # Plans = [9, 24, 56, 72]
+    # Plans = [9, 24, 56]
     def test_cyclelength_correct(self):
         _filepath = os.path.abspath('goodvapfile.vap')
         cycle_length = vaphelper.get_cycle_length_from_vap(_filepath)
@@ -113,8 +113,8 @@ class VapHelperTest(unittest.TestCase):
     def test_plans_correct(self):
         _filepath = os.path.abspath('goodvapfile.vap')
         plans = vaphelper.get_stage_lenghts_from_vap(_filepath)
-        self.assertEqual(len(plans), 0)
-        self.assertEqual(plans, [])
+        self.assertEqual(len(plans), 3)
+        self.assertEqual(plans, [9,24,56])
 
     #
 
