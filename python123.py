@@ -4,16 +4,33 @@ import tkFileDialog # file dialog library
 # import threading # library for threads
 import json # json library
 import sys # all kinds of shit library
+import os.path
 
 import puahelper
 import vaphelper
 import vissimclasses
+
+folderpath = ""
+
+# seriously this is fucked up
+def get_absolute_path_for_file(file):
+    try:
+        f = open(file)
+        f.close()
+    except IOError:
+        file = folderpath + "\\" + file
+
+    return file
 
 # initializes a file chooser to load the desired model
 def ask_for_model():
     Tk().withdraw()  # we don't want a full GUI, so keep the root window from appearing
     # FILEOPENOPTIONS = dict(filetypes = [('PTV Vissim network files','*.inpx'),('All files', '*.*')])
     filename = tkFileDialog.askopenfilename()  # show an "Open" dialog box and return the path to the selected file
+    directory = os.path.split(filename)[0]
+    global folderpath
+    folderpath = directory.replace("/", "\\")
+    # print folderpath
     return filename.replace("/", "\\")
 
 # Closes the COM connection and exits the program
@@ -67,6 +84,7 @@ for sc in signalControllerCollection:
     sc_data['id'] = str(vissim_signal_controller_object.id)
     sc_data['name'] = str(vissim_signal_controller_object.name)
     sc_data['type'] = str(vissim_signal_controller_object.type)
+    pua_to_global_ids = {}
     if(str(vissim_signal_controller_object.type) == 'VAP'):
 
         # test TFL files
@@ -75,8 +93,9 @@ for sc in signalControllerCollection:
         # sc_data['pua_file'] = "D:\\PyCharmProjects\\tests\\goodpuafile.pua"
 
         # actual data
-        sc_data['vap_file'] = str(vissim_signal_controller_object.supply_file_1)
-        sc_data['pua_file'] = str(vissim_signal_controller_object.supply_file_2)
+        sc_data['vap_file'] = get_absolute_path_for_file(str(vissim_signal_controller_object.supply_file_1))
+        sc_data['pua_file'] = get_absolute_path_for_file(str(vissim_signal_controller_object.supply_file_2))
+        print "PUA : " + str(vissim_signal_controller_object.supply_file_2)
         sc_data['curr_stage'] = puahelper.get_starting_stage_from_pua(sc_data['pua_file'])
         pua_to_global_ids = puahelper.read_and_map_signalgroups_from_pua(sc_data['pua_file'])
         pua_stages = puahelper.get_phases_in_stages(sc_data['pua_file'])
@@ -130,12 +149,13 @@ for sc in signalControllerCollection:
             sg_data['Link '+ str(counter)] = str(link)
 
         sg_no = str(sg.AttValue("No"))
-        if sg_no in pua_to_global_ids:
-            local_key = str(pua_to_global_ids[sg_no])
-            green_stages = []
-            if local_key in pua_stages:
-                green_stages = pua_stages[local_key]
-            sg_data['phase_in_stages'] = green_stages
+        if pua_to_global_ids is not None:
+            if sg_no in pua_to_global_ids:
+                local_key = str(pua_to_global_ids[sg_no])
+                green_stages = []
+                if local_key in pua_stages:
+                    green_stages = pua_stages[local_key]
+                sg_data['phase_in_stages'] = green_stages
 
         sgs.append(sg_data)
 
