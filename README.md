@@ -6,11 +6,11 @@
 
 - ~~Make a base case so I don't crawl the file forever -> while line != None: ne6ta~~
 
-- Read from plan array, so you know when stages switch
+- ~~Read from plan array, so you know when stages switch~~
 
 - Edit plan array depending on the PDDL result
 
-- Think of way to exit the program safely (No license for Vissim, Vissim not installed, etc)
+- ~~Think of way to exit the program safely (No license for Vissim, Vissim not installed, etc)~~
 
 - ~~Ask Michael about interstages? - Don't think about it~~
 
@@ -21,8 +21,3 @@
 - Handle no such file I guess
 
 - := used when using variables?? Would not support shit like that
-
-
-# Functions to test
-
-ask_for_model()
