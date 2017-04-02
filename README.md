@@ -25,3 +25,5 @@
 - Make sure that the Link names match -> rename everything that has no name
 
 - On extracting stages, work with Regex if not lazy enough
+
+- Everything will crash if the signal controller is not VAP
