@@ -9,9 +9,11 @@ import os.path
 import puahelper
 import vaphelper
 import vissimclasses
+import jsontopddl
 
-folderpath = ""
-json_file_name = "out.json"
+folderpath = ''
+json_filename = 'out.json'
+pddl_filename = 'pddl.pddl'
 # pddl_file_name = problem_file + time_stamp + .pddl
 
 # VAP and PUA filess might not give their absolute path if they are in the same folder as the model
@@ -21,7 +23,7 @@ def _get_absolute_path_for_file(file):
         open_file = open(file)
         open_file.close()
     except IOError:
-        file = folderpath + "\\" + file
+        file = folderpath + '\\' + file
 
     return file
 
@@ -35,13 +37,13 @@ def _ask_for_model():
     filename = tkFileDialog.askopenfilename(**FILE_DIALOG_OPTIONS)  # show an "Open" dialog box and return the path to the selected file
     directory = os.path.split(filename)[0]
     global folderpath
-    folderpath = directory.replace("/", "\\")
+    folderpath = directory.replace('/', '\\')
     # print folderpath
-    return filename.replace("/", "\\")
+    return filename.replace('/', '\\')
 
 def _write_data_to_json_file(data):
     json_data = json.dumps(data)
-    f = open(json_file_name, 'w')
+    f = open(json_filename, 'w')
     f.write(str(json_data))
     f.close()
 
@@ -102,7 +104,7 @@ for sc in signalControllerCollection:
         # actual data
         # sc_data['vap_file'] = get_absolute_path_for_file(str(vissim_signal_controller_object.supply_file_1))
         # sc_data['pua_file'] = get_absolute_path_for_file(str(vissim_signal_controller_object.supply_file_2))
-        sc_data['curr_stage'] = puahelper.get_starting_stage_from_pua(sc_data['pua_file'])
+        sc_data['initial_stage'] = puahelper.get_starting_stage_from_pua(sc_data['pua_file'])
         sc_data['max_stage'] = puahelper.get_max_stage_from_pua(sc_data['pua_file'])
         pua_to_global_ids = puahelper.read_and_map_signalgroups_from_pua(sc_data['pua_file'])
         pua_stages = puahelper.get_phases_in_stages_from_pua(sc_data['pua_file'])
@@ -136,7 +138,7 @@ for sc in signalControllerCollection:
         vissim_signal_group_object.set_links_from_signalhead_collection(signal_heads_collection)
         print "Signal group from links:" + str(vissim_signal_group_object.links)
 
-        sg_data['Links'] = vissim_signal_group_object.links
+        sg_data['links'] = vissim_signal_group_object.links
 
         sg_no = str(sg.AttValue("No"))
         if pua_to_global_ids is not None:
@@ -158,5 +160,7 @@ for sc in signalControllerCollection:
 print "= END OF SIGNAL CONTROLLER ="
 
 _write_data_to_json_file(scs)
+
+jsontopddl.convert_jsonfile_to_pddlproblem(json_filename, pddl_filename)
 
 _close_program("")
