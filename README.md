@@ -21,3 +21,5 @@
 - Handle no such file I guess
 
 - := used when using variables?? Would not support shit like that
+
+- Make sure that the Link names match -> rename everything that has no name
