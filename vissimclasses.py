@@ -162,19 +162,24 @@ class VissimSignalGroup(object):
     def key(self):
         return self.id
 
-    def get_links_from_signalhead_collection(self, signal_heads_collection):
+    def set_links_from_signalhead_collection(self, signal_heads_collection):
         _links = []
 
         for sh in signal_heads_collection:
+            # create json object for the link
+            sh_data = {}
+            # get the sh's link
             sh_link = sh.Lane.Link
-
             sh_link_name = sh_link.AttValue("Name")
             # Check if there is no name given to the link
             if sh_link_name == "":
                 # Give unique name to the link
                 sh_link_name = "l_" + str(sh_link.AttValue("No"))
 
-            _links.append(sh_link_name)
+            # Put the name in the object
+            sh_data['name'] = sh_link_name
+            _links.append(sh_data)
+
 
         self.links = _links
 

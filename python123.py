@@ -127,7 +127,7 @@ for sc in signalControllerCollection:
         # Crawl through the signal heads so the from link are found
         signal_heads_collection = sg.SigHeads.GetAll()
 
-        vissim_signal_group_object.get_links_from_signalhead_collection(signal_heads_collection)
+        vissim_signal_group_object.set_links_from_signalhead_collection(signal_heads_collection)
         print "Signal group from links:" + str(vissim_signal_group_object.links)
 
         sg_data['Links'] = vissim_signal_group_object.links
