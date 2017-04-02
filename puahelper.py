@@ -74,7 +74,7 @@ def read_and_map_signalgroups_from_pua(filepath):
     return map
 
 # Gets which phases are green when stage is reached
-def get_phases_in_stages(filepath):
+def get_phases_in_stages_from_pua(filepath):
     lines = _get_actual_content_to_extract_in_pua(filepath, STAGES_KEY)
     green_map = {}
 
@@ -101,7 +101,7 @@ def get_phases_in_stages(filepath):
     # for key, value in green_map.items():
     #     print key + " : " + str(value)
 
-    print "END OF GET STAGES"
+    print "END OF GET PHASES IN STAGES"
 
     return green_map
 
@@ -112,10 +112,25 @@ def get_starting_stage_from_pua(filepath):
 
     for line in lines:
         if stringhelper.does_string_contain_substring(line, STAGE_PREFIX) == True:
-            stage_number = int(line.replace(STAGE_PREFIX, ''))
+            # stage_number = int(line.replace(STAGE_PREFIX, ''))
+            stage_number = stringhelper.parse_integer_from_string(line)
             # print stage_number
             print "END OF FIND STARTING STAGE"
             return stage_number
 
 
     return -1
+
+def get_max_stage_from_pua(filepath):
+    lines = _get_actual_content_to_extract_in_pua(filepath, STAGES_KEY)
+    max_stage = -1
+    for line in lines:
+        if stringhelper.does_string_contain_substring(line, STAGE_PREFIX) == True:
+            # better with regex
+            stage_number = stringhelper.parse_integer_from_string(line)
+            if stage_number > max_stage:
+                max_stage = stage_number
+            # print stage_number
+
+    print "END OF FIND MAX STAGE"
+    return max_stage

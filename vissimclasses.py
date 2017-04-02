@@ -158,19 +158,25 @@ class VissimSignalGroup(object):
         self.min_green = objectContainer.AttValue("MinGreen")
         self.type = objectContainer.AttValue("Type")
         self.signal_controller = objectContainer.AttValue("SC")
-        # self.amber = objectContainer.AttValue("Amber")
-        # self.controlled_by_com = objectContainer.AttValue("ContrByCOM")
-        # self.green_flashing_time = objectContainer.AttValue("GreenFlsh")
-        # self.min_red = objectContainer.AttValue("MinRed")
-        # self.red_amber_time = objectContainer.AttValue("RedAmber")
-        # self.current_signal_stage = objectContainer.AttValue("SigState")
-        # self.signal_stage_runtime = objectContainer.AttValue("tSigState")
 
     def key(self):
         return self.id
 
-    def setLinks(self, set):
-        self.links = set
+    def get_links_from_signalhead_collection(self, signal_heads_collection):
+        _links = []
+
+        for sh in signal_heads_collection:
+            sh_link = sh.Lane.Link
+
+            sh_link_name = sh_link.AttValue("Name")
+            # Check if there is no name given to the link
+            if sh_link_name == "":
+                # Give unique name to the link
+                sh_link_name = "l_" + str(sh_link.AttValue("No"))
+
+            _links.append(sh_link_name)
+
+        self.links = _links
 
     def links(self):
         return self.links

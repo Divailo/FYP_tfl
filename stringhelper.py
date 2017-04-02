@@ -18,9 +18,6 @@ def parse_integer_from_string(string):
 def escape_vap_comments(tobeeditted):
     return re.sub(r"(\/\*){1}([^\*\/])+(\*\/){1}",r"", tobeeditted)
 
-# def get_dimension_sizes_for_vap_array():
-
-
 # Removes the '[' and ']' from the part after the '=' in an array element inside the vap file
 def remove_brackets_for_vap_array(arraystring):
     return arraystring.replace('[', '').replace(']', '')

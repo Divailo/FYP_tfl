@@ -1,9 +1,9 @@
-import win32com.client as com # com library
-from Tkinter import Tk # gui library
-import tkFileDialog # file dialog library
-# import threading # library for threads
-import json # json library
-import sys # all kinds of shit library
+import win32com.client as com  # com library
+from Tkinter import Tk  # gui library
+import tkFileDialog  # file dialog library
+# import threading  # library for threads
+import json  # json library
+import sys  # all kinds of shit library
 import os.path
 
 import puahelper
@@ -11,12 +11,15 @@ import vaphelper
 import vissimclasses
 
 folderpath = ""
+json_file_name = "out.json"
+# pddl_file_name = problem_file + time_stamp + .pddl
 
-# seriously this is fucked up
+# VAP and PUA filess might not give their absolute path if they are in the same folder as the model
+# To ensure absolute path is taken, this method is called when getting pua and vap files
 def get_absolute_path_for_file(file):
     try:
-        f = open(file)
-        f.close()
+        open_file = open(file)
+        open_file.close()
     except IOError:
         file = folderpath + "\\" + file
 
@@ -25,8 +28,11 @@ def get_absolute_path_for_file(file):
 # initializes a file chooser to load the desired model
 def ask_for_model():
     Tk().withdraw()  # we don't want a full GUI, so keep the root window from appearing
-    # FILEOPENOPTIONS = dict(filetypes = [('PTV Vissim network files','*.inpx'),('All files', '*.*')])
-    filename = tkFileDialog.askopenfilename()  # show an "Open" dialog box and return the path to the selected file
+
+    FILE_DIALOG_OPTIONS = {'filetypes': [('PTV Vissim network files', '*.inpx'), ('All files', '*.*')],
+                           'title': 'Choose VISSIM model'}
+
+    filename = tkFileDialog.askopenfilename(**FILE_DIALOG_OPTIONS)  # show an "Open" dialog box and return the path to the selected file
     directory = os.path.split(filename)[0]
     global folderpath
     folderpath = directory.replace("/", "\\")
@@ -40,16 +46,10 @@ def close_program(message):
     # Display error message in console if any
     if message != "":
         print "ERROR MESSAGE: " + message
-    print "\n == END OF SCRIPT =="
+    print "\n== END OF SCRIPT =="
     sys.exit()
 
-# def get_phases_in_stages(filepath):
-
-def get_interstages_from_pua(filepth):
-    # TODO
-    return 0
-
-print " == START OF SCRIPT =="
+print "== START OF SCRIPT =="
 
 inpx_file = ask_for_model()
 if inpx_file is None:
@@ -59,12 +59,13 @@ if inpx_file[-5:] != ".inpx":
     close_program("Please choose .inpx file")
 
 
-
 # create Vissim COM object
 Vissim = com.Dispatch("Vissim.Vissim")
 
 if Vissim is None:
-    close_program("Vissim program not found. It might be because the program is not installed on the machine")
+    close_program("Vissim program not found."
+                  "It might be because the program is not installed on the machine")
+
 
 # version-specific object: Vissim = com.Dispatch("Vissim.Vissim.9")
 # Vissim.LoadNet("C:\Users\Ivaylo\Desktop\Examples\PTV Headquarters - Left-hand\Headquarters 14 LH.inpx")
@@ -85,25 +86,21 @@ for sc in signalControllerCollection:
     sc_data['name'] = str(vissim_signal_controller_object.name)
     sc_data['type'] = str(vissim_signal_controller_object.type)
     pua_to_global_ids = {}
-    if(str(vissim_signal_controller_object.type) == 'VAP'):
+    if str(vissim_signal_controller_object.type) == 'VAP':
 
         # test TFL files
-        # sc_data['vap_file'] = "C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap"
-        # sc_data['pua_file'] = "C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.pua"
+        sc_data['vap_file'] = "C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap"
+        sc_data['pua_file'] = "C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.pua"
         # sc_data['pua_file'] = "D:\\PyCharmProjects\\tests\\goodpuafile.pua"
 
         # actual data
-        sc_data['vap_file'] = get_absolute_path_for_file(str(vissim_signal_controller_object.supply_file_1))
-        sc_data['pua_file'] = get_absolute_path_for_file(str(vissim_signal_controller_object.supply_file_2))
-        print "PUA : " + str(vissim_signal_controller_object.supply_file_2)
+        # sc_data['vap_file'] = get_absolute_path_for_file(str(vissim_signal_controller_object.supply_file_1))
+        # sc_data['pua_file'] = get_absolute_path_for_file(str(vissim_signal_controller_object.supply_file_2))
         sc_data['curr_stage'] = puahelper.get_starting_stage_from_pua(sc_data['pua_file'])
+        sc_data['max_stage'] = puahelper.get_max_stage_from_pua(sc_data['pua_file'])
         pua_to_global_ids = puahelper.read_and_map_signalgroups_from_pua(sc_data['pua_file'])
-        pua_stages = puahelper.get_phases_in_stages(sc_data['pua_file'])
+        pua_stages = puahelper.get_phases_in_stages_from_pua(sc_data['pua_file'])
 
-        if len(pua_stages)>0:
-            sc_data['max_stage'] = len(pua_stages)
-        else:
-            sc_data['max_stage'] = -1
         # specific for TFL models, will return -1 if it works with different models
         sc_data['cycle_length'] = vaphelper.get_cycle_length_from_vap(sc_data['vap_file'])
         sc_data['stage_timings'] = vaphelper.get_stage_lenghts_from_vap(sc_data['vap_file'])
@@ -129,24 +126,11 @@ for sc in signalControllerCollection:
 
         # Crawl through the signal heads so the from link are found
         signal_heads_collection = sg.SigHeads.GetAll()
-        links = []
 
-        for sh in signal_heads_collection:
-            shLink = str(sh.Lane.Link.AttValue("No"))
-            print "Signal Heaad Link: " + shLink
-            links.append(shLink)
-            # print "Signal Head's group: " + str(sh.AttValue("SG"))
-
-        # Using set so unique values are ensured
-        unique_links = set(links)
-        vissim_signal_group_object.setLinks(unique_links)
+        vissim_signal_group_object.get_links_from_signalhead_collection(signal_heads_collection)
         print "Signal group from links:" + str(vissim_signal_group_object.links)
 
-        links_data = []
-        counter = 0
-        for link in unique_links:
-            counter = counter + 1
-            sg_data['Link '+ str(counter)] = str(link)
+        sg_data['Links'] = vissim_signal_group_object.links
 
         sg_no = str(sg.AttValue("No"))
         if pua_to_global_ids is not None:
@@ -168,8 +152,7 @@ for sc in signalControllerCollection:
 print "= END OF SIGNAL CONTROLLER ="
 
 json_data = json.dumps(scs)
-
-f = open('out.json', 'w')
+f = open(json_file_name, 'w')
 f.write(str(json_data))
 f.close()
 
