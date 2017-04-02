@@ -2,16 +2,20 @@ import re # regex library
 
 import stringhelper
 
+# Constants
 ACTUAL_CONTENT_SEPARATOR = "$"
 SIGNAL_GROUPS_KEY = "$SIGNAL_GROUPS"
 STAGES_KEY = "$STAGES"
 STAGE_PREFIX = "Stage_"
 STARTING_STAGE_KEY = "$STARTING_STAGE"
 
-
-def _get_actual_content_to_extract_in_pua(file, key):
-
-    global ACTUAL_CONTENT_SEPARATOR
+# Looks for a section which starts with the provided key
+# Starts extracting the lines to look for after seeing a $
+# Finishes extracting lines to read when sees another $
+# returns collection of lines to read from
+# on error (structure not satisfied) returns empty array
+def _get_actual_content_to_extract_in_pua(filepath, key):
+    file = open(filepath)
 
     line = ""
     while line != key:
@@ -19,6 +23,7 @@ def _get_actual_content_to_extract_in_pua(file, key):
             line = file.next().strip()
         except StopIteration:
             # End of file reached
+            file.close()
             return []
 
     while line != ACTUAL_CONTENT_SEPARATOR:
@@ -26,6 +31,7 @@ def _get_actual_content_to_extract_in_pua(file, key):
             line = file.next().strip()
         except StopIteration:
             # End of file reached
+            file.close()
             return []
 
     lines = []
@@ -40,18 +46,16 @@ def _get_actual_content_to_extract_in_pua(file, key):
                 break
         except StopIteration:
             # End of file reached
+            file.close()
             return lines
 
     return lines
 
 # Opens a file and finds all the local (the ones used in the pua file) and global (the ones used in the model) ids of signal groups
 def read_and_map_signalgroups_from_pua(filepath):
-    global SIGNAL_GROUPS_KEY
-    opened_file = open(filepath)
-
-    lines_to_read = _get_actual_content_to_extract_in_pua(opened_file, SIGNAL_GROUPS_KEY)
-
+    lines_to_read = _get_actual_content_to_extract_in_pua(filepath, SIGNAL_GROUPS_KEY)
     map = {}
+
     for line in lines_to_read:
         # Civil war
         line = line.replace('\t',' ')
@@ -65,21 +69,13 @@ def read_and_map_signalgroups_from_pua(filepath):
     # for key, value in map.items():
     #     print key + " : " + value
 
-    opened_file.close()
     print "END OF MAP SIGNAL GROUPS TO IDS"
 
     return map
 
 # Gets which phases are green when stage is reached
 def get_phases_in_stages(filepath):
-
-    global STAGES_KEY
-
-    opened_file = open(filepath)
-    lines = _get_actual_content_to_extract_in_pua(opened_file, STAGES_KEY)
-    global STAGE_PREFIX
-    RED_KEY = "red"
-
+    lines = _get_actual_content_to_extract_in_pua(filepath, STAGES_KEY)
     green_map = {}
 
     for line in lines:
@@ -106,17 +102,13 @@ def get_phases_in_stages(filepath):
     #     print key + " : " + str(value)
 
     print "END OF GET STAGES"
-    opened_file.close()
 
     return green_map
 
 
 # Returns integer, representing the first stage of the signal controller
 def get_starting_stage_from_pua(filepath):
-    global STARTING_STAGE_KEY
-    opened_file = open(filepath)
-    lines = _get_actual_content_to_extract_in_pua(opened_file, STARTING_STAGE_KEY)
-    global STAGE_PREFIX
+    lines = _get_actual_content_to_extract_in_pua(filepath, STARTING_STAGE_KEY)
 
     for line in lines:
         if stringhelper.does_string_contain_substring(line, STAGE_PREFIX) == True:
@@ -125,6 +117,5 @@ def get_starting_stage_from_pua(filepath):
             print "END OF FIND STARTING STAGE"
             return stage_number
 
-    opened_file.close()
 
     return -1

@@ -47,3 +47,12 @@ fabric.properties
 
 # stupid debug stuff
 out.txt
+out.json
+
+# pyinstaller
+*.rar
+/dist/
+/build/
+IVAYLO.RAR
+/IVAYLO/
+TFL_ivaylo.spec
