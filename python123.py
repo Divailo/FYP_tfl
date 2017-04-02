@@ -16,7 +16,7 @@ json_file_name = "out.json"
 
 # VAP and PUA filess might not give their absolute path if they are in the same folder as the model
 # To ensure absolute path is taken, this method is called when getting pua and vap files
-def get_absolute_path_for_file(file):
+def _get_absolute_path_for_file(file):
     try:
         open_file = open(file)
         open_file.close()
@@ -26,7 +26,7 @@ def get_absolute_path_for_file(file):
     return file
 
 # initializes a file chooser to load the desired model
-def ask_for_model():
+def _ask_for_model():
     Tk().withdraw()  # we don't want a full GUI, so keep the root window from appearing
 
     FILE_DIALOG_OPTIONS = {'filetypes': [('PTV Vissim network files', '*.inpx'), ('All files', '*.*')],
@@ -39,8 +39,14 @@ def ask_for_model():
     # print folderpath
     return filename.replace("/", "\\")
 
+def _write_data_to_json_file(data):
+    json_data = json.dumps(data)
+    f = open(json_file_name, 'w')
+    f.write(str(json_data))
+    f.close()
+
 # Closes the COM connection and exits the program
-def close_program(message):
+def _close_program(message):
     global Vissim
     Vissim = None
     # Display error message in console if any
@@ -51,19 +57,19 @@ def close_program(message):
 
 print "== START OF SCRIPT =="
 
-inpx_file = ask_for_model()
+inpx_file = _ask_for_model()
 if inpx_file is None:
-    close_program("Please choose a file")
+    _close_program("Please choose a file")
 
 if inpx_file[-5:] != ".inpx":
-    close_program("Please choose .inpx file")
+    _close_program("Please choose .inpx file")
 
 
 # create Vissim COM object
 Vissim = com.Dispatch("Vissim.Vissim")
 
 if Vissim is None:
-    close_program("Vissim program not found."
+    _close_program("Vissim program not found."
                   "It might be because the program is not installed on the machine")
 
 
@@ -151,9 +157,6 @@ for sc in signalControllerCollection:
 
 print "= END OF SIGNAL CONTROLLER ="
 
-json_data = json.dumps(scs)
-f = open(json_file_name, 'w')
-f.write(str(json_data))
-f.close()
+_write_data_to_json_file(scs)
 
-close_program("")
+_close_program("")
