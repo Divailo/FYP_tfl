@@ -23,3 +23,5 @@
 - := used when using variables?? Would not support shit like that
 
 - Make sure that the Link names match -> rename everything that has no name
+
+- On extracting stages, work with Regex if not lazy enough
