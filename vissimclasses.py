@@ -79,13 +79,15 @@ class VissimSignalController(object):
         if name != "":
             self.name = name
         else:
-            self._counter = self._counter + 1
-            self.name = "Junction_"
+            # This was such a fun idea :( . Goodbye sweet prince
+            # self._counter = self._counter + 1
+            # self.name = "Junction_"
             # so the program supports unlimited amount of signal controllers -> after Z , it goes to AA
-            aretheretoomanyjunctions = self._counter / len(self._alphabet) - 1
-            if aretheretoomanyjunctions >= 0:
-                self.name = self.name + self._alphabet[aretheretoomanyjunctions]
-            self.name = self.name + self._alphabet[self._counter % len(self._alphabet)]
+            # aretheretoomanyjunctions = self._counter / len(self._alphabet) - 1
+            # if aretheretoomanyjunctions >= 0:
+            #     self.name = self.name + self._alphabet[aretheretoomanyjunctions]
+            # self.name = self.name + self._alphabet[self._counter % len(self._alphabet)]
+            self.name = '__Junction_' + self.id
 
     def vapfile(self):
         if self.type == "VAP":
