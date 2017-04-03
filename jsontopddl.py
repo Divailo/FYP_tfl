@@ -34,14 +34,7 @@ def _extract_phase_in_stages_map(sgsarray):
     return  phase_in_stages
 
 
-def convert_jsonfile_to_pddlproblem(json_filename, pddl_filename):
-    print "= CONVERTING JSON TO PDDL ="
-    pddl_file = open(pddl_filename, 'w')
-    pddl_file.writelines(generate_pddl_lines(json_filename))
-    print "= CONVERTING JSON TO PDDL ="
-
-
-def generate_pddl_lines(json_filename):
+def _generate_pddl_lines(json_filename):
     lines = []
     json_file = open(json_filename)
     data = json.load(json_file)
@@ -63,6 +56,13 @@ def generate_pddl_lines(json_filename):
 
     json_file.close()
     return lines
+
+
+def convert_jsonfile_to_pddlproblem(json_filename, pddl_filename):
+    print "= CONVERTING JSON TO PDDL ="
+    pddl_file = open(pddl_filename, 'w')
+    pddl_file.writelines(_generate_pddl_lines(json_filename))
+    print "= CONVERTING JSON TO PDDL ="
 
 def _create_signal_controller_section(name):
     return START_COMMENT_KEY + name + '\n'

@@ -24,7 +24,7 @@ class JsonToPddlTestCase(unittest.TestCase):
 
     def test_sample_json(self):
         _filepath = os.path.join(os.path.dirname(__file__), 'sample_json.txt')
-        lines = jsontopddl.generate_pddl_lines(_filepath)
+        lines = jsontopddl._generate_pddl_lines(_filepath)
         self.assertEqual(lines, [u';; Junction_A\n',
                                  u'\t(= (current_stage Junction_A) 10)\n',
                                  u'\t(= (max_stage Junction_A) 30)\n',
