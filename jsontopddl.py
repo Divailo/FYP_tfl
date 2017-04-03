@@ -56,15 +56,15 @@ def convert_jsonfile_to_pddlproblem(json_filename, pddl_filename):
         for line in phases_in_stages_lines:
             lines.append(line)
 
-
         pddl_file.writelines(lines)
-
 
     json_file.close()
     print "= CONVERTING JSON TO PDDL ="
 
+
 def _create_signal_controller_section(name):
     return START_COMMENT_KEY + name + '\n'
+
 
 def _make_current_stage_line(initial_stage_value, intersection_name):
     line = '\t'
@@ -75,6 +75,7 @@ def _make_current_stage_line(initial_stage_value, intersection_name):
         line = line + '(= (' + CURR_STAGE_KEY + intersection_name + ') ' + initial_stage_value + ')' + '\n'
     return line
 
+
 def _make_max_stage_line(max_stage_value, intersection_name):
     line = '\t'
     if max_stage_value == -1:
@@ -83,6 +84,7 @@ def _make_max_stage_line(max_stage_value, intersection_name):
         max_stage_value = str(max_stage_value * 10)
         line = line + '(= (' + MAX_STAGE_KEY + intersection_name + ') ' + max_stage_value + ')' + '\n'
     return line
+
 
 def _make_phase_in_stage_lines(phases_in_stages, intersection_name):
     lines_to_append = []

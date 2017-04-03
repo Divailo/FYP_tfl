@@ -65,7 +65,6 @@ class VissimSignalController(object):
     _counter = -1
 
     def __init__(self, objectContainer):
-        # self.active = objectContainer.AttValue("Active")
         self.id = objectContainer.AttValue("No")
         self.type = objectContainer.AttValue("Type")
         self._configurename(objectContainer.AttValue("Name"))
@@ -73,11 +72,6 @@ class VissimSignalController(object):
         self.supply_file_2 = objectContainer.AttValue("SupplyFile2")
 
     def id(self):
-        return self.id
-
-    # ffs the com method is called FindItemByKey while the attribute is called No
-    # consistency much!
-    def key(self):
         return self.id
 
     # Gives it some name, so it better looking PDDL can be constructed
@@ -110,15 +104,6 @@ class VissimSignalController(object):
             return self.supply_file_2
         else:
             return None
-
-    # def progid(self):
-    #     return self.progid
-
-    # def progfile(self):
-    #     return self.progfile
-    # def active(self):
-    #     return self.active
-
 
 
 class VissimSignalGroup(object):
@@ -158,9 +143,6 @@ class VissimSignalGroup(object):
         self.min_green = objectContainer.AttValue("MinGreen")
         self.type = objectContainer.AttValue("Type")
         self.signal_controller = objectContainer.AttValue("SC")
-
-    def key(self):
-        return self.id
 
     def set_links_from_signalhead_collection(self, signal_heads_collection):
         _links = []
