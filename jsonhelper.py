@@ -15,3 +15,5 @@ SG_ID_KEY = 'id'
 SG_MIN_GREEN_KEY = 'min_green'
 SG_LINKS_KEY = 'links'
 SG_PHASE_IN_STAGES_KEY = 'phase_in_stages'
+# LINK KEYS
+LINK_NAME_KEY = 'name'
