@@ -105,7 +105,7 @@ def convert_jsonfile_to_pddlproblem(json_filename, pddl_filename):
     print "= CONVERTING JSON TO PDDL ="
 
 
-SWITCHTRAFICSIGNAL_REGEX = r'\d+\.\d+:\s*\(\s*switchtrafficsignal\s*\S+\)'
+RELEVANT_LINE_REGEX = r'\d+\.\d+:\s*\(\s*switchtrafficsignal\s*\S+\)'
 IRRELEVANT_REGEX1 = r'.\d+:\s*\(\s*switchtrafficsignal'
 IRRELEVANT_REGEX2 = r'\)'
 
@@ -114,7 +114,7 @@ def _get_new_stages_information(filepath):
     toReturn = {}
     opened_file = open(filepath)
     for line in opened_file.readlines():
-        if re.match(SWITCHTRAFICSIGNAL_REGEX, line) is not None:
+        if re.match(RELEVANT_LINE_REGEX, line) is not None:
             line = re.sub(IRRELEVANT_REGEX1, '', line)
             line = re.sub(IRRELEVANT_REGEX2, '', line)
 
