@@ -56,13 +56,6 @@ def _generate_pddl_lines(json_filename):
     json_file.close()
     return lines
 
-
-def convert_jsonfile_to_pddlproblem(json_filename, pddl_filename):
-    print "= CONVERTING JSON TO PDDL ="
-    pddl_file = open(pddl_filename, 'w')
-    pddl_file.writelines(_generate_pddl_lines(json_filename))
-    print "= CONVERTING JSON TO PDDL ="
-
 def _create_signal_controller_section(name):
     return START_COMMENT_KEY + name + '\n'
 
@@ -102,6 +95,13 @@ def _make_phase_in_stage_lines(phases_in_stages, intersection_name):
 
 
     return line
+
+
+def convert_jsonfile_to_pddlproblem(json_filename, pddl_filename):
+    print "= CONVERTING JSON TO PDDL ="
+    pddl_file = open(pddl_filename, 'w')
+    pddl_file.writelines(_generate_pddl_lines(json_filename))
+    print "= CONVERTING JSON TO PDDL ="
 
 
 # convert_jsonfile_to_pddlproblem('out.json','pddl.pddl')
