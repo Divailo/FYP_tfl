@@ -12,7 +12,6 @@ SC_CYCLE_LENGTH_KEY = 'cycle_length'
 SC_STAGE_TIMINGS_KEY = 'stage_timings'
 # SG KEYS
 SG_ID_KEY = 'id'
-SG_MIN_GREEN_KEY = 'min_green'
 SG_LINKS_KEY = 'links'
 SG_PHASE_IN_STAGES_KEY = 'phase_in_stages'
 # LINK KEYS

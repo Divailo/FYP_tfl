@@ -87,7 +87,7 @@ class VissimSignalController(object):
             # if aretheretoomanyjunctions >= 0:
             #     self.name = self.name + self._alphabet[aretheretoomanyjunctions]
             # self.name = self.name + self._alphabet[self._counter % len(self._alphabet)]
-            self.name = '__Junction_' + self.id
+            self.name = '__junction_' + str(self.id)
 
     def vapfile(self):
         if self.type == "VAP":
@@ -142,7 +142,6 @@ class VissimSignalGroup(object):
     def __init__(self, objectContainer):
         self.name = objectContainer.AttValue("Name")
         self.id = objectContainer.AttValue("No")
-        self.min_green = objectContainer.AttValue("MinGreen")
         self.type = objectContainer.AttValue("Type")
         self.signal_controller = objectContainer.AttValue("SC")
 

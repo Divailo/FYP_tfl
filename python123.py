@@ -97,13 +97,13 @@ for sc in signalControllerCollection:
     if str(vissim_signal_controller_object.type) == 'VAP':
 
         # test TFL files
-        sc_data['vap_file'] = "C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap"
-        sc_data['pua_file'] = "C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.pua"
+        # sc_data['vap_file'] = "C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap"
+        # sc_data['pua_file'] = "C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.pua"
         # sc_data['pua_file'] = "D:\\PyCharmProjects\\tests\\goodpuafile.pua"
 
         # actual data
-        # sc_data['vap_file'] = get_absolute_path_for_file(str(vissim_signal_controller_object.supply_file_1))
-        # sc_data['pua_file'] = get_absolute_path_for_file(str(vissim_signal_controller_object.supply_file_2))
+        sc_data['vap_file'] = _get_absolute_path_for_file(str(vissim_signal_controller_object.supply_file_1))
+        sc_data['pua_file'] = _get_absolute_path_for_file(str(vissim_signal_controller_object.supply_file_2))
         sc_data['initial_stage'] = puahelper.get_starting_stage_from_pua(sc_data['pua_file'])
         sc_data['max_stage'] = puahelper.get_max_stage_from_pua(sc_data['pua_file'])
         pua_to_global_ids = puahelper.read_and_map_signalgroups_from_pua(sc_data['pua_file'])
@@ -127,9 +127,7 @@ for sc in signalControllerCollection:
 
         sg_data = {}
         sg_data['id'] = str(sg.AttValue("No"))
-        sg_data['min_green'] = str(sg.AttValue("MinGreen"))
 
-        print "Singal Group MinGreen: " + str(sg.AttValue("MinGreen"))
         print "Singal Group No: " + str(sg.AttValue("No"))
 
         # Crawl through the signal heads so the from link are found
