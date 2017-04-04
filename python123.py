@@ -9,7 +9,7 @@ import os.path
 import puahelper
 import vaphelper
 import vissimclasses
-import jsontopddl
+import pddlhelper
 
 folderpath = ''
 json_filename = 'out.json'
@@ -162,6 +162,6 @@ print "= END OF SIGNAL CONTROLLER ="
 
 _write_data_to_json_file(scs)
 
-jsontopddl.convert_jsonfile_to_pddlproblem(json_filename, pddl_filename)
+pddlhelper.convert_jsonfile_to_pddlproblem(json_filename, pddl_filename)
 
 _close_program("")

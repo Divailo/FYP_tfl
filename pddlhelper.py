@@ -1,4 +1,5 @@
 import json
+import re
 
 import jsonhelper
 
@@ -104,4 +105,27 @@ def convert_jsonfile_to_pddlproblem(json_filename, pddl_filename):
     print "= CONVERTING JSON TO PDDL ="
 
 
-# convert_jsonfile_to_pddlproblem('out.json','pddl.pddl')
+SWITCHTRAFICSIGNAL_REGEX = r'\d+\.\d+:\s*\(\s*switchtrafficsignal\s*\S+\)'
+IRRELEVANT_REGEX1 = r'.\d+:\s*\(\s*switchtrafficsignal'
+IRRELEVANT_REGEX2 = r'\)'
+
+# Returns a map: juction : [signal timings]
+def _get_new_stages_information(filepath):
+    toReturn = {}
+    opened_file = open(filepath)
+    for line in opened_file.readlines():
+        if re.match(SWITCHTRAFICSIGNAL_REGEX, line) is not None:
+            line = re.sub(IRRELEVANT_REGEX1, '', line)
+            line = re.sub(IRRELEVANT_REGEX2, '', line)
+
+            split_lne = re.split(' ', line)
+            stage_timing = split_lne[0]
+            junction_name = split_lne[1]
+            if not junction_name in toReturn:
+                toReturn[junction_name] = []
+            toReturn[junction_name].append(stage_timing)
+
+    opened_file.close()
+    return toReturn
+
+print _get_new_stages_information('C:\\Users\\Ivaylo\\Downloads\\plan_example.pddl')
