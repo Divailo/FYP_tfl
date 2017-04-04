@@ -18,7 +18,6 @@ JSON_LINK_NAME_KEY = jsonhelper.LINK_NAME_KEY
 CURR_STAGE_KEY = 'current_stage '  # Parameters: intersection, value
 MAX_STAGE_KEY = 'max_stage '  # Parameters: intersection, value
 PHASE_IN_STAGE_KEY = 'phase_in_stage '  # Parameters: link, intersection, value
-MIN_GREEN_KEY = 'min_green_time '  # Parameters: intersection, value. Not sure if needed
 
 START_COMMENT_KEY = ';; '
 
