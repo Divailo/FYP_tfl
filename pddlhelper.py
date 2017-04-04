@@ -22,6 +22,7 @@ PHASE_IN_STAGE_KEY = 'phase_in_stage '  # Parameters: link, intersection, value
 
 START_COMMENT_KEY = ';; '
 
+
 def _extract_phase_in_stages_map(sgsarray):
     phase_in_stages = {}
     for sg in sgsarray:
@@ -31,7 +32,7 @@ def _extract_phase_in_stages_map(sgsarray):
             link_name = link[JSON_LINK_NAME_KEY]
             phase_in_stages[link_name] = sg_stages
 
-    return  phase_in_stages
+    return phase_in_stages
 
 
 def _generate_pddl_lines(json_filename):
@@ -56,6 +57,7 @@ def _generate_pddl_lines(json_filename):
 
     json_file.close()
     return lines
+
 
 def _create_signal_controller_section(name):
     return START_COMMENT_KEY + name + '\n'
@@ -90,7 +92,8 @@ def _make_phase_in_stage_lines(phases_in_stages, intersection_name):
         for link, stages in phases_in_stages.iteritems():
             for stage in stages:
                 stage_value = str(stage * 10)
-                line_to_append = '\t' + '(= (' + PHASE_IN_STAGE_KEY + link + ' ' + intersection_name + ') ' + stage_value + ')' + '\n'
+                line_to_append = '\t' + '(= (' \
+                                 + PHASE_IN_STAGE_KEY + link + ' ' + intersection_name + ') ' + stage_value + ')' + '\n'
                 lines_to_be_joined.append(line_to_append)
         line = line.join(lines_to_be_joined)
 
@@ -109,9 +112,10 @@ RELEVANT_LINE_REGEX = r'\d+\.\d+:\s*\(\s*switchtrafficsignal\s*\S+\)'
 IRRELEVANT_REGEX1 = r'.\d+:\s*\(\s*switchtrafficsignal'
 IRRELEVANT_REGEX2 = r'\)'
 
+
 # Returns a map: juction : [signal timings]
 def _get_new_stages_information(filepath):
-    toReturn = {}
+    to_return = {}
     opened_file = open(filepath)
     for line in opened_file.readlines():
         if re.match(RELEVANT_LINE_REGEX, line) is not None:
@@ -121,11 +125,11 @@ def _get_new_stages_information(filepath):
             split_lne = re.split(' ', line)
             stage_timing = split_lne[0]
             junction_name = split_lne[1]
-            if not junction_name in toReturn:
-                toReturn[junction_name] = []
-            toReturn[junction_name].append(stage_timing)
+            if junction_name not in to_return:
+                to_return[junction_name] = []
+            to_return[junction_name].append(stage_timing)
 
     opened_file.close()
-    return toReturn
+    return to_return
 
 print _get_new_stages_information('C:\\Users\\Ivaylo\\Downloads\\plan_example.pddl')

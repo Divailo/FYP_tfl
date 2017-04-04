@@ -88,7 +88,7 @@ def get_phases_in_stages_from_pua(filepath):
             stage_pointer = int(re.search(r'\d+', line).group())
             for signal_group in string_split[1:]:
                 # if the array of the signal group green stages is not initialized
-                if not signal_group in green_map:
+                if signal_group not in green_map:
                     green_map[signal_group] = []
                 # add a green stage to the signal
                 green_map[signal_group].append(stage_pointer)
