@@ -132,4 +132,4 @@ def _get_new_stages_information(filepath):
     opened_file.close()
     return to_return
 
-print _get_new_stages_information('C:\\Users\\Ivaylo\\Downloads\\plan_example.pddl')
+# print _get_new_stages_information('C:\\Users\\Ivaylo\\Downloads\\plan_example.pddl')
