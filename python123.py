@@ -1,19 +1,17 @@
 import win32com.client as com  # com library
-from Tkinter import Tk  # gui library
-import tkFileDialog  # file dialog library
-# import threading  # library for threads
-import json  # json library
 import sys  # all kinds of shit library
-import os.path
 
 import puahelper
 import vaphelper
 import vissimclasses
 import pddlhelper
+import jsonhelper
+import dialoghelper
 
-folderpath = ''
 json_filename = 'out.json'
 pddl_filename = 'pddl.pddl'
+
+
 # pddl_file_name = problem_file + time_stamp + .pddl
 
 # VAP and PUA filess might not give their absolute path if they are in the same folder as the model
@@ -23,29 +21,10 @@ def _get_absolute_path_for_file(file):
         open_file = open(file)
         open_file.close()
     except IOError:
-        file = folderpath + '\\' + file
+        file = dialoghelper.folderpath + '\\' + file
 
     return file
 
-# initializes a file chooser to load the desired model
-def _ask_for_model():
-    Tk().withdraw()  # we don't want a full GUI, so keep the root window from appearing
-
-    FILE_DIALOG_OPTIONS = {'filetypes': [('PTV Vissim network files', '*.inpx'), ('All files', '*.*')],
-                           'title': 'Choose VISSIM model'}
-
-    filename = tkFileDialog.askopenfilename(**FILE_DIALOG_OPTIONS)  # show an "Open" dialog box and return the path to the selected file
-    directory = os.path.split(filename)[0]
-    global folderpath
-    folderpath = directory.replace('/', '\\')
-    # print folderpath
-    return filename.replace('/', '\\')
-
-def _write_data_to_json_file(data):
-    json_data = json.dumps(data)
-    f = open(json_filename, 'w')
-    f.write(str(json_data))
-    f.close()
 
 # Closes the COM connection and exits the program
 def _close_program(message):
@@ -57,23 +36,22 @@ def _close_program(message):
     print "\n== END OF SCRIPT =="
     sys.exit()
 
+
 print "== START OF SCRIPT =="
 
-inpx_file = _ask_for_model()
+inpx_file = dialoghelper.ask_for_model()
 if inpx_file is None:
     _close_program("Please choose a file")
 
 if inpx_file[-5:] != ".inpx":
     _close_program("Please choose .inpx file")
 
-
 # create Vissim COM object
 Vissim = com.Dispatch("Vissim.Vissim")
 
 if Vissim is None:
     _close_program("Vissim program not found."
-                  "It might be because the program is not installed on the machine")
-
+                   "It might be because the program is not installed on the machine")
 
 # version-specific object: Vissim = com.Dispatch("Vissim.Vissim.9")
 # Vissim.LoadNet("C:\Users\Ivaylo\Desktop\Examples\PTV Headquarters - Left-hand\Headquarters 14 LH.inpx")
@@ -157,10 +135,9 @@ for sc in signalControllerCollection:
     sc_data['signal_groups'] = sgs
     scs.append(sc_data)
 
-
 print "= END OF SIGNAL CONTROLLER ="
 
-_write_data_to_json_file(scs)
+jsonhelper.write_data_to_json_file(json_filename, scs)
 
 pddlhelper.convert_jsonfile_to_pddlproblem(json_filename, pddl_filename)
 

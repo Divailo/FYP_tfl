@@ -1,3 +1,5 @@
+import json  # json library
+
 # JSON Keys
 
 # SC Keys
@@ -16,3 +18,10 @@ SG_LINKS_KEY = 'links'
 SG_PHASE_IN_STAGES_KEY = 'phase_in_stages'
 # LINK KEYS
 LINK_NAME_KEY = 'name'
+
+
+def write_data_to_json_file(json_filename, data):
+    json_data = json.dumps(data)
+    f = open(json_filename, 'w')
+    f.write(str(json_data))
+    f.close()
