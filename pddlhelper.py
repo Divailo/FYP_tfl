@@ -97,7 +97,6 @@ def _make_phase_in_stage_lines(phases_in_stages, intersection_name):
                 lines_to_be_joined.append(line_to_append)
         line = line.join(lines_to_be_joined)
 
-
     return line
 
 
