@@ -1,3 +1,5 @@
+junction_prefix = '__junction_'
+
 class VissimSignalController(object):
     """
     Atrribtues:
@@ -87,7 +89,7 @@ class VissimSignalController(object):
             # if aretheretoomanyjunctions >= 0:
             #     self.name = self.name + self._alphabet[aretheretoomanyjunctions]
             # self.name = self.name + self._alphabet[self._counter % len(self._alphabet)]
-            self.name = '__junction_' + str(self.id)
+            self.name = junction_prefix + str(self.id)
 
     def vapfile(self):
         if self.type == "VAP":
