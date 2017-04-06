@@ -15,7 +15,7 @@ class PuaHelperTest(unittest.TestCase):
 
     def test_getstages_for_unbreakable_loop1(self):
         _filepath = os.path.abspath('emptyfile.pua')
-        phases_in_stages = puahelper.get_phases_in_stages(_filepath)
+        phases_in_stages = puahelper.get_phases_in_stages_from_pua(_filepath)
         self.assertEqual(phases_in_stages, {})
 
     def test_getstartingstage_for_unbreakable_loop1(self):
@@ -37,7 +37,7 @@ class PuaHelperTest(unittest.TestCase):
 
     def test_getstages_for_unbreakable_loop2(self):
         _filepath = os.path.abspath('halfemptyfile.pua')
-        phases_in_stages = puahelper.get_phases_in_stages(_filepath)
+        phases_in_stages = puahelper.get_phases_in_stages_from_pua(_filepath)
         self.assertEqual(phases_in_stages, {})
 
     def test_getstartingstage_for_unbreakable_loop2(self):
@@ -57,7 +57,7 @@ class PuaHelperTest(unittest.TestCase):
 
     def test_getstages_nocontent(self):
         _filepath = os.path.abspath('emptycontentpuafile.pua')
-        phases_in_stages = puahelper.get_phases_in_stages(_filepath)
+        phases_in_stages = puahelper.get_phases_in_stages_from_pua(_filepath)
         self.assertEqual(phases_in_stages, {})
 
     def test_getstartingstage_nocontent(self):
@@ -76,7 +76,7 @@ class PuaHelperTest(unittest.TestCase):
 
     def test_getstages_commented_nocontent(self):
         _filepath = os.path.abspath('commented_badpuafile.pua')
-        phases_in_stages = puahelper.get_phases_in_stages(_filepath)
+        phases_in_stages = puahelper.get_phases_in_stages_from_pua(_filepath)
         self.assertEqual(phases_in_stages, {})
 
     def test_getstartingstage_commented_nocontent(self):
@@ -102,7 +102,7 @@ class PuaHelperTest(unittest.TestCase):
 
     def test_getstages_commented_goodfile(self):
         _filepath = os.path.abspath('commented_goodpuafile.pua')
-        phases_in_stages = puahelper.get_phases_in_stages(_filepath)
+        phases_in_stages = puahelper.get_phases_in_stages_from_pua(_filepath)
         self.assertEqual(len(phases_in_stages), 3)
         self.assertEqual(phases_in_stages['A'], [1])
         self.assertEqual(phases_in_stages['B'], [2])
@@ -132,7 +132,7 @@ class PuaHelperTest(unittest.TestCase):
 
     def test_getstages_correctvalues_tabs(self):
         _filepath = os.path.abspath('goodpuafile.pua')
-        phases_in_stages = puahelper.get_phases_in_stages(_filepath)
+        phases_in_stages = puahelper.get_phases_in_stages_from_pua(_filepath)
         self.assertEqual(len(phases_in_stages), 3)
         self.assertEqual(phases_in_stages['A'], [1])
         self.assertEqual(phases_in_stages['B'], [2])
@@ -161,7 +161,7 @@ class PuaHelperTest(unittest.TestCase):
 
     def test_getstages_correctvalues_lines(self):
         _filepath = os.path.abspath('pelican.pua')
-        phases_in_stages = puahelper.get_phases_in_stages(_filepath)
+        phases_in_stages = puahelper.get_phases_in_stages_from_pua(_filepath)
         self.assertEqual(len(phases_in_stages), 2)
         self.assertEqual(phases_in_stages['V1'], [1])
         self.assertEqual(phases_in_stages['P2'], [2])

@@ -65,7 +65,6 @@ class VissimSignalController(object):
     _counter = -1
 
     def __init__(self, objectContainer):
-        # self.active = objectContainer.AttValue("Active")
         self.id = objectContainer.AttValue("No")
         self.type = objectContainer.AttValue("Type")
         self._configurename(objectContainer.AttValue("Name"))
@@ -75,23 +74,20 @@ class VissimSignalController(object):
     def id(self):
         return self.id
 
-    # ffs the com method is called FindItemByKey while the attribute is called No
-    # consistency much!
-    def key(self):
-        return self.id
-
     # Gives it some name, so it better looking PDDL can be constructed
     def _configurename(self, name):
         if name != "":
             self.name = name
         else:
-            self._counter = self._counter + 1
-            self.name = "Junction_"
+            # This was such a fun idea :( . Goodbye sweet prince
+            # self._counter = self._counter + 1
+            # self.name = "Junction_"
             # so the program supports unlimited amount of signal controllers -> after Z , it goes to AA
-            aretheretoomanyjunctions = self._counter / len(self._alphabet) - 1
-            if aretheretoomanyjunctions >= 0:
-                self.name = self.name + self._alphabet[aretheretoomanyjunctions]
-            self.name = self.name + self._alphabet[self._counter % len(self._alphabet)]
+            # aretheretoomanyjunctions = self._counter / len(self._alphabet) - 1
+            # if aretheretoomanyjunctions >= 0:
+            #     self.name = self.name + self._alphabet[aretheretoomanyjunctions]
+            # self.name = self.name + self._alphabet[self._counter % len(self._alphabet)]
+            self.name = '__junction_' + str(self.id)
 
     def vapfile(self):
         if self.type == "VAP":
@@ -110,15 +106,6 @@ class VissimSignalController(object):
             return self.supply_file_2
         else:
             return None
-
-    # def progid(self):
-    #     return self.progid
-
-    # def progfile(self):
-    #     return self.progfile
-    # def active(self):
-    #     return self.active
-
 
 
 class VissimSignalGroup(object):
@@ -155,22 +142,29 @@ class VissimSignalGroup(object):
     def __init__(self, objectContainer):
         self.name = objectContainer.AttValue("Name")
         self.id = objectContainer.AttValue("No")
-        self.min_green = objectContainer.AttValue("MinGreen")
         self.type = objectContainer.AttValue("Type")
         self.signal_controller = objectContainer.AttValue("SC")
-        # self.amber = objectContainer.AttValue("Amber")
-        # self.controlled_by_com = objectContainer.AttValue("ContrByCOM")
-        # self.green_flashing_time = objectContainer.AttValue("GreenFlsh")
-        # self.min_red = objectContainer.AttValue("MinRed")
-        # self.red_amber_time = objectContainer.AttValue("RedAmber")
-        # self.current_signal_stage = objectContainer.AttValue("SigState")
-        # self.signal_stage_runtime = objectContainer.AttValue("tSigState")
 
-    def key(self):
-        return self.id
+    def set_links_from_signalhead_collection(self, signal_heads_collection):
+        _links = []
 
-    def setLinks(self, set):
-        self.links = set
+        for sh in signal_heads_collection:
+            # create json object for the link
+            sh_data = {}
+            # get the sh's link
+            sh_link = sh.Lane.Link
+            sh_link_name = sh_link.AttValue("Name")
+            # Check if there is no name given to the link
+            if sh_link_name == "":
+                # Give unique name to the link
+                sh_link_name = "l_" + str(sh_link.AttValue("No"))
+
+            # Put the name in the object
+            sh_data['name'] = sh_link_name
+            _links.append(sh_data)
+
+
+        self.links = _links
 
     def links(self):
         return self.links
