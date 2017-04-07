@@ -137,6 +137,7 @@ def get_stage_lenghts_from_vap(filepath):
 
 
 def edit_timing_changes(filepath, timings):
+    # create arrays string
     x = len(timings)
     line_to_put = 'Plan[ ' + str(x)+ ', 1 ] = [ '
     for i in range(x - 1):
@@ -145,14 +146,12 @@ def edit_timing_changes(filepath, timings):
         if should_put_comma:
             line_to_put = line_to_put + ', '
     line_to_put = line_to_put + ' ]'
-
+    # create new file
     new_file_path = _create_vap_file(filepath)
     print 'New array: ' + line_to_put + ' to be put in new_file_path'
-
+    # put content in the new file
+    # with operators close files as soon as they are done
     with open(filepath, "r") as read_from:
         with open(new_file_path, "w") as write_to:
             for line in read_from:
-                write_to.write(re.sub(PLAN_ARRAY_KEY,line_to_put,line))
-    # else:
-        # print
-
+                write_to.write(re.sub(PLAN_ARRAY_KEY,line_to_put, line))
