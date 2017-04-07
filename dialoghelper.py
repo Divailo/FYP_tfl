@@ -30,3 +30,13 @@ def ask_for_plan():
     folderpath = directory.replace('/', '\\')
     # print folderpath
     return filename.replace('/', '\\')
+
+
+def _get_absolute_path_for_file(file):
+    try:
+        open_file = open(file)
+        open_file.close()
+    except IOError:
+        file = folderpath + '\\' + file
+
+    return file

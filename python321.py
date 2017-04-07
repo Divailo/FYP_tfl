@@ -15,7 +15,7 @@ def _close_program(message):
     sys.exit()
 
 def look_for_sg_by_id(sc_id):
-    sc = Vissim.Net.SignalControllers.FindItemByKey(sc_id)
+    sc = Vissim.Net.SignalControllers.ItemByKey(sc_id)
     if sc is None:
         print 'No Signal Controller with id: ' + str(sc_id)
         return ''
@@ -66,7 +66,7 @@ for key in new_timing.keys():
     if filepath == '':
         print 'No VAP file for key: ' + key
     else:
-        print 'Found VAP file for: ' + key + ' : ' + filepath
+        print 'Found VAP file for: ' + key + ' : ' + dialoghelper._get_absolute_path_for_file(filepath)
         # TODO call vaphelper.replace_timings(new_timing)
 
 # look at keys. If __junction_id, look for id
