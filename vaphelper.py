@@ -1,14 +1,32 @@
 import re # regex library
+import os.path
 
 import stringhelper
+import dialoghelper
 
 # Constants
 CONSTANT_SECTION_KEY = "CONST"
 ARRAY_SECTION_KEY = "ARRAY"
 SECTION_END_KEY = ';'
 
-CYCLE_LENGTH_KEY = "CycleLength"
-PLAN_ARRAY_KEY = "((Plan){1}\s*\[{1})\s*\d+\,{1}\s*\d+\s*\]{1}\s*\={1}\s*\[{1}.*\]{1}"
+CYCLE_LENGTH_KEY = 'CycleLength'
+PLAN_ARRAY_KEY = '((Plan){1}\s*\[{1})\s*\d+\,{1}\s*\d+\s*\]{1}\s*\={1}\s*\[{1}.*\]{1}'
+
+
+def _give_me_name_for_new_vap_file(name, counter):
+    new_name = name + "_pddl_" + str(counter) + '.vap'
+    path = dialoghelper.folderpath + '\\' + new_name
+    if not os.path.isfile(path):
+        return new_name
+    else:
+        return _give_me_name_for_new_vap_file(name, counter+1)
+
+def _create_vap_file(filepath):
+    head, tail = os.path.split(filepath)
+    name, extension = tail.split('.')
+    new_name_path = dialoghelper.folderpath + '\\' + _give_me_name_for_new_vap_file(name, 1)
+    return new_name_path
+
 
 # checks if the line is end of the section by checking if the line is or ends with ';'
 def _check_for_end_of_section(line):
@@ -16,6 +34,7 @@ def _check_for_end_of_section(line):
         return True
     else:
         return False
+
 
 # extracts the constants section of the vap file
 def _extract_section_for_key(filepath, key):
@@ -26,7 +45,7 @@ def _extract_section_for_key(filepath, key):
             line = file.next().strip()
         except StopIteration:
             # End of file reached
-            print "Key not found: " + key + " , in file" + file.name
+            print "Key not found: " + key + ", in file" + file.name
             file.close()
             return []
 
@@ -46,13 +65,18 @@ def _extract_section_for_key(filepath, key):
             file.close()
             return lines
 
+
 def _extract_timings_from_array_line(arrayline):
-    split_found_line = arrayline.split("=")
-    remove_brackets_string = stringhelper.remove_brackets_for_vap_array(split_found_line[1])
-    all_elements = remove_brackets_string.split(',')
+    array_declaration, array_values = arrayline.split("=")
+    array_declaration_no_brackets = stringhelper.remove_brackets_for_vap_array(array_declaration)
+    array_values_no_brackets = stringhelper.remove_brackets_for_vap_array(array_values)
     to_extract = []
-    # return all_elements
-    x = 9
+    # find x (the number of elements in each array a 2d array)
+    x = stringhelper.parse_integer_from_string(array_declaration_no_brackets.split(',')[1])
+    # check if the x is actually extracted
+    if x == -1:
+        return []
+    all_elements = array_values_no_brackets.split(',')
     try:
         for i in range(x):
             index = i * x
@@ -96,6 +120,7 @@ def get_cycle_length_from_vap(filepath):
 
     return cycle_length
 
+
 # Looks for a single line
 def get_stage_lenghts_from_vap(filepath):
     lines = _extract_section_for_key(filepath, ARRAY_SECTION_KEY)
@@ -109,3 +134,25 @@ def get_stage_lenghts_from_vap(filepath):
             break
 
     return stages_timing
+
+
+def edit_timing_changes(filepath, timings):
+    x = len(timings)
+    line_to_put = 'Plan[ ' + str(x)+ ', 1 ] = [ '
+    for i in range(x - 1):
+        line_to_put = line_to_put + '[ ' + timings[i] + ' ]'
+        should_put_comma = i == x - 1
+        if should_put_comma:
+            line_to_put = line_to_put + ', '
+    line_to_put = line_to_put + ' ]'
+
+    new_file_path = _create_vap_file(filepath)
+    print 'New array: ' + line_to_put + ' to be put in new_file_path'
+
+    with open(filepath, "r") as read_from:
+        with open(new_file_path, "w") as write_to:
+            for line in read_from:
+                write_to.write(re.sub(PLAN_ARRAY_KEY,line_to_put,line))
+    # else:
+        # print
+

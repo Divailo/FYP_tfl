@@ -6,6 +6,7 @@ import dialoghelper
 import pddlhelper
 import vissimclasses
 import stringhelper
+import vaphelper
 
 def _close_program(message):
     # Display error message in console if any
@@ -14,16 +15,16 @@ def _close_program(message):
     print "\n== END OF SCRIPT =="
     sys.exit()
 
-def look_for_sg_by_id(sc_id):
+
+def _look_for_sg_by_id(sc_id):
     sc = Vissim.Net.SignalControllers.ItemByKey(sc_id)
     if sc is None:
         print 'No Signal Controller with id: ' + str(sc_id)
-        return ''
+        return None
     else:
-        vap_file = sc.AttValue("SupplyFile1")
-        return vap_file
+        return sc
 
-def look_for_sg_by_name(name):
+def _look_for_sg_by_name(name):
     for sc in Vissim.Net.SignalControllers.GetAll():
         if sc.AttValue('Name') == name:
             # TODO: check if it is a vap file
@@ -51,23 +52,31 @@ if Vissim is None:
 
 Vissim.LoadNet(inpx_file)
 
-for key in new_timing.keys():
+for key, value in new_timing.items():
     print 'Looking for : ' + key
     filepath = ''
     look_for_that_prefix = vissimclasses.junction_prefix
     if stringhelper.does_string_contain_substring(key, look_for_that_prefix):
         sc_id = int(re.sub(look_for_that_prefix, '', key))
         print 'Looking for signal controller key: ' + str(sc_id)
-        filepath = look_for_sg_by_id(sc_id)
+        signal_controller = _look_for_sg_by_id(sc_id)
     else:
         print 'Looking for signal controller name: ' + key
-        filepath = look_for_sg_by_name(key)
+        signal_controller = _look_for_sg_by_name(key)
+        # filepath = _look_for_sg_by_name(key)
 
-    if filepath == '':
+    # vap_filepath = signal_controller.AttValue("SupplyFile1")
+    vap_filepath = "C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap"
+
+    if vap_filepath == '':
         print 'No VAP file for key: ' + key
     else:
-        print 'Found VAP file for: ' + key + ' : ' + dialoghelper._get_absolute_path_for_file(filepath)
-        # TODO call vaphelper.replace_timings(new_timing)
+        vap_filepath = dialoghelper._get_absolute_path_for_file(vap_filepath)
+        print 'Found VAP file for: ' + key + ' : ' + vap_filepath
+        # TODO call vaphelper.replace_timings(timings)
+        # TODO create a new file. and then signal_controller.SetAttValue('SupplyFile1',nefile_path)
+        # TODO make sure to not override anything
+        vaphelper.edit_timing_changes(vap_filepath, value)
 
 # look at keys. If __junction_id, look for id
 # else look through all the scs and look for AttValue name
