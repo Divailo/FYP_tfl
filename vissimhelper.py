@@ -1,5 +1,9 @@
 junction_prefix = '__junction_'
 
+
+def check_vissim_initialised(com_vissim):
+    return com_vissim is not None
+
 class VissimSignalController(object):
     """
     Atrribtues:

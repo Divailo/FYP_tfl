@@ -3,7 +3,7 @@ import sys  # all kinds of shit library
 
 import puahelper
 import vaphelper
-import vissimclasses
+import vissimhelper
 import pddlhelper
 import jsonhelper
 import dialoghelper
@@ -40,16 +40,16 @@ def _close_program(message):
 print "== START OF SCRIPT =="
 
 inpx_file = dialoghelper.ask_for_model()
-if inpx_file is None:
+if not dialoghelper.check_file_chosen(inpx_file):
     _close_program("Please choose a file")
 
-if inpx_file[-5:] != ".inpx":
-    _close_program("Please choose .inpx file")
+if not dialoghelper.check_model_file(inpx_file):
+    _close_program("Please choose a valid Vissim model file/inpx file")
 
 # create Vissim COM object
 Vissim = com.Dispatch("Vissim.Vissim")
 
-if Vissim is None:
+if not vissimhelper.check_vissim_initialised(Vissim):
     _close_program("Vissim program not found."
                    "It might be because the program is not installed on the machine")
 
@@ -64,7 +64,7 @@ sgs = []
 scs = []
 for sc in signalControllerCollection:
 
-    vissim_signal_controller_object = vissimclasses.VissimSignalController(sc)
+    vissim_signal_controller_object = vissimhelper.VissimSignalController(sc)
 
     sc_data = {}
 
@@ -104,7 +104,7 @@ for sc in signalControllerCollection:
     # counter = 0
     sgCollection = sc.SGs.GetAll()
     for sg in sgCollection:
-        vissim_signal_group_object = vissimclasses.VissimSignalGroup(sg)
+        vissim_signal_group_object = vissimhelper.VissimSignalGroup(sg)
 
         sg_data = {}
         sg_data['id'] = str(sg.AttValue("No"))

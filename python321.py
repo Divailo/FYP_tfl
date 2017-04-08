@@ -4,7 +4,7 @@ import re
 
 import dialoghelper
 import pddlhelper
-import vissimclasses
+import vissimhelper
 import stringhelper
 import vaphelper
 
@@ -46,7 +46,8 @@ inpx_file = dialoghelper.ask_for_model()
 
 Vissim = com.Dispatch("Vissim.Vissim")
 
-if Vissim is None:
+
+if not vissimhelper.check_vissim_initialised(Vissim):
     _close_program("Vissim program not found."
                    "It might be because the program is not installed on the machine")
 
@@ -55,7 +56,7 @@ Vissim.LoadNet(inpx_file)
 for key, value in new_timing.items():
     print 'Looking for : ' + key
     filepath = ''
-    look_for_that_prefix = vissimclasses.junction_prefix
+    look_for_that_prefix = vissimhelper.junction_prefix
     if stringhelper.does_string_contain_substring(key, look_for_that_prefix):
         sc_id = int(re.sub(look_for_that_prefix, '', key))
         print 'Looking for signal controller key: ' + str(sc_id)

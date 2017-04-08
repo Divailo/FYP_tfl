@@ -32,6 +32,13 @@ def ask_for_plan():
     return filename.replace('/', '\\')
 
 
+def check_file_chosen(file):
+    return not file == ''
+
+def check_model_file(file):
+    return file[-5:] != ".inpx"
+
+
 def _get_absolute_path_for_file(file):
     try:
         open_file = open(file)
