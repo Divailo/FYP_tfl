@@ -14,7 +14,7 @@ PLAN_ARRAY_KEY = '((Plan){1}\s*\[{1})\s*\d+\,{1}\s*\d+\s*\]{1}\s*\={1}\s*\[{1}.*
 
 
 def _give_me_name_for_new_vap_file(name, counter):
-    new_name = name + "_pddl_" + str(counter) + '.vap'
+    new_name = name + '_pddl_' + str(counter) + '.vap'
     path = dialoghelper.folderpath + '\\' + new_name
     if not os.path.isfile(path):
         return new_name
@@ -45,7 +45,7 @@ def _extract_section_for_key(filepath, key):
             line = file.next().strip()
         except StopIteration:
             # End of file reached
-            print "Key not found: " + key + ", in file" + file.name
+            print 'Key not found: ' + key + ', in file' + file.name
             file.close()
             return []
 
@@ -67,7 +67,7 @@ def _extract_section_for_key(filepath, key):
 
 
 def _extract_timings_from_array_line(arrayline):
-    array_declaration, array_values = arrayline.split("=")
+    array_declaration, array_values = arrayline.split('=')
     array_declaration_no_brackets = stringhelper.remove_brackets_for_vap_array(array_declaration)
     array_values_no_brackets = stringhelper.remove_brackets_for_vap_array(array_values)
     to_extract = []
@@ -109,14 +109,14 @@ def get_cycle_length_from_vap(filepath):
 
     cycle_length = -1
     try:
-        key, value = foundline.split("=")
+        key, value = foundline.split('=')
     except ValueError:
-        print "Failed to split the cycle_length line in VAP: " + foundline
+        print 'Failed to split the cycle_length line in VAP: ' + foundline
     else:
         cycle_length = stringhelper.parse_integer_from_string(value)
 
     # print "Cycle length = " + cycle_length
-    print "END OF FINDING CYCLE LENGTH"
+    print 'END OF FINDING CYCLE LENGTH'
 
     return cycle_length
 

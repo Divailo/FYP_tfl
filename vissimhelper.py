@@ -1,5 +1,12 @@
-junction_prefix = '__junction_'
+# Attribute Keys
+SC_ID_KEY = 'No'
+SC_TYPE_KEY = 'Type'
+SC_NAME_KEY = 'Name'
+SC_VAPFILE_ATTRIBUTE_KEY = 'SupplyFile1'
+SC_PUAFILE_ATTRIBUTE_KEY = 'SupplyFile2'
+SG_ID_KEY = 'No'
 
+junction_prefix = '__junction_'
 
 def check_vissim_initialised(com_vissim):
     return com_vissim is not None

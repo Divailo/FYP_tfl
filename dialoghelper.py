@@ -18,6 +18,7 @@ def ask_for_model():
     # print folderpath
     return filename.replace('/', '\\')
 
+
 def ask_for_plan():
     Tk().withdraw()  # we don't want a full GUI, so keep the root window from appearing
 
@@ -35,8 +36,9 @@ def ask_for_plan():
 def check_file_chosen(file):
     return not file == ''
 
+
 def check_model_file(file):
-    return file[-5:] != ".inpx"
+    return file[-5:] == ".inpx"
 
 
 def _get_absolute_path_for_file(file):
