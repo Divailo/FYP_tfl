@@ -19,8 +19,8 @@ FIRST_ARRAY_ITEM = r'\[\s*\-?\d+\s*\,'
 def _give_me_name_for_new_vap_file(name, counter):
     date_object = datetime.now().date()
     time_object = datetime.now().time()
-    date_string = str(date_object.year) + str(date_object.month) + str(date_object.day)
-    time_string = str(time_object.hour) + str(time_object.minute) + str(time_object.second)
+    date_string = 'd' + str(date_object.year) + str(date_object.month) + str(date_object.day)
+    time_string = 't' + str(time_object.hour) + '_' + str(time_object.minute) + '_' + str(time_object.second)
     new_name = name + '_pddl_' + date_string+ '_' + time_string + '.vap'
     return new_name
 
