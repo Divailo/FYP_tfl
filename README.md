@@ -22,8 +22,10 @@
 
 - := used when using variables?? Would not support shit like that
 
-- Make sure that the Link names match -> rename everything that has no name
+- ~~Make sure that the Link names match -> rename everything that has no name~~
 
 - On extracting stages, work with Regex if not lazy enough
 
 - Everything will crash if the signal controller is not VAP
+
+- If original VAP file has no PLAN[x,y] = [];, then it won't work
