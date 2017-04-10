@@ -12,7 +12,6 @@ SECTION_END_KEY = ';'
 
 CYCLE_LENGTH_KEY = 'CycleLength'
 PLAN_ARRAY_KEY = r'((Plan){1}\s*\[{1})\s*\d+\,{1}\s*\d+\s*\]{1}\s*\={1}\s*\[{1}.*\]{1}'
-# PLAN_ARRAY_TO_EDIT = r'\=\s*\[\s*\[*.*\]'
 FIRST_ARRAY_ITEM = r'\[\s*\-?\d+\s*\,'
 
 
@@ -142,7 +141,7 @@ def edit_timing_changes(filepath, timings):
     new_file_path = _create_vap_file(filepath)
     print 'New array: ' + str(new_timings_strings) + ' to be put in new_file_path'
     # put content in the new file
-    # with operators close files as soon as they are done
+    # 'with' operators close files as soon as they are done
     with open(filepath, "r") as read_from:
         with open(new_file_path, "w") as write_to:
             for line in read_from:

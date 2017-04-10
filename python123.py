@@ -12,7 +12,9 @@ json_filename = 'out.json'
 pddl_filename = 'pddl.pddl'
 
 
-# pddl_file_name = problem_file + time_stamp + .pddl
+def _get_absolute_path_for_file(filepath):
+    return dialoghelper.get_absolute_path_for_file(filepath)
+
 
 # Closes the COM connection and exits the program
 def _close_program(message):
@@ -64,13 +66,13 @@ for sc in signalControllerCollection:
     if str(vissim_signal_controller_object.type) == 'VAP':
 
         # test TFL files
-        sc_data[jsonhelper.SC_VAPFILE_KEY] = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap'
-        sc_data[jsonhelper.SC_PUAFILE_KEY] = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.pua'
+        # sc_data[jsonhelper.SC_VAPFILE_KEY] = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap'
+        # sc_data[jsonhelper.SC_PUAFILE_KEY] = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.pua'
         # sc_data['pua_file'] = "D:\\PyCharmProjects\\tests\\goodpuafile.pua"
 
         # actual data
-        # sc_data[jsonhelper.SC_VAPFILE_KEY] = _get_absolute_path_for_file(str(vissim_signal_controller_object.supply_file_1))
-        # sc_data[jsonhelper.SC_PUAFILE_KEY] = _get_absolute_path_for_file(str(vissim_signal_controller_object.supply_file_2))
+        sc_data[jsonhelper.SC_VAPFILE_KEY] = _get_absolute_path_for_file(str(vissim_signal_controller_object.supply_file_1))
+        sc_data[jsonhelper.SC_PUAFILE_KEY] = _get_absolute_path_for_file(str(vissim_signal_controller_object.supply_file_2))
         sc_data[jsonhelper.SC_INITIAL_STAGE_KEY] = puahelper.get_starting_stage_from_pua(sc_data[jsonhelper.SC_PUAFILE_KEY])
         sc_data[jsonhelper.SC_MAX_STAGE_KEY] = puahelper.get_max_stage_from_pua(sc_data[jsonhelper.SC_PUAFILE_KEY])
         pua_to_global_ids = puahelper.read_and_map_signalgroups_from_pua(sc_data[jsonhelper.SC_PUAFILE_KEY])

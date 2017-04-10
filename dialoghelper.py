@@ -46,7 +46,7 @@ def check_model_file(file):
     return file[-5:] == ".inpx"
 
 
-def _get_absolute_path_for_file(file):
+def get_absolute_path_for_file(file):
     try:
         open_file = open(file)
         open_file.close()

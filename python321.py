@@ -17,6 +17,10 @@ def _close_program(message):
     sys.exit()
 
 
+def _get_absolute_path_for_file(filepath):
+    return dialoghelper.get_absolute_path_for_file(filepath)
+
+
 def _look_for_sg_by_id(sc_id):
     sc = Vissim.Net.SignalControllers.ItemByKey(sc_id)
     if sc is None:
@@ -69,13 +73,13 @@ for key, value in new_timing.items():
         signal_controller = _look_for_sg_by_name(key)
         # filepath = _look_for_sg_by_name(key)
 
-    # vap_filepath = signal_controller.AttValue("SupplyFile1")
-    vap_filepath = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap'
+    vap_filepath = signal_controller.AttValue("SupplyFile1")
+    # vap_filepath = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap'
 
     if vap_filepath == '':
         print 'No VAP file for key: ' + key
     else:
-        vap_filepath = dialoghelper._get_absolute_path_for_file(vap_filepath)
+        vap_filepath = _get_absolute_path_for_file(vap_filepath)
         print 'Found VAP file for: ' + key + ' : ' + vap_filepath
         new_vap_file = vaphelper.edit_timing_changes(vap_filepath, value)
         signal_controller.SetAttValue('SupplyFile1', new_vap_file)
