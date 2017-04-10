@@ -1,8 +1,13 @@
 from Tkinter import Tk  # gui library
 import tkFileDialog  # file dialog library
+from tkMessageBox import showerror
 import os.path
 
 folderpath = ''
+
+def create_error_box(message):
+    showerror('Error', message)
+
 
 # initializes a file chooser to load the desired model
 def ask_for_model():

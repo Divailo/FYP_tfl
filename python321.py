@@ -12,6 +12,7 @@ def _close_program(message):
     # Display error message in console if any
     if message != '':
         print 'ERROR MESSAGE: ' + message
+        dialoghelper.showerror(message)
     print '\n== END OF SCRIPT =='
     sys.exit()
 
@@ -28,10 +29,10 @@ def _look_for_sg_by_name(name):
     for sc in Vissim.Net.SignalControllers.GetAll():
         if sc.AttValue(vissimhelper.SC_NAME_KEY) == name:
             if sc.AttValue(vissimhelper.SC_TYPE_KEY) == 'VAP':
-                return sc.AttValue(vissimhelper.SC_VAPFILE_ATTRIBUTE_KEY)
+                return sc
             else:
-                return ''
-    return ''
+                return None
+    return None
 
 
 print '== START OF SCRIPT =='
@@ -76,10 +77,8 @@ for key, value in new_timing.items():
     else:
         vap_filepath = dialoghelper._get_absolute_path_for_file(vap_filepath)
         print 'Found VAP file for: ' + key + ' : ' + vap_filepath
-        # TODO call vaphelper.replace_timings(timings)
-        # TODO create a new file. and then signal_controller.SetAttValue('SupplyFile1',nefile_path)
-        # TODO make sure to not override anything
-        vaphelper.edit_timing_changes(vap_filepath, value)
+        new_vap_file = vaphelper.edit_timing_changes(vap_filepath, value)
+        signal_controller.SetAttValue('SupplyFile1', new_vap_file)
 
 # look at keys. If __junction_id, look for id
 # else look through all the scs and look for AttValue name

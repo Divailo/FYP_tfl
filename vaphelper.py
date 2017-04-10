@@ -10,7 +10,9 @@ ARRAY_SECTION_KEY = "ARRAY"
 SECTION_END_KEY = ';'
 
 CYCLE_LENGTH_KEY = 'CycleLength'
-PLAN_ARRAY_KEY = '((Plan){1}\s*\[{1})\s*\d+\,{1}\s*\d+\s*\]{1}\s*\={1}\s*\[{1}.*\]{1}'
+PLAN_ARRAY_KEY = r'((Plan){1}\s*\[{1})\s*\d+\,{1}\s*\d+\s*\]{1}\s*\={1}\s*\[{1}.*\]{1}'
+# PLAN_ARRAY_TO_EDIT = r'\=\s*\[\s*\[*.*\]'
+PLAN_ARRAY_TO_EDIT = r'\[\s*\-?\d+\s*\,'
 
 
 def _give_me_name_for_new_vap_file(name, counter):
@@ -66,7 +68,7 @@ def _extract_section_for_key(filepath, key):
             return lines
 
 
-def _extract_timings_from_array_line(arrayline):
+def _extract_timings_from_array_line(arrayline, stages):
     array_declaration, array_values = arrayline.split('=')
     array_declaration_no_brackets = stringhelper.remove_brackets_for_vap_array(array_declaration)
     array_values_no_brackets = stringhelper.remove_brackets_for_vap_array(array_values)
@@ -78,15 +80,15 @@ def _extract_timings_from_array_line(arrayline):
         return []
     all_elements = array_values_no_brackets.split(',')
     try:
-        for i in range(x):
+        for i in range(stages):
             index = i * x
             to_append = stringhelper.parse_integer_from_string(all_elements[index])
             # check for end of timings
             # (technically if the element  to append is less than the previous one, than it is wrong)
-            if len(to_extract) > 0:
-                last_index = len(to_extract) - 1
-                if to_append < to_extract[last_index]:
-                    break
+            # if len(to_extract) > 0:
+            #     last_index = len(to_extract) - 1
+            #     if to_append < to_extract[last_index]:
+            #         break
             to_extract.append(to_append)
 
     except IndexError:
@@ -94,19 +96,16 @@ def _extract_timings_from_array_line(arrayline):
 
     return to_extract
 
+
 # Looks for a single line that contains CycleLength
 def get_cycle_length_from_vap(filepath):
     lines = _extract_section_for_key(filepath, CONSTANT_SECTION_KEY)
-
-    foundline = ""
-
+    foundline = ''
     for line in lines:
         line = line.strip()
-
         if stringhelper.does_string_contain_substring(line, CYCLE_LENGTH_KEY) == True:
             foundline = line
             break
-
     cycle_length = -1
     try:
         key, value = foundline.split('=')
@@ -114,23 +113,23 @@ def get_cycle_length_from_vap(filepath):
         print 'Failed to split the cycle_length line in VAP: ' + foundline
     else:
         cycle_length = stringhelper.parse_integer_from_string(value)
-
     # print "Cycle length = " + cycle_length
     print 'END OF FINDING CYCLE LENGTH'
-
     return cycle_length
 
 
 # Looks for a single line
-def get_stage_lenghts_from_vap(filepath):
+def get_stage_lenghts_from_vap(filepath, number_of_stages):
+    if number_of_stages < 0:
+        return []
     lines = _extract_section_for_key(filepath, ARRAY_SECTION_KEY)
     stages_timing = []
     for line in lines:
-        ignore_whitespace_line = line.replace("\s","")
+        ignore_whitespace_line = line.replace("\s", '')
         if re.search(PLAN_ARRAY_KEY, ignore_whitespace_line) is not None:
             found_line = line
             # print "FOUND LINE: " + str(_extract_timings_from_array_line(found_line))
-            stages_timing = _extract_timings_from_array_line(found_line)
+            stages_timing = _extract_timings_from_array_line(found_line, number_of_stages)
             break
 
     return stages_timing
@@ -139,10 +138,16 @@ def get_stage_lenghts_from_vap(filepath):
 def edit_timing_changes(filepath, timings):
     # create arrays string
     x = len(timings)
-    line_to_put = 'Plan[ ' + str(x)+ ', 1 ] = [ '
+    line_to_put = [].append('')
+    for i in range(x):
+        line_to_put = timings[i]
+
+
+
+    line_to_put = '= [ '
     for i in range(x - 1):
         line_to_put = line_to_put + '[ ' + timings[i] + ' ]'
-        should_put_comma = i == x - 1
+        should_put_comma = not(i == x - 2)
         if should_put_comma:
             line_to_put = line_to_put + ', '
     line_to_put = line_to_put + ' ]'
@@ -154,4 +159,8 @@ def edit_timing_changes(filepath, timings):
     with open(filepath, "r") as read_from:
         with open(new_file_path, "w") as write_to:
             for line in read_from:
-                write_to.write(re.sub(PLAN_ARRAY_KEY,line_to_put, line))
+                if re.search(PLAN_ARRAY_KEY, line) is not None:
+                    # print 'Found line: '+ line
+                    line = re.sub(PLAN_ARRAY_TO_EDIT, line_to_put, line)
+                write_to.write(line)
+    return new_file_path

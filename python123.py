@@ -21,6 +21,7 @@ def _close_program(message):
     # Display error message in console if any
     if message != '':
         print 'ERROR MESSAGE: ' + message
+        dialoghelper.showerror(message)
     print '\n== END OF SCRIPT =='
     sys.exit()
 
@@ -77,7 +78,8 @@ for sc in signalControllerCollection:
 
         # specific for TFL models, will return -1 if it works with different models
         sc_data[jsonhelper.SC_CYCLE_LENGTH_KEY] = vaphelper.get_cycle_length_from_vap(sc_data[jsonhelper.SC_VAPFILE_KEY])
-        sc_data[jsonhelper.SC_STAGE_TIMINGS_KEY] = vaphelper.get_stage_lenghts_from_vap(sc_data[jsonhelper.SC_VAPFILE_KEY])
+        sc_data[jsonhelper.SC_STAGE_TIMINGS_KEY] = vaphelper.get_stage_lenghts_from_vap(sc_data[jsonhelper.SC_VAPFILE_KEY]
+                                                                                        , sc_data[jsonhelper.SC_MAX_STAGE_KEY])
     else:
         print 'Non-VAP signal controllers currently not supported!'
         continue
