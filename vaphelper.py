@@ -1,5 +1,6 @@
 import re # regex library
 import os.path
+from datetime import datetime
 
 import stringhelper
 import dialoghelper
@@ -16,12 +17,13 @@ FIRST_ARRAY_ITEM = r'\[\s*\-?\d+\s*\,'
 
 
 def _give_me_name_for_new_vap_file(name, counter):
-    new_name = name + '_pddl_' + str(counter) + '.vap'
-    path = dialoghelper.folderpath + '\\' + new_name
-    if not os.path.isfile(path):
-        return new_name
-    else:
-        return _give_me_name_for_new_vap_file(name, counter+1)
+    date_object = datetime.now().date()
+    time_object = datetime.now().time()
+    date_string = str(date_object.year) + str(date_object.month) + str(date_object.day)
+    time_string = str(time_object.hour) + str(time_object.minute) + str(time_object.second)
+    new_name = name + '_pddl_' + date_string+ '_' + time_string + '.vap'
+    return new_name
+
 
 def _create_vap_file(filepath):
     head, tail = os.path.split(filepath)
@@ -83,12 +85,6 @@ def _extract_timings_from_array_line(arrayline, stages):
         for i in range(stages):
             index = i * x
             to_append = stringhelper.parse_integer_from_string(all_elements[index])
-            # check for end of timings
-            # (technically if the element  to append is less than the previous one, than it is wrong)
-            # if len(to_extract) > 0:
-            #     last_index = len(to_extract) - 1
-            #     if to_append < to_extract[last_index]:
-            #         break
             to_extract.append(to_append)
 
     except IndexError:
