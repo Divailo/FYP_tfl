@@ -12,7 +12,7 @@ SECTION_END_KEY = ';'
 CYCLE_LENGTH_KEY = 'CycleLength'
 PLAN_ARRAY_KEY = r'((Plan){1}\s*\[{1})\s*\d+\,{1}\s*\d+\s*\]{1}\s*\={1}\s*\[{1}.*\]{1}'
 # PLAN_ARRAY_TO_EDIT = r'\=\s*\[\s*\[*.*\]'
-PLAN_ARRAY_TO_EDIT = r'\[\s*\-?\d+\s*\,'
+FIRST_ARRAY_ITEM = r'\[\s*\-?\d+\s*\,'
 
 
 def _give_me_name_for_new_vap_file(name, counter):
@@ -136,31 +136,30 @@ def get_stage_lenghts_from_vap(filepath, number_of_stages):
 
 
 def edit_timing_changes(filepath, timings):
-    # create arrays string
     x = len(timings)
-    line_to_put = [].append('')
+    # array initialized with a '' so the first match don't get replaced
+    new_timings_strings = ['']
     for i in range(x):
-        line_to_put = timings[i]
-
-
-
-    line_to_put = '= [ '
-    for i in range(x - 1):
-        line_to_put = line_to_put + '[ ' + timings[i] + ' ]'
-        should_put_comma = not(i == x - 2)
-        if should_put_comma:
-            line_to_put = line_to_put + ', '
-    line_to_put = line_to_put + ' ]'
+        new_item = '[' + timings[i]
+        new_timings_strings.append(new_item)
     # create new file
     new_file_path = _create_vap_file(filepath)
-    print 'New array: ' + line_to_put + ' to be put in new_file_path'
+    print 'New array: ' + str(new_timings_strings) + ' to be put in new_file_path'
     # put content in the new file
     # with operators close files as soon as they are done
     with open(filepath, "r") as read_from:
         with open(new_file_path, "w") as write_to:
             for line in read_from:
                 if re.search(PLAN_ARRAY_KEY, line) is not None:
-                    # print 'Found line: '+ line
-                    line = re.sub(PLAN_ARRAY_TO_EDIT, line_to_put, line)
+                    old_timings = re.findall(FIRST_ARRAY_ITEM, line)
+                    for i in range(len(new_timings_strings) - 1):
+                        old_time = old_timings[i]
+                        new_time = new_timings_strings[i]
+                        if new_time != '':
+                            print 'Old time: '+ old_time
+                            print 'New time: ' + new_time
+                            line = line.replace(old_time, new_time)
+                            print 'New line: ' + line
+                    write_to.write('/* This was automatically edited by the PDDL plan */\n')
                 write_to.write(line)
     return new_file_path
