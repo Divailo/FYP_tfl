@@ -38,7 +38,7 @@ if not dialoghelper.check_model_file(inpx_file):
     _close_program('Please choose a valid Vissim model file/inpx file')
 
 # create Vissim COM object
-Vissim = com.Dispatch("Vissim.Vissim")
+Vissim = com.Dispatch('Vissim.Vissim')
 
 if not vissimhelper.check_vissim_initialised(Vissim):
     _close_program('Vissim program not found.'
@@ -49,11 +49,11 @@ if not vissimhelper.check_vissim_initialised(Vissim):
 # Vissim.LoadNet("C:\Users\Public\Documents\PTV Vision\PTV Vissim 9\Examples Demo\Roundabout London.UK\Roundabout London.inpx")
 Vissim.LoadNet(inpx_file)
 
-signalControllerCollection = Vissim.Net.SignalControllers.GetAll()
+signal_controller_collection = Vissim.Net.SignalControllers.GetAll()
 
 sgs = []
 scs = []
-for sc in signalControllerCollection:
+for sc in signal_controller_collection:
 
     vissim_signal_controller_object = vissimhelper.VissimSignalController(sc)
 

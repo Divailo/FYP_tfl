@@ -10,8 +10,8 @@ CONSTANT_SECTION_KEY = "CONST"
 ARRAY_SECTION_KEY = "ARRAY"
 SECTION_END_KEY = ';'
 
-CYCLE_LENGTH_KEY = 'CycleLength'
-PLAN_ARRAY_KEY = r'((Plan){1}\s*\[{1})\s*\d+\,{1}\s*\d+\s*\]{1}\s*\={1}\s*\[{1}.*\]{1}'
+CYCLE_LENGTH_KEY = r'(CycleLength){1}\s*=\s*\d+'
+PLAN_ARRAY_KEY = r'((Plan){1}\s*\[{1})\s*\d+\,{1}\s*\d+\s*\]{1}\s*={1}\s*\[{1}.*\]{1}'
 FIRST_ARRAY_ITEM = r'\[\s*\-?\d+\s*\,'
 
 
@@ -98,7 +98,7 @@ def get_cycle_length_from_vap(filepath):
     foundline = ''
     for line in lines:
         line = line.strip()
-        if stringhelper.does_string_contain_substring(line, CYCLE_LENGTH_KEY) == True:
+        if re.search(CYCLE_LENGTH_KEY, line) is not None:
             foundline = line
             break
     cycle_length = -1

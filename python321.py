@@ -29,14 +29,14 @@ def _look_for_sg_by_id(sc_id):
     else:
         return sc
 
-def _look_for_sg_by_name(name):
-    for sc in Vissim.Net.SignalControllers.GetAll():
-        if sc.AttValue(vissimhelper.SC_NAME_KEY) == name:
-            if sc.AttValue(vissimhelper.SC_TYPE_KEY) == 'VAP':
-                return sc
-            else:
-                return None
-    return None
+# def _look_for_sg_by_name(name):
+#     for sc in Vissim.Net.SignalControllers.GetAll():
+#         if sc.AttValue(vissimhelper.SC_NAME_KEY) == name:
+#             if sc.AttValue(vissimhelper.SC_TYPE_KEY) == 'VAP':
+#                 return sc
+#             else:
+#                 return None
+#     return None
 
 
 print '== START OF SCRIPT =='
@@ -45,7 +45,7 @@ plan_file = dialoghelper.ask_for_plan()
 if not dialoghelper.check_file_chosen(plan_file):
     _close_program('Please choose a file')
 
-new_timing  = pddlhelper._get_new_stages_information(plan_file)
+new_timing  = pddlhelper.get_new_stages_information(plan_file)
 if new_timing == {}:
     _close_program('Could not read signal timing from ' + plan_file)
 
@@ -64,14 +64,15 @@ for key, value in new_timing.items():
     print 'Looking for : ' + key
     filepath = ''
     look_for_that_prefix = vissimhelper.junction_prefix
-    if stringhelper.does_string_contain_substring(key, look_for_that_prefix):
-        sc_id = int(re.sub(look_for_that_prefix, '', key))
-        print 'Looking for signal controller key: ' + str(sc_id)
-        signal_controller = _look_for_sg_by_id(sc_id)
-    else:
-        print 'Looking for signal controller name: ' + key
-        signal_controller = _look_for_sg_by_name(key)
-        # filepath = _look_for_sg_by_name(key)
+    # if stringhelper.does_string_contain_substring(key, look_for_that_prefix):
+    # sc_id = int(re.sub(look_for_that_prefix, '', key))
+    divide = key.split('_')
+    sc_id = int(divide[len(divide) - 1])
+    print 'Looking for signal controller key: ' + str(sc_id)
+    signal_controller = _look_for_sg_by_id(sc_id)
+    # else:
+    #     print 'Looking for signal controller name: ' + key
+    #     signal_controller = _look_for_sg_by_name(key)
 
     vap_filepath = signal_controller.AttValue("SupplyFile1")
     # vap_filepath = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap'

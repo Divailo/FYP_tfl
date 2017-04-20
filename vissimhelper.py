@@ -1,3 +1,5 @@
+import re
+
 # Attribute Keys
 SC_ID_KEY = 'No'
 SC_TYPE_KEY = 'Type'
@@ -90,7 +92,7 @@ class VissimSignalController(object):
     # Gives it some name, so it better looking PDDL can be constructed
     def _configurename(self, name):
         if name != "":
-            self.name = name
+            self.name = re.sub('\s','_', name) + '_' + str(self.id)
         else:
             # This was such a fun idea :( . Goodbye sweet prince
             # self._counter = self._counter + 1

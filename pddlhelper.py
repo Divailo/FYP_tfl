@@ -113,7 +113,7 @@ IRRELEVANT_REGEX2 = r'\)'
 
 
 # Returns a map: juction : [signal timings]
-def _get_new_stages_information(filepath):
+def get_new_stages_information(filepath):
     to_return = {}
     opened_file = open(filepath)
     for line in opened_file.readlines():
