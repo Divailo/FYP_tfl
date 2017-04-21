@@ -4,16 +4,16 @@ import re
 import jsonhelper
 
 # JSON keys
-JSON_SC_ID_KEY = jsonhelper.SC_ID_KEY
-JSON_SC_NAME_KEY = jsonhelper.SC_NAME_KEY
-JSON_SC_TYPE_KEY = jsonhelper.SC_TYPE_KEY
-JSON_SC_SG_KEY = jsonhelper.SC_SG_KEY
-JSON_SC_INITIAL_STAGE_KEY = jsonhelper.SC_INITIAL_STAGE_KEY
-JSON_SC_MAX_STAGE_KEY = jsonhelper.SC_MAX_STAGE_KEY
+JSON_SC_ID_KEY = jsonhelper.JSON_SC_ID_KEY
+JSON_SC_NAME_KEY = jsonhelper.JSON_SC_NAME_KEY
+JSON_SC_TYPE_KEY = jsonhelper.JSON_SC_TYPE_KEY
+JSON_SC_SG_KEY = jsonhelper.JSON_SC_SG_KEY
+JSON_SC_INITIAL_STAGE_KEY = jsonhelper.JSON_SC_INITIAL_STAGE_KEY
+JSON_SC_MAX_STAGE_KEY = jsonhelper.JSON_SC_MAX_STAGE_KEY
 
-JSON_SG_PHASE_IN_STAGES_KEY = jsonhelper.SG_PHASE_IN_STAGES_KEY
-JSON_SG_LINKS_KEY = jsonhelper.SG_LINKS_KEY
-JSON_LINK_NAME_KEY = jsonhelper.LINK_NAME_KEY
+JSON_SG_PHASE_IN_STAGES_KEY = jsonhelper.JSON_SG_PHASE_IN_STAGES_KEY
+JSON_SG_LINKS_KEY = jsonhelper.JSON_SG_LINKS_KEY
+JSON_LINK_NAME_KEY = jsonhelper.JSON_LINK_NAME_KEY
 
 # PDDL function and property names
 CURR_STAGE_KEY = 'current_stage '  # Parameters: intersection, value

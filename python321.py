@@ -1,6 +1,5 @@
 import sys
 import win32com.client as com  # com library
-import re
 
 import dialoghelper
 import pddlhelper
@@ -52,7 +51,7 @@ if new_timing == {}:
 inpx_file = dialoghelper.ask_for_model()
 
 Vissim = com.Dispatch('Vissim.Vissim')
-
+Vissim.BringToFront()
 
 if not vissimhelper.check_vissim_initialised(Vissim):
     _close_program('Vissim program not found.'
@@ -74,8 +73,8 @@ for key, value in new_timing.items():
     #     print 'Looking for signal controller name: ' + key
     #     signal_controller = _look_for_sg_by_name(key)
 
-    vap_filepath = signal_controller.AttValue("SupplyFile1")
-    # vap_filepath = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap'
+    # vap_filepath = signal_controller.AttValue('SupplyFile1')
+    vap_filepath = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap'
 
     if vap_filepath == '':
         print 'No VAP file for key: ' + key

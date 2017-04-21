@@ -39,12 +39,12 @@ if not dialoghelper.check_model_file(inpx_file):
 
 # create Vissim COM object
 Vissim = com.Dispatch('Vissim.Vissim')
+Vissim.BringToFront()
 
 if not vissimhelper.check_vissim_initialised(Vissim):
     _close_program('Vissim program not found.'
                    'It might be because the program is not installed on the machine')
 
-# version-specific object: Vissim = com.Dispatch("Vissim.Vissim.9")
 # Vissim.LoadNet("C:\Users\Ivaylo\Desktop\Examples\PTV Headquarters - Left-hand\Headquarters 14 LH.inpx")
 # Vissim.LoadNet("C:\Users\Public\Documents\PTV Vision\PTV Vissim 9\Examples Demo\Roundabout London.UK\Roundabout London.inpx")
 Vissim.LoadNet(inpx_file)
@@ -55,76 +55,71 @@ sgs = []
 scs = []
 for sc in signal_controller_collection:
 
-    vissim_signal_controller_object = vissimhelper.VissimSignalController(sc)
-
     sc_data = {}
 
-    sc_data[jsonhelper.SC_ID_KEY] = str(vissim_signal_controller_object.id)
-    sc_data[jsonhelper.SC_NAME_KEY] = str(vissim_signal_controller_object.name)
-    sc_data[jsonhelper.SC_TYPE_KEY] = str(vissim_signal_controller_object.type)
+    sc_data[jsonhelper.JSON_SC_ID_KEY] = str(vissimhelper.get_sc_id(sc))
+    sc_data[jsonhelper.JSON_SC_NAME_KEY] = str(vissimhelper.get_sc_name(sc))
+    sc_data[jsonhelper.JSON_SC_TYPE_KEY] = str(vissimhelper.get_sc_type(sc))
     pua_to_global_ids = {}
-    if str(vissim_signal_controller_object.type) == 'VAP':
+    if str(vissimhelper.get_sc_type(sc)) == 'VAP':
 
         # test TFL files
-        # sc_data[jsonhelper.SC_VAPFILE_KEY] = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap'
-        # sc_data[jsonhelper.SC_PUAFILE_KEY] = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.pua'
-        # sc_data['pua_file'] = "D:\\PyCharmProjects\\tests\\goodpuafile.pua"
+        vap_file_location = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap'
+        pua_file_location = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.pua'
 
         # actual data
-        sc_data[jsonhelper.SC_VAPFILE_KEY] = _get_absolute_path_for_file(str(vissim_signal_controller_object.supply_file_1))
-        sc_data[jsonhelper.SC_PUAFILE_KEY] = _get_absolute_path_for_file(str(vissim_signal_controller_object.supply_file_2))
-        sc_data[jsonhelper.SC_INITIAL_STAGE_KEY] = puahelper.get_starting_stage_from_pua(sc_data[jsonhelper.SC_PUAFILE_KEY])
-        sc_data[jsonhelper.SC_MAX_STAGE_KEY] = puahelper.get_max_stage_from_pua(sc_data[jsonhelper.SC_PUAFILE_KEY])
-        pua_to_global_ids = puahelper.read_and_map_signalgroups_from_pua(sc_data[jsonhelper.SC_PUAFILE_KEY])
-        pua_stages = puahelper.get_phases_in_stages_from_pua(sc_data[jsonhelper.SC_PUAFILE_KEY])
-
+        # vap_file_location = _get_absolute_path_for_file(str(vissimhelper.vapfile(sc)))
+        # pua_file_location = _get_absolute_path_for_file(str(vissimhelper.vapfile(sc)))
+        pua_to_global_ids = puahelper.read_and_map_signalgroups_from_pua(pua_file_location)
+        print 'PUA TO GLOBAL IDS: ' + str(pua_to_global_ids)
+        # serialize
+        sc_data[jsonhelper.JSON_SC_VAPFILE_KEY] = vap_file_location
+        sc_data[jsonhelper.JSON_SC_PUAFILE_KEY] = pua_file_location
+        sc_data[jsonhelper.JSON_SC_INITIAL_STAGE_KEY] = puahelper.get_starting_stage_from_pua(pua_file_location)
+        sc_data[jsonhelper.JSON_SC_MAX_STAGE_KEY] = puahelper.get_max_stage_from_pua(pua_file_location)
+        pua_stages = puahelper.get_phases_in_stages_from_pua(pua_file_location)
         # specific for TFL models, will return -1 if it works with different models
-        sc_data[jsonhelper.SC_CYCLE_LENGTH_KEY] = vaphelper.get_cycle_length_from_vap(sc_data[jsonhelper.SC_VAPFILE_KEY])
-        sc_data[jsonhelper.SC_STAGE_TIMINGS_KEY] = vaphelper.get_stage_lenghts_from_vap(sc_data[jsonhelper.SC_VAPFILE_KEY]
-                                                                                        , sc_data[jsonhelper.SC_MAX_STAGE_KEY])
+        sc_data[jsonhelper.JSON_SC_CYCLE_LENGTH_KEY] = vaphelper.get_cycle_length_from_vap(vap_file_location)
+        sc_data[jsonhelper.JSON_SC_STAGE_TIMINGS_KEY] = vaphelper.get_stage_lenghts_from_vap(vap_file_location
+                                                                                             , sc_data[jsonhelper.JSON_SC_MAX_STAGE_KEY])
     else:
-        print 'Non-VAP signal controllers currently not supported!'
+        print 'Non-VAP signal controllers not supported!'
         continue
 
-    # key = sg.AttValue("No")
-    # type = sg.AttValue("Type")
-    print 'Signal Controller Key: ' + str(vissim_signal_controller_object.id)
-    print 'Signal Controller Type: ' + str(vissim_signal_controller_object.type)
-    print 'Signal Controller Supply File 1: ' + str(vissim_signal_controller_object.supply_file_1)
-    print 'Signal Controller Supply File 2: ' + str(vissim_signal_controller_object.supply_file_2)
+    print 'Signal Controller Key: ' + str(vissimhelper.get_sc_id(sc))
+    print 'Signal Controller Supply File 1: ' + str(vap_file_location)
+    print 'Signal Controller Supply File 2: ' + str(pua_file_location)
 
-    # counter = 0
     sgCollection = sc.SGs.GetAll()
     for sg in sgCollection:
-        vissim_signal_group_object = vissimhelper.VissimSignalGroup(sg)
-
         sg_data = {}
-        sg_data[jsonhelper.SG_ID_KEY] = str(sg.AttValue(vissimhelper.SG_ID_KEY))
+        sg_data[jsonhelper.JSON_SG_ID_KEY] = str(sg.AttValue(vissimhelper.SG_ID_KEY))
 
         print 'Singal Group No: ' + str(sg.AttValue(vissimhelper.SG_ID_KEY))
 
         # Crawl through the signal heads so the from link are found
         signal_heads_collection = sg.SigHeads.GetAll()
 
-        vissim_signal_group_object.set_links_from_signalhead_collection(signal_heads_collection)
-        print 'Signal group from links: ' + str(vissim_signal_group_object.links)
+        sg_links = vissimhelper.get_links_from_signalhead_collection(signal_heads_collection, signal_heads_collection)
+        print 'Signal group from links: ' + str(sg_links)
 
-        sg_data[jsonhelper.SG_LINKS_KEY] = vissim_signal_group_object.links
+        sg_data[jsonhelper.JSON_SG_LINKS_KEY] = sg_links
 
-        sg_no = str(sg.AttValue(vissimhelper.SG_ID_KEY))
+        sg_id = vissimhelper.get_sg_id(sg)
+        sg_id_string = str(sg_id)
         if pua_to_global_ids is not None:
-            if sg_no in pua_to_global_ids:
-                local_key = str(pua_to_global_ids[sg_no])
+            if sg_id_string in pua_to_global_ids:
+                local_key = str(pua_to_global_ids[sg_id_string])
                 green_stages = []
                 if local_key in pua_stages:
                     green_stages = pua_stages[local_key]
-                sg_data[jsonhelper.SG_PHASE_IN_STAGES_KEY] = green_stages
+                sg_data[jsonhelper.JSON_SG_PHASE_IN_STAGES_KEY] = green_stages
 
         sgs.append(sg_data)
 
         print '= END OF SIGNAL GROUP = \n'
 
-    sc_data[jsonhelper.SC_SG_KEY] = sgs
+    sc_data[jsonhelper.JSON_SC_SG_KEY] = sgs
     scs.append(sc_data)
 
 print '= END OF SIGNAL CONTROLLER ='

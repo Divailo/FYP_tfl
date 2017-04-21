@@ -132,10 +132,11 @@ def get_stage_lenghts_from_vap(filepath, number_of_stages):
 
 def edit_timing_changes(filepath, timings):
     x = len(timings)
+    # First match is the one in the declaration of the 2d array
     # array initialized with a '' so the first match don't get replaced
     new_timings_strings = ['']
     for i in range(x):
-        new_item = '[' + timings[i]
+        new_item = '[' + timings[i] + ','
         new_timings_strings.append(new_item)
     # create new file
     new_file_path = _create_vap_file(filepath)
@@ -146,6 +147,7 @@ def edit_timing_changes(filepath, timings):
         with open(new_file_path, "w") as write_to:
             for line in read_from:
                 if re.search(PLAN_ARRAY_KEY, line) is not None:
+                    print 'Should edit line: ' + line
                     old_timings = re.findall(FIRST_ARRAY_ITEM, line)
                     for i in range(len(new_timings_strings) - 1):
                         old_time = old_timings[i]
