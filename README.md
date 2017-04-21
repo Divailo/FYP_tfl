@@ -28,8 +28,8 @@
 
 - If original VAP file has no PLAN[x,y] = [];, then it won't work
 
-- ~~Look at COM interface, at Vissim page. Basically when I finish setting new source file, call SaveNet() or SaveNetAs()
+- ~~Look at COM interface, at Vissim page. Basically when I finish setting new source file, call SaveNet() or SaveNetAs()~~
 
 - ~~Call BringToFront() so the window requests focus~~
 
-- Might look onto LoadProject instead of LoadNet, but prolly I won't, too much effort for something that's already fixed
+- ~~Might look onto LoadProject instead of LoadNet, but prolly I won't, too much effort for something that's already fixed~~
