@@ -2,7 +2,7 @@
 
 # Stuff to do
 
-- For phase in stage keep in mind that all the non-specified signal groups should show red by assumption
+- ~~For phase in stage keep in mind that all the non-specified signal groups should show red by assumption~~
 
 - ~~Make a base case so I don't crawl the file forever -> while line != None: ne6ta~~
 
@@ -28,7 +28,7 @@
 
 - If original VAP file has no PLAN[x,y] = [];, then it won't work
 
-- Look at COM interface, at Vissim page. Basically when I finish setting new source file, call SaveNet() or SaveNetAs()
+- ~~Look at COM interface, at Vissim page. Basically when I finish setting new source file, call SaveNet() or SaveNetAs()
 
 - ~~Call BringToFront() so the window requests focus~~
 
