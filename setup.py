@@ -1,7 +1,7 @@
 from setuptools import setup
 setup(
-    name='ivaylo-test2',
-    version='0.0.1',
+    name='ivaylo-tfl-1',
+    version='0.1',
     scripts=['main_extract_data'],
     author='Ivaylo Hristov',
     py_modules = ['dialoghelper',
