@@ -17,6 +17,7 @@ SG_ID_KEY = 'No'
 
 junction_prefix = '__junction_'
 
+
 def initialise_vissim(com_object):
     return com_object.Dispatch('Vissim.Vissim')
 
@@ -31,6 +32,7 @@ def load_vissim_network(vissim_ojbect, filepath):
 
 def get_signal_controllers(vissim_object):
     return vissim_object.Net.SignalControllers.GetAll()
+
 
 def get_sc_by_id(vissim_object, sc_id):
     sc = vissim_object.Net.SignalControllers.ItemByKey(sc_id)

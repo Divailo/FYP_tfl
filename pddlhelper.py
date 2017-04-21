@@ -19,7 +19,6 @@ JSON_LINK_NAME_KEY = jsonhelper.JSON_LINK_NAME_KEY
 CURR_STAGE_KEY = 'current_stage '  # Parameters: intersection, value
 MAX_STAGE_KEY = 'max_stage '  # Parameters: intersection, value
 PHASE_IN_STAGE_KEY = 'phase_in_stage '  # Parameters: link, intersection, value
-
 START_COMMENT_KEY = ';; '
 
 
@@ -102,7 +101,6 @@ def _make_phase_in_stage_lines(phases_in_stages, intersection_name):
 
 def convert_jsonfile_to_pddlproblem(json_filename, pddl_filename):
     print '= CONVERTING JSON TO PDDL ='
-    # pddl_file = open(pddl_filename, 'w')
     pddl_filename.writelines(_generate_pddl_lines(json_filename))
     pddl_filename.close()
 

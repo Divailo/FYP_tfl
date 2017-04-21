@@ -1,6 +1,7 @@
-import re # regex library
+import re  # regex library
 import os.path
 from datetime import datetime
+import logging
 
 import stringhelper
 import dialoghelper
@@ -14,10 +15,11 @@ CYCLE_LENGTH_KEY = r'(CycleLength){1}\s*=\s*\d+'
 PLAN_ARRAY_KEY = r'((Plan){1}\s*\[{1})\s*\d+\,{1}\s*\d+\s*\]{1}\s*={1}\s*\[{1}.*\]{1}'
 FIRST_ARRAY_ITEM = r'\[\s*\-?\d+\s*\,'
 
-
 # Formats the file of a name to be the one provided in the parameter
 # A timestamp of format dYYYYMMDD_tHH_MM_SS is appended
-def _give_me_name_for_new_vap_file(name, counter):
+def _give_me_name_for_new_vap_file(name):
+    # escape ever appending
+    name = re.sub(r'd\d+_t\d+_\d+_\d+','',name)
     date_object = datetime.now().date()
     time_object = datetime.now().time()
     month_string = stringhelper.get_good_time_string(date_object.month)
@@ -27,14 +29,14 @@ def _give_me_name_for_new_vap_file(name, counter):
     seconds_string = stringhelper.get_good_time_string(time_object.second)
     date_string = 'd' + str(date_object.year) + month_string + day_string
     time_string = 't' + hours_string + '_' + minutes_string + '_' + seconds_string
-    new_name = name + '_pddl_' + date_string+ '_' + time_string + '.vap'
+    new_name = name  + date_string + '_' + time_string + '.vap'
     return new_name
 
 
 def _create_vap_file(filepath):
     head, tail = os.path.split(filepath)
     name, extension = tail.split('.')
-    new_name_path = dialoghelper.folderpath + '\\' + _give_me_name_for_new_vap_file(name, 1)
+    new_name_path = dialoghelper.folderpath + '\\' + _give_me_name_for_new_vap_file(name)
     return new_name_path
 
 
@@ -55,7 +57,8 @@ def _extract_section_for_key(filepath, key):
             line = file.next().strip()
         except StopIteration:
             # End of file reached
-            print 'Key not found: ' + key + ', in file' + file.name
+            logging.getLogger('tfl_ivaylo').error('Key not found: ' + key + ', in file' + file.name)
+            # print 'Key not found: ' + key + ', in file' + file.name
             file.close()
             return []
 
@@ -92,10 +95,8 @@ def _extract_timings_from_array_line(arrayline, stages):
             index = i * x
             to_append = stringhelper.parse_integer_from_string(all_elements[index])
             to_extract.append(to_append)
-
     except IndexError:
         return []
-
     return to_extract
 
 
@@ -112,11 +113,10 @@ def get_cycle_length_from_vap(filepath):
     try:
         key, value = foundline.split('=')
     except ValueError:
-        print 'Failed to split the cycle_length line in VAP: ' + foundline
+        # print 'Failed to split the cycle_length line in VAP: ' + foundline
+        cycle_length =  -1
     else:
         cycle_length = stringhelper.parse_integer_from_string(value)
-    # print "Cycle length = " + cycle_length
-    print 'END OF FINDING CYCLE LENGTH'
     return cycle_length
 
 
@@ -130,7 +130,6 @@ def get_stage_lenghts_from_vap(filepath, number_of_stages):
         ignore_whitespace_line = line.replace("\s", '')
         if re.search(PLAN_ARRAY_KEY, ignore_whitespace_line) is not None:
             found_line = line
-            # print "FOUND LINE: " + str(_extract_timings_from_array_line(found_line))
             stages_timing = _extract_timings_from_array_line(found_line, number_of_stages)
             break
 
@@ -147,23 +146,25 @@ def edit_timing_changes(filepath, timings):
         new_timings_strings.append(new_item)
     # create new file
     new_file_path = _create_vap_file(filepath)
-    print 'New array: ' + str(new_timings_strings) + ' to be put in new_file_path'
+    # print 'New array: ' + str(new_timings_strings) + ' to be put in new_file_path'
     # put content in the new file
     # 'with' operators close files as soon as they are done
     with open(filepath, "r") as read_from:
         with open(new_file_path, "w") as write_to:
             for line in read_from:
                 if re.search(PLAN_ARRAY_KEY, line) is not None:
-                    print 'Should edit line: ' + line
                     old_timings = re.findall(FIRST_ARRAY_ITEM, line)
                     for i in range(len(new_timings_strings) - 1):
                         old_time = old_timings[i]
                         new_time = new_timings_strings[i]
                         if new_time != '':
-                            print 'Old time: '+ old_time
-                            print 'New time: ' + new_time
+                            logging.getLogger('tfl_ivaylo').info('Old time: '+ old_time)
+                            logging.getLogger('tfl_ivaylo').info('New time: ' + new_time)
+                            # print 'Old time: '+ old_time
+                            # print 'New time: ' + new_time
                             line = line.replace(old_time, new_time)
-                            print 'New line: ' + line
+                            logging.getLogger('tfl_ivaylo').info('New line: ' + line)
+                            # print 'New line: ' + line
                     write_to.write('/* This was automatically edited by the PDDL plan */\n')
                 write_to.write(line)
     return new_file_path

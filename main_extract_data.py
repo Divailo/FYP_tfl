@@ -1,6 +1,7 @@
 import win32com.client as com  # com library
 import sys  # all kinds of shit library
 
+import logging
 import puahelper
 import vaphelper
 import vissimhelper
@@ -17,13 +18,19 @@ def _get_absolute_path_for_file(filepath):
 def _close_program(message):
     # Display error message in dialog if any
     if message != '':
-        print 'ERROR MESSAGE: ' + message
+        logger.error('ERROR MESSAGE: ' + message)
         dialoghelper.showerror(message)
     print '\n== END OF SCRIPT =='
     sys.exit()
 
+# initiliaze logger
+logger = logging.getLogger('tfl_ivaylo')
+logger.setLevel(logging.INFO)
+fh = logging.FileHandler('extract_data.log')
+fh.setLevel(logging.INFO)
+logger.addHandler(fh)
 
-print '== START OF SCRIPT =='
+logger.info('== START OF SCRIPT ==')
 
 inpx_file = dialoghelper.ask_for_model()
 if not dialoghelper.is_file_chosen(inpx_file):
@@ -65,10 +72,10 @@ for sc in signal_controller_collection:
         initial_stage = puahelper.get_starting_stage_from_pua(pua_file_location)
         max_stage = puahelper.get_max_stage_from_pua(pua_file_location)
         stage_timings = vaphelper.get_stage_lenghts_from_vap(vap_file_location, max_stage)
-        print 'Signal Controller Id: ' + str(vissimhelper.get_sc_id(sc))
-        print 'Signal Controller Supply File 1: ' + str(vap_file_location)
-        print 'Signal Controller Supply File 2: ' + str(pua_file_location)
-        print 'PUA TO GLOBAL IDS: ' + str(pua_to_global_ids)
+        logger.info('Signal Controller Id: ' + str(vissimhelper.get_sc_id(sc)))
+        logger.info('Signal Controller Supply File 1: ' + str(vap_file_location))
+        logger.info('Signal Controller Supply File 2: ' + str(pua_file_location))
+        logger.info('Pua to global ids: ' + str(pua_to_global_ids))
         # serialize
         sc_data[jsonhelper.JSON_SC_ID_KEY] = str(sc_id)
         sc_data[jsonhelper.JSON_SC_NAME_KEY] = sc_name
@@ -89,8 +96,8 @@ for sc in signal_controller_collection:
         sg_id = vissimhelper.get_sg_id(sg)
         sg_id_string = str(sg_id)
         sg_links = vissimhelper.get_links(sg)
-        print 'Singal Group No: ' + sg_id_string
-        print 'Signal group from links: ' + str(sg_links)
+        logger.info('Singal Group No: ' + sg_id_string)
+        logger.info('Signal group from links: ' + str(sg_links))
 
         if pua_to_global_ids is not None:
             if sg_id_string in pua_to_global_ids:
@@ -103,11 +110,13 @@ for sc in signal_controller_collection:
             sg_data[jsonhelper.JSON_SG_LINKS_KEY] = sg_links
 
         sgs.append(sg_data)
-        print '= END OF SIGNAL GROUP = \n'
+        logger.info('= END OF SIGNAL GROUP = \n')
+        # print '= END OF SIGNAL GROUP = \n'
 
     sc_data[jsonhelper.JSON_SC_SG_KEY] = sgs
     sc_json_array.append(sc_data)
-    print '= END OF SIGNAL CONTROLLER ='
+    logger.info('= END OF SIGNAL CONTROLLER =')
+    # print '= END OF SIGNAL CONTROLLER ='
 print '= ALL DATA COLLECTED ='
 
 json_filename = 'out_' + inpx_file[:-5] + '.json'
