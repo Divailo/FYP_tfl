@@ -59,7 +59,6 @@ for key, value in new_timing.items():
     signal_controller = vissimhelper.get_sc_by_id(vissim, sc_id)
     vap_filepath = vissimhelper.get_vapfile(signal_controller)
     # vap_filepath = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap'
-
     if vap_filepath == '':
         logger.info('No VAP file for key: ' + key)
     else:

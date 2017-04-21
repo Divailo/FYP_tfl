@@ -62,5 +62,4 @@ def get_absolute_path_for_file(file):
         open_file.close()
     except IOError:
         file = os.path.join(os.path.dirname(folderpath), file)
-
     return file

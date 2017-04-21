@@ -15,11 +15,12 @@ CYCLE_LENGTH_KEY = r'(CycleLength){1}\s*=\s*\d+'
 PLAN_ARRAY_KEY = r'((Plan){1}\s*\[{1})\s*\d+\,{1}\s*\d+\s*\]{1}\s*={1}\s*\[{1}.*\]{1}'
 FIRST_ARRAY_ITEM = r'\[\s*\-?\d+\s*\,'
 
+
 # Formats the file of a name to be the one provided in the parameter
 # A timestamp of format dYYYYMMDD_tHH_MM_SS is appended
 def _give_me_name_for_new_vap_file(name):
     # escape ever appending
-    name = re.sub(r'd\d+_t\d+_\d+_\d+','',name)
+    name = re.sub(r'd\d+_t\d+_\d+_\d+', '', name)
     date_object = datetime.now().date()
     time_object = datetime.now().time()
     month_string = stringhelper.get_good_time_string(date_object.month)
@@ -29,7 +30,7 @@ def _give_me_name_for_new_vap_file(name):
     seconds_string = stringhelper.get_good_time_string(time_object.second)
     date_string = 'd' + str(date_object.year) + month_string + day_string
     time_string = 't' + hours_string + '_' + minutes_string + '_' + seconds_string
-    new_name = name  + date_string + '_' + time_string + '.vap'
+    new_name = name + date_string + '_' + time_string + '.vap'
     return new_name
 
 
@@ -61,9 +62,7 @@ def _extract_section_for_key(filepath, key):
             # print 'Key not found: ' + key + ', in file' + file.name
             file.close()
             return []
-
     lines = []
-
     while True:
         try:
             line = file.next().strip()
@@ -114,7 +113,7 @@ def get_cycle_length_from_vap(filepath):
         key, value = foundline.split('=')
     except ValueError:
         # print 'Failed to split the cycle_length line in VAP: ' + foundline
-        cycle_length =  -1
+        cycle_length = -1
     else:
         cycle_length = stringhelper.parse_integer_from_string(value)
     return cycle_length
@@ -158,7 +157,7 @@ def edit_timing_changes(filepath, timings):
                         old_time = old_timings[i]
                         new_time = new_timings_strings[i]
                         if new_time != '':
-                            logging.getLogger('tfl_ivaylo').info('Old time: '+ old_time)
+                            logging.getLogger('tfl_ivaylo').info('Old time: ' + old_time)
                             logging.getLogger('tfl_ivaylo').info('New time: ' + new_time)
                             # print 'Old time: '+ old_time
                             # print 'New time: ' + new_time
