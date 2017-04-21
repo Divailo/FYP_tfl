@@ -4,7 +4,6 @@ import win32com.client as com  # com library
 import dialoghelper
 import pddlhelper
 import vissimhelper
-import stringhelper
 import vaphelper
 
 def _close_program(message):
@@ -20,7 +19,7 @@ def _get_absolute_path_for_file(filepath):
     return dialoghelper.get_absolute_path_for_file(filepath)
 
 
-def _look_for_sg_by_id(sc_id):
+def _look_for_sg_by_sc_id(sc_id):
     sc = Vissim.Net.SignalControllers.ItemByKey(sc_id)
     if sc is None:
         print 'No Signal Controller with id: ' + str(sc_id)
@@ -28,25 +27,16 @@ def _look_for_sg_by_id(sc_id):
     else:
         return sc
 
-# def _look_for_sg_by_name(name):
-#     for sc in Vissim.Net.SignalControllers.GetAll():
-#         if sc.AttValue(vissimhelper.SC_NAME_KEY) == name:
-#             if sc.AttValue(vissimhelper.SC_TYPE_KEY) == 'VAP':
-#                 return sc
-#             else:
-#                 return None
-#     return None
-
 
 print '== START OF SCRIPT =='
 
-plan_file = dialoghelper.ask_for_plan()
-if not dialoghelper.check_file_chosen(plan_file):
+model_file = dialoghelper.ask_for_plan()
+if not dialoghelper.check_file_chosen(model_file):
     _close_program('Please choose a file')
 
-new_timing  = pddlhelper.get_new_stages_information(plan_file)
+new_timing  = pddlhelper.get_new_stages_information(model_file)
 if new_timing == {}:
-    _close_program('Could not read signal timing from ' + plan_file)
+    _close_program('Could not read signal timing from ' + model_file)
 
 inpx_file = dialoghelper.ask_for_model()
 
@@ -58,6 +48,7 @@ if not vissimhelper.check_vissim_initialised(Vissim):
                    'It might be because the program is not installed on the machine')
 
 Vissim.LoadNet(inpx_file)
+Vissim.BringToFront()
 
 for key, value in new_timing.items():
     print 'Looking for : ' + key
@@ -68,10 +59,7 @@ for key, value in new_timing.items():
     divide = key.split('_')
     sc_id = int(divide[len(divide) - 1])
     print 'Looking for signal controller key: ' + str(sc_id)
-    signal_controller = _look_for_sg_by_id(sc_id)
-    # else:
-    #     print 'Looking for signal controller name: ' + key
-    #     signal_controller = _look_for_sg_by_name(key)
+    signal_controller = _look_for_sg_by_sc_id(sc_id)
 
     # vap_filepath = signal_controller.AttValue('SupplyFile1')
     vap_filepath = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap'
@@ -84,7 +72,3 @@ for key, value in new_timing.items():
         new_vap_file = vaphelper.edit_timing_changes(vap_filepath, value)
         signal_controller.SetAttValue('SupplyFile1', new_vap_file)
         print 'New VAP file set: ' + signal_controller.AttValue('SupplyFile1')
-
-# look at keys. If __junction_id, look for id
-# else look through all the scs and look for AttValue name
-# signalControllerCollection = Vissim.Net.SignalControllers.GetAll()
