@@ -1,1 +1,0 @@
-TFL_ivaylo > log.txt

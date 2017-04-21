@@ -37,7 +37,7 @@ def _give_me_name_for_new_vap_file(name):
 def _create_vap_file(filepath):
     head, tail = os.path.split(filepath)
     name, extension = tail.split('.')
-    new_name_path = dialoghelper.folderpath + '\\' + _give_me_name_for_new_vap_file(name)
+    new_name_path = dialoghelper.get_absolute_path_for_file(_give_me_name_for_new_vap_file(name))
     return new_name_path
 
 
