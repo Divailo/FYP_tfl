@@ -5,6 +5,7 @@ import os.path
 
 folderpath = ''
 
+
 def create_error_box(message):
     showerror('Error', message)
 
@@ -16,11 +17,11 @@ def ask_for_model():
     FILE_DIALOG_OPTIONS = {'filetypes': [('PTV Vissim network files', '*.inpx'), ('All files', '*.*')],
                            'title': 'Choose VISSIM model'}
 
-    filename = tkFileDialog.askopenfilename(**FILE_DIALOG_OPTIONS)  # show an "Open" dialog box and return the path to the selected file
+    filename = tkFileDialog.askopenfilename(
+        **FILE_DIALOG_OPTIONS)  # show an "Open" dialog box and return the path to the selected file
     directory = os.path.split(filename)[0]
     global folderpath
     folderpath = directory.replace('/', '\\')
-    # print folderpath
     return filename.replace('/', '\\')
 
 
@@ -30,15 +31,24 @@ def ask_for_plan():
     FILE_DIALOG_OPTIONS = {'filetypes': [('PDDL plan files', '*.pddl'), ('All files', '*.*')],
                            'title': 'Choose PDDL result file'}
 
-    filename = tkFileDialog.askopenfilename(**FILE_DIALOG_OPTIONS)  # show an "Open" dialog box and return the path to the selected file
+    filename = tkFileDialog.askopenfilename(
+        **FILE_DIALOG_OPTIONS)  # show an "Open" dialog box and return the path to the selected file
     directory = os.path.split(filename)[0]
     global folderpath
     folderpath = directory.replace('/', '\\')
-    # print folderpath
     return filename.replace('/', '\\')
 
 
-def check_file_chosen(file):
+def ask_to_save():
+    Tk().withdraw()  # we don't want a full GUI, so keep the root window from appearing
+    filename = tkFileDialog.asksaveasfile(mode='w',
+                                          filetypes=[('PDDL plan files', '*.pddl'), ('All files', '*.*')],
+                                          defaultextension='pddl',
+                                          title='Save PDDL file as')
+    return filename
+
+
+def is_file_chosen(file):
     return not file == ''
 
 
@@ -51,6 +61,5 @@ def get_absolute_path_for_file(file):
         open_file = open(file)
         open_file.close()
     except IOError:
-        file = folderpath + '\\' + file
-
+        file = os.path.join(os.path.dirname(folderpath), file)
     return file

@@ -1,7 +1,6 @@
 import json  # json library
 
 # JSON Keys
-
 # SC Keys
 JSON_SC_ID_KEY = 'id'
 JSON_SC_NAME_KEY = 'name'
