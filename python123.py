@@ -64,12 +64,12 @@ for sc in signal_controller_collection:
     if str(vissimhelper.get_sc_type(sc)) == 'VAP':
 
         # test TFL files
-        vap_file_location = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap'
-        pua_file_location = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.pua'
+        # vap_file_location = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap'
+        # pua_file_location = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.pua'
 
         # actual data
-        # vap_file_location = _get_absolute_path_for_file(str(vissimhelper.vapfile(sc)))
-        # pua_file_location = _get_absolute_path_for_file(str(vissimhelper.vapfile(sc)))
+        vap_file_location = _get_absolute_path_for_file(str(vissimhelper.vapfile(sc)))
+        pua_file_location = _get_absolute_path_for_file(str(vissimhelper.vapfile(sc)))
         pua_to_global_ids = puahelper.read_and_map_signalgroups_from_pua(pua_file_location)
         print 'PUA TO GLOBAL IDS: ' + str(pua_to_global_ids)
         # serialize

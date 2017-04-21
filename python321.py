@@ -61,8 +61,8 @@ for key, value in new_timing.items():
     print 'Looking for signal controller key: ' + str(sc_id)
     signal_controller = _look_for_sg_by_sc_id(sc_id)
 
-    # vap_filepath = signal_controller.AttValue('SupplyFile1')
-    vap_filepath = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap'
+    vap_filepath = signal_controller.AttValue('SupplyFile1')
+    # vap_filepath = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap'
 
     if vap_filepath == '':
         print 'No VAP file for key: ' + key
