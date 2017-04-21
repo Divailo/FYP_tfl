@@ -119,10 +119,12 @@ for sc in signal_controller_collection:
     # print '= END OF SIGNAL CONTROLLER ='
 print '= ALL DATA COLLECTED ='
 
-json_filename = 'out_' + inpx_file[:-5] + '.json'
+# Create JSON file
+json_file_path = jsonhelper.create_json_filename_for_model(inpx_file)
+jsonhelper.write_data_to_json_file(json_file_path, sc_json_array)
+# Create PDDL file
 pddl_filename = dialoghelper.ask_to_save()
 if pddl_filename is None:
     _close_program('')
-jsonhelper.write_data_to_json_file(json_filename, sc_json_array)
-pddlhelper.convert_jsonfile_to_pddlproblem(json_filename, pddl_filename)
+pddlhelper.convert_jsonfile_to_pddlproblem(json_file_path, pddl_filename)
 _close_program('')
