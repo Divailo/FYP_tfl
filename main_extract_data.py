@@ -8,9 +8,6 @@ import pddlhelper
 import jsonhelper
 import dialoghelper
 
-json_filename = 'out.json'
-
-
 def _get_absolute_path_for_file(filepath):
     return dialoghelper.get_absolute_path_for_file(filepath)
 
@@ -114,9 +111,11 @@ for sc in signal_controller_collection:
     print '= END OF SIGNAL CONTROLLER ='
 print '= ALL DATA COLLECTED ='
 
-jsonhelper.write_data_to_json_file(json_filename, sc_json_array)
+
+json_filename = 'out_' + inpx_file[:-5] + '.json'
 pddl_filename = dialoghelper.ask_to_save()
 if pddl_filename is None:
     _close_program('')
+jsonhelper.write_data_to_json_file(json_filename, sc_json_array)
 pddlhelper.convert_jsonfile_to_pddlproblem(json_filename, pddl_filename)
 _close_program('')
