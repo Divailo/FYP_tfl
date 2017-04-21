@@ -1,5 +1,9 @@
 import re
 
+import jsonhelper
+import puahelper
+import vaphelper
+
 # SC attribute keys
 SC_ID_KEY = 'No'
 SC_TYPE_KEY = 'Type'
@@ -13,9 +17,39 @@ SG_ID_KEY = 'No'
 
 junction_prefix = '__junction_'
 
+def initialise_vissim(com_object):
+    return com_object.Dispatch('Vissim.Vissim')
 
-def check_vissim_initialised(com_vissim):
-    return com_vissim is not None
+
+def bring_vissim_to_front(vissim_object):
+    vissim_object.BringToFront()
+
+
+def load_vissim_network(vissim_ojbect, filepath):
+    vissim_ojbect.LoadNet(filepath)
+
+
+def get_signal_controllers(vissim_object):
+    return vissim_object.Net.SignalControllers.GetAll()
+
+def get_sc_by_id(vissim_object, sc_id):
+    sc = vissim_object.Net.SignalControllers.ItemByKey(sc_id)
+    if sc is None:
+        print 'No Signal Controller with id: ' + str(sc_id)
+        return None
+    else:
+        return sc
+
+
+def save_network(vissim_object):
+    vissim_object.SaveNet()
+
+
+# ====================================
+#              Signal Controllers
+# ====================================
+def set_vap_file(signal_controller, filepath):
+    signal_controller.SetAttValue('SupplyFile1', filepath)
 
 
 def get_sc_id(signal_controller):
@@ -36,14 +70,18 @@ def get_sc_type(signal_controller):
     return str(signal_controller.AttValue(SC_TYPE_KEY))
 
 
-def vapfile(signal_controller):
+def get_signal_groups(signal_controller):
+    return signal_controller.SGs.GetAll()
+
+
+def get_vapfile(signal_controller):
     if signal_controller.AttValue(SC_TYPE_KEY) == SC_VAP_TYPE:
         return signal_controller.AttValue(SC_VAPFILE_ATTRIBUTE_KEY)
     else:
         return None
 
 
-def puafile(signal_controller):
+def get_puafile(signal_controller):
     if signal_controller.AttValue(SC_TYPE_KEY) == SC_VAP_TYPE:
         return signal_controller.AttValue(SC_PUAFILE_ATTRIBUTE_KEY)
     else:
@@ -57,9 +95,13 @@ def get_sg_id(signal_group):
     return signal_group.AttValue(SG_ID_KEY)
 
 
-def get_links_from_signalhead_collection(signal_group, signal_heads_collection):
-    _links = []
+def get_sg_signalheads(signal_group):
+    return signal_group.SigHeads.GetAll()
 
+
+def get_links(signal_group):
+    signal_heads_collection = get_sg_signalheads(signal_group)
+    _links = []
     for sh in signal_heads_collection:
         # create json object for the link
         sh_data = {}  # get the sh's link
@@ -75,11 +117,3 @@ def get_links_from_signalhead_collection(signal_group, signal_heads_collection):
         _links.append(sh_data)
 
     return _links
-
-
-def set_local_pua_id(signal_group, id):
-    signal_group.pua_id = id
-
-
-def local_pua_id(signal_group):
-    return signal_group.pua_id

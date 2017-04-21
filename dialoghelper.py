@@ -38,7 +38,16 @@ def ask_for_plan():
     return filename.replace('/', '\\')
 
 
-def check_file_chosen(file):
+def ask_to_save():
+    Tk().withdraw()  # we don't want a full GUI, so keep the root window from appearing
+    filename = tkFileDialog.asksaveasfile(mode='w',
+                                          filetypes = [('PDDL plan files', '*.pddl'), ('All files', '*.*')],
+                                          defaultextension='pddl',
+                                          title='Save PDDL file as')
+    return filename
+
+
+def is_file_chosen(file):
     return not file == ''
 
 

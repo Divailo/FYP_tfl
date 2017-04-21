@@ -1,2 +1,2 @@
 echo "Generating PYTHON EXE"
-pyinstaller python321.py --onefile --name TFL_ivaylo_pddltovissim --noconsole
+pyinstaller main_apply_changes.py --onefile --name TFL_ivaylo_pddltovissim --noconsole

@@ -102,9 +102,9 @@ def _make_phase_in_stage_lines(phases_in_stages, intersection_name):
 
 def convert_jsonfile_to_pddlproblem(json_filename, pddl_filename):
     print '= CONVERTING JSON TO PDDL ='
-    pddl_file = open(pddl_filename, 'w')
-    pddl_file.writelines(_generate_pddl_lines(json_filename))
-    print '= CONVERTING JSON TO PDDL ='
+    # pddl_file = open(pddl_filename, 'w')
+    pddl_filename.writelines(_generate_pddl_lines(json_filename))
+    pddl_filename.close()
 
 
 RELEVANT_LINE_REGEX = r'\d+\.\d+:\s*\(\s*switchtrafficsignal\s*\S+\)'
