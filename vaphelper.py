@@ -6,8 +6,8 @@ import stringhelper
 import dialoghelper
 
 # Constants
-CONSTANT_SECTION_KEY = "CONST"
-ARRAY_SECTION_KEY = "ARRAY"
+CONSTANT_SECTION_KEY = 'CONST'
+ARRAY_SECTION_KEY = 'ARRAY'
 SECTION_END_KEY = ';'
 
 CYCLE_LENGTH_KEY = r'(CycleLength){1}\s*=\s*\d+'
@@ -15,6 +15,8 @@ PLAN_ARRAY_KEY = r'((Plan){1}\s*\[{1})\s*\d+\,{1}\s*\d+\s*\]{1}\s*={1}\s*\[{1}.*
 FIRST_ARRAY_ITEM = r'\[\s*\-?\d+\s*\,'
 
 
+# Formats the file of a name to be the one provided in the parameter
+# A timestamp of format dYYYYMMDD_tHH_MM_SS is appended
 def _give_me_name_for_new_vap_file(name, counter):
     date_object = datetime.now().date()
     time_object = datetime.now().time()
