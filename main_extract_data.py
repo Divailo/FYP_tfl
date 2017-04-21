@@ -111,7 +111,6 @@ for sc in signal_controller_collection:
     print '= END OF SIGNAL CONTROLLER ='
 print '= ALL DATA COLLECTED ='
 
-
 json_filename = 'out_' + inpx_file[:-5] + '.json'
 pddl_filename = dialoghelper.ask_to_save()
 if pddl_filename is None:
