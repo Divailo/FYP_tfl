@@ -19,9 +19,8 @@ def ask_for_model():
 
     filename = tkFileDialog.askopenfilename(
         **FILE_DIALOG_OPTIONS)  # show an "Open" dialog box and return the path to the selected file
-    directory = os.path.split(filename)[0]
     global folderpath
-    folderpath = directory.replace('/', '\\')
+    folderpath = filename
     return filename.replace('/', '\\')
 
 
@@ -33,9 +32,6 @@ def ask_for_plan():
 
     filename = tkFileDialog.askopenfilename(
         **FILE_DIALOG_OPTIONS)  # show an "Open" dialog box and return the path to the selected file
-    directory = os.path.split(filename)[0]
-    global folderpath
-    folderpath = directory.replace('/', '\\')
     return filename.replace('/', '\\')
 
 
