@@ -21,3 +21,9 @@ def escape_vap_comments(tobeeditted):
 # Removes the '[' and ']' from the part after the '=' in an array element inside the vap file
 def remove_brackets_for_vap_array(arraystring):
     return arraystring.replace('[', '').replace(']', '')
+
+def get_good_time_string(time_int):
+    good_string = str(time_int)
+    if (time_int) < 10:
+        good_string = '0' + good_string
+    return good_string

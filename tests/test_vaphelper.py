@@ -14,7 +14,7 @@ class VapHelperTest(unittest.TestCase):
 
     def test_no_plans_provided(self):
         _filepath = os.path.abspath('emptyfile.vap')
-        plans = vaphelper.get_stage_lenghts_from_vap(_filepath)
+        plans = vaphelper.get_stage_lenghts_from_vap(_filepath, 3)
         # len(cycl
         self.assertEqual(len(plans), 0)
         self.assertEqual(plans, [])
@@ -30,7 +30,7 @@ class VapHelperTest(unittest.TestCase):
 
     def test_no_value_for_plans(self):
         _filepath = os.path.abspath('vap_with_keys_no_values.vap')
-        plans = vaphelper.get_stage_lenghts_from_vap(_filepath)
+        plans = vaphelper.get_stage_lenghts_from_vap(_filepath, 3)
         self.assertEqual(len(plans), 0)
         self.assertEqual(plans, [])
 
@@ -46,7 +46,7 @@ class VapHelperTest(unittest.TestCase):
 
     def test_plans_correct_no_content_with_comments(self):
         _filepath = os.path.abspath('vap_with_keys_values_no_section.vap')
-        plans = vaphelper.get_stage_lenghts_from_vap(_filepath)
+        plans = vaphelper.get_stage_lenghts_from_vap(_filepath, 3)
         self.assertEqual(len(plans), 0)
         self.assertEqual(plans, [])
 
@@ -61,7 +61,7 @@ class VapHelperTest(unittest.TestCase):
 
     def test_plans_commented_nocontent(self):
         _filepath = os.path.abspath('commented_badvapfile.vap')
-        plans = vaphelper.get_stage_lenghts_from_vap(_filepath)
+        plans = vaphelper.get_stage_lenghts_from_vap(_filepath, 3)
         self.assertEqual(len(plans), 0)
         self.assertEqual(plans, [])
 
@@ -78,8 +78,9 @@ class VapHelperTest(unittest.TestCase):
 
     def test__plans_correct_with_comments(self):
         _filepath = os.path.abspath('commented_goodvapfile.vap')
-        plans = vaphelper.get_stage_lenghts_from_vap(_filepath)
-        self.assertEqual(len(plans), 3)
+        max_stage = 3
+        plans = vaphelper.get_stage_lenghts_from_vap(_filepath, max_stage)
+        self.assertEqual(len(plans), max_stage)
         self.assertEqual(plans, [4,16,28])
 
     #
@@ -95,8 +96,9 @@ class VapHelperTest(unittest.TestCase):
 
     def test__plans_correct_documented(self):
         _filepath = os.path.abspath('goodvapfile_documented.vap')
-        plans = vaphelper.get_stage_lenghts_from_vap(_filepath)
-        self.assertEqual(len(plans), 3)
+        max_stages = 3
+        plans = vaphelper.get_stage_lenghts_from_vap(_filepath, max_stages)
+        self.assertEqual(len(plans), max_stages)
         self.assertEqual(plans, [9,24,56])
 
     #
@@ -112,8 +114,9 @@ class VapHelperTest(unittest.TestCase):
 
     def test_plans_correct(self):
         _filepath = os.path.abspath('goodvapfile.vap')
-        plans = vaphelper.get_stage_lenghts_from_vap(_filepath)
-        self.assertEqual(len(plans), 3)
+        max_stages = 3
+        plans = vaphelper.get_stage_lenghts_from_vap(_filepath, max_stages)
+        self.assertEqual(len(plans), max_stages)
         self.assertEqual(plans, [9,24,56])
 
     #
