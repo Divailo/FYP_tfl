@@ -49,8 +49,8 @@ for key, value in new_timing.items():
     sc_id = int(divide[len(divide) - 1])
     print 'Looking for signal controller key: ' + str(sc_id)
     signal_controller = vissimhelper.get_sc_by_id(vissim, sc_id)
-    # vap_filepath = vissimhelper.get_vapfile(signal_controller)
-    vap_filepath = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap'
+    vap_filepath = vissimhelper.get_vapfile(signal_controller)
+    # vap_filepath = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap'
 
     if vap_filepath == '':
         print 'No VAP file for key: ' + key

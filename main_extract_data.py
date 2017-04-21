@@ -8,6 +8,7 @@ import pddlhelper
 import jsonhelper
 import dialoghelper
 
+
 def _get_absolute_path_for_file(filepath):
     return dialoghelper.get_absolute_path_for_file(filepath)
 
@@ -37,8 +38,6 @@ if vissim is None:
                    'It might be because the program is not installed on the machine')
 
 vissimhelper.bring_vissim_to_front(vissim)
-# Vissim.LoadNet("C:\Users\Ivaylo\Desktop\Examples\PTV Headquarters - Left-hand\Headquarters 14 LH.inpx")
-# Vissim.LoadNet("C:\Users\Public\Documents\PTV Vision\PTV Vissim 9\Examples Demo\Roundabout London.UK\Roundabout London.inpx")
 vissimhelper.load_vissim_network(vissim, inpx_file)
 signal_controller_collection = vissimhelper.get_signal_controllers(vissim)
 sc_json_array = []
@@ -53,13 +52,13 @@ for sc in signal_controller_collection:
     if sc_type == 'VAP':
         # test TFL files
         # vap_file_location = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap'
-        pua_file_location = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.pua'
+        # pua_file_location = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.pua'
 
         # actual data
         sc_id = vissimhelper.get_sc_id(sc)
         sc_name = vissimhelper.get_sc_name(sc)
         vap_file_location = _get_absolute_path_for_file(str(vissimhelper.get_vapfile(sc)))
-        # pua_file_location = _get_absolute_path_for_file(str(vissimhelper.get_puafile(sc)))
+        pua_file_location = _get_absolute_path_for_file(str(vissimhelper.get_puafile(sc)))
         cycle_length = vaphelper.get_cycle_length_from_vap(vap_file_location)
         pua_to_global_ids = puahelper.read_and_map_signalgroups_from_pua(pua_file_location)
         pua_stages = puahelper.get_phases_in_stages_from_pua(pua_file_location)
