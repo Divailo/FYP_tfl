@@ -72,3 +72,5 @@ for key, value in new_timing.items():
         new_vap_file = vaphelper.edit_timing_changes(vap_filepath, value)
         signal_controller.SetAttValue('SupplyFile1', new_vap_file)
         print 'New VAP file set: ' + signal_controller.AttValue('SupplyFile1')
+
+Vissim.SaveNet()
