@@ -3,7 +3,7 @@ import pddlhelper
 import os.path
 
 
-class PddlHelperTestCase(unittest.TestCase):
+class PddlToVissimTestCase(unittest.TestCase):
     def test_badfile(self):
         _filepath = os.path.join(os.path.dirname(__file__), 'bad_sample_pddl.pddl')
         new_timing = pddlhelper.get_new_stages_information(_filepath)
