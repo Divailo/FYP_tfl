@@ -16,6 +16,15 @@ PLAN_ARRAY_KEY = r'((Plan){1}\s*\[{1})\s*\d+\,{1}\s*\d+\s*\]{1}\s*={1}\s*\[{1}.*
 FIRST_ARRAY_ITEM = r'\[\s*\-?\d+\s*\,'
 
 
+def _escape_vap_comments(to_be_editted):
+    return re.sub(r"(\/\*){1}([^\*\/])+(\*\/){1}", r"", to_be_editted)
+
+
+# Removes the '[' and ']' from the part after the '=' in an array element inside the vap file
+def _remove_brackets_for_vap_array(arraystring):
+    return arraystring.replace('[', '').replace(']', '')
+
+
 # Formats the file of a name to be the one provided in the parameter
 # A timestamp of format dYYYYMMDD_tHH_MM_SS is appended
 def _give_me_name_for_new_vap_file(name):
@@ -71,7 +80,7 @@ def _extract_section_for_key(filepath, key):
                 file.close()
                 return lines
             else:
-                lines.append(stringhelper.escape_vap_comments(line))
+                lines.append(_escape_vap_comments(line))
         except StopIteration:
             # End of file reached
             file.close()
@@ -80,8 +89,8 @@ def _extract_section_for_key(filepath, key):
 
 def _extract_timings_from_array_line(arrayline, stages):
     array_declaration, array_values = arrayline.split('=')
-    array_declaration_no_brackets = stringhelper.remove_brackets_for_vap_array(array_declaration)
-    array_values_no_brackets = stringhelper.remove_brackets_for_vap_array(array_values)
+    array_declaration_no_brackets = _remove_brackets_for_vap_array(array_declaration)
+    array_values_no_brackets = _remove_brackets_for_vap_array(array_values)
     to_extract = []
     # find x (the number of elements in each array a 2d array)
     x = stringhelper.parse_integer_from_string(array_declaration_no_brackets.split(',')[1])
