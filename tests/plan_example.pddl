@@ -1,0 +1,7 @@
+35.000: ( switchtrafficsignal junction_G) [0.000]
+35.001: ( switchtrafficsignal junction_E) [0.000]
+40.004: ( switchtrafficsignal junction_G) [0.000]
+45.005: ( switchtrafficsignal junction_E) [0.000]
+45.006: ( switchtrafficsignal junction_G) [0.000]
+80.008: ( switchtrafficsignal junction_E) [0.000]
+80.009: ( switchtrafficsignal junction_G) [0.000]
