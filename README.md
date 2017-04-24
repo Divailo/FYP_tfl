@@ -28,8 +28,8 @@
 
 - Handle no such file I guess
 
-- := used when using variables?? Would not support shit like that
+- := used when declaring VAP variables -> not supported
 
-- Everything will crash if the signal controller is not VAP
+- Non-VAP SCs not supported
 
 - If original VAP file has no PLAN[x,y] = [];, then it won't work
