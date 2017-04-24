@@ -6,6 +6,28 @@ import os.path
 folderpath = ''
 
 
+def open_dialog_and_gain_focus():
+    # Make a top-level instance and hide since it is ugly and big.
+    root = Tk()
+    root.withdraw()
+
+    # Make it almost invisible - no decorations, 0 size, top left corner.
+    root.overrideredirect(True)
+    root.geometry('0x0+0+0')
+
+    # Show window again and lift it to top so it can get focus,
+    # otherwise dialogs will end up behind the terminal.
+    root.deiconify()
+    root.lift()
+    root.focus_force()
+    return root
+
+
+def destroy_root_view(view):
+    view.destroy()
+
+
+
 def show_error_box_with_message(message):
     Tk().withdraw()  # we don't want a full GUI, so keep the root window from appearing
     showerror('Error', message)
@@ -13,31 +35,34 @@ def show_error_box_with_message(message):
 
 # initializes a file chooser to load the desired model
 def ask_for_model():
-    Tk().withdraw()  # we don't want a full GUI, so keep the root window from appearing
+    root = open_dialog_and_gain_focus()
     FILE_DIALOG_OPTIONS = {'filetypes': [('PTV Vissim network files', '*.inpx'), ('All files', '*.*')],
                            'title': 'Choose VISSIM model'}
     filename = tkFileDialog.askopenfilename(
         **FILE_DIALOG_OPTIONS)  # show an "Open" dialog box and return the path to the selected file
     global folderpath
     folderpath = filename
+    destroy_root_view(root)
     return filename.replace('/', '\\')
 
 
 def ask_for_plan():
-    Tk().withdraw()  # we don't want a full GUI, so keep the root window from appearing
+    root = open_dialog_and_gain_focus()
     FILE_DIALOG_OPTIONS = {'filetypes': [('PDDL plan files', '*.pddl'), ('All files', '*.*')],
                            'title': 'Choose PDDL result file'}
     filename = tkFileDialog.askopenfilename(
         **FILE_DIALOG_OPTIONS)  # show an "Open" dialog box and return the path to the selected file
+    destroy_root_view(root)
     return filename.replace('/', '\\')
 
 
 def ask_to_save():
-    Tk().withdraw()  # we don't want a full GUI, so keep the root window from appearing
+    root = open_dialog_and_gain_focus()
     filename = tkFileDialog.asksaveasfile(mode='w',
                                           filetypes=[('PDDL plan files', '*.pddl'), ('All files', '*.*')],
                                           defaultextension='pddl',
                                           title='Save PDDL file as')
+    destroy_root_view(root)
     return filename
 
 
