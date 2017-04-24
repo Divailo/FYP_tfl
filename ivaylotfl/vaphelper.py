@@ -140,7 +140,7 @@ def get_stage_lenghts_from_vap(filepath, number_of_stages):
             found_line = line
             stages_timing = _extract_timings_from_array_line(found_line, number_of_stages)
             break
-
+    print 'END OF FINC CYCLE LENGTH'
     return stages_timing
 
 
