@@ -6,8 +6,9 @@ import os.path
 folderpath = ''
 
 
-def create_error_box(message):
-    showerror('Error', message)
+def show_error_box_with_message(message):
+    Tk().withdraw()  # we don't want a full GUI, so keep the root window from appearing
+    showerror('Error',message)
 
 
 # initializes a file chooser to load the desired model

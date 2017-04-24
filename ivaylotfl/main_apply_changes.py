@@ -12,7 +12,7 @@ def _close_program(message):
     # Display error message in dialog if any
     if message != '':
         logging.getLogger('tfl_ivaylo').error('ERROR MESSAGE: ' + message)
-        dialoghelper.showerror(message)
+        dialoghelper.show_error_box_with_message(message)
     print '\n== END OF SCRIPT =='
     sys.exit()
 
