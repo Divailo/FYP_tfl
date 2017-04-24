@@ -58,3 +58,5 @@ IVAYLO.RAR
 TFL_ivaylo.spec
 TFL_ivaylo_pddltovissim.spec
 pddl.pddl
+# egg
+ivaylo_tfl.egg-info
