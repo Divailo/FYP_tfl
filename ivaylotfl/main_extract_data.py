@@ -58,11 +58,6 @@ def main():
         # sc_data[jsonhelper.JSON_SC_TYPE_KEY] =
         pua_to_global_ids = {}
         if sc_type == 'VAP':
-            # test TFL files
-            # vap_file_location = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap'
-            # pua_file_location = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.pua'
-
-            # actual data
             sc_id = vissimhelper.get_sc_id(sc)
             sc_name = vissimhelper.get_sc_name(sc)
             vap_file_location = _get_absolute_path_for_file(str(vissimhelper.get_vapfile(sc)))
@@ -88,7 +83,7 @@ def main():
             sc_data[jsonhelper.JSON_SC_CYCLE_LENGTH_KEY] = cycle_length
             sc_data[jsonhelper.JSON_SC_STAGE_TIMINGS_KEY] = stage_timings
         else:
-            print 'Non-VAP signal controllers not supported!'
+            logger.info('Non-VAP signal controllers not supported!')
             continue
 
         sgCollection = sc.SGs.GetAll()
@@ -118,7 +113,7 @@ def main():
         sc_json_array.append(sc_data)
         logger.info('= END OF SIGNAL CONTROLLER =')
         # print '= END OF SIGNAL CONTROLLER ='
-    print '= ALL DATA COLLECTED ='
+    logger.info('= ALL DATA COLLECTED =')
 
     # Create JSON file
     json_file_path = jsonhelper.create_json_filename_for_model(inpx_file)

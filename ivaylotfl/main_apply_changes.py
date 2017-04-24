@@ -51,8 +51,6 @@ def main():
     # Apply changes
     for key, value in new_timing.items():
         logger.info('Looking for : ' + key)
-        filepath = ''
-        look_for_that_prefix = vissimhelper.junction_prefix
         divide = key.split('_')
         sc_id = int(divide[len(divide) - 1])
         logger.info('Looking for signal controller key: ' + str(sc_id))
