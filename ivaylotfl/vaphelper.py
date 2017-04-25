@@ -68,7 +68,6 @@ def __extract_section_for_key(filepath, key):
         except StopIteration:
             # End of file reached
             logging.getLogger('tfl_ivaylo').error('Key not found: ' + key + ', in file' + file.name)
-            # print 'Key not found: ' + key + ', in file' + file.name
             file.close()
             return []
     lines = []
@@ -121,14 +120,13 @@ def get_cycle_length_from_vap(filepath):
     try:
         key, value = foundline.split('=')
     except ValueError:
-        # print 'Failed to split the cycle_length line in VAP: ' + foundline
         cycle_length = -1
     else:
         cycle_length = stringhelper.parse_integer_from_string(value)
     return cycle_length
 
-
-# Looks for a single line
+# Looks for a single line in the Array, named Plan
+# It will extract
 def get_stage_lenghts_from_vap(filepath, number_of_stages):
     if number_of_stages < 0:
         return []
@@ -140,7 +138,6 @@ def get_stage_lenghts_from_vap(filepath, number_of_stages):
             found_line = line
             stages_timing = __extract_timings_from_array_line(found_line, number_of_stages)
             break
-    print 'END OF FINC CYCLE LENGTH'
     return stages_timing
 
 
@@ -154,7 +151,6 @@ def edit_timing_changes(filepath, timings):
         new_timings_strings.append(new_item)
     # create new file
     new_file_path = __create_vap_file(filepath)
-    # print 'New array: ' + str(new_timings_strings) + ' to be put in new_file_path'
     # put content in the new file
     # 'with' operators close files as soon as they are done
     with open(filepath, "r") as read_from:
@@ -168,11 +164,8 @@ def edit_timing_changes(filepath, timings):
                         if new_time != '':
                             logging.getLogger('tfl_ivaylo').info('Old time: ' + old_time)
                             logging.getLogger('tfl_ivaylo').info('New time: ' + new_time)
-                            # print 'Old time: '+ old_time
-                            # print 'New time: ' + new_time
                             line = line.replace(old_time, new_time)
                             logging.getLogger('tfl_ivaylo').info('New line: ' + line)
-                            # print 'New line: ' + line
                     write_to.write('/* This was automatically edited by the PDDL plan */\n')
                 write_to.write(line)
     return new_file_path

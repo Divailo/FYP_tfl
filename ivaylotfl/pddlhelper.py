@@ -100,7 +100,6 @@ def __make_phase_in_stage_lines(phases_in_stages, intersection_name):
 
 
 def convert_jsonfile_to_pddlproblem(json_filename, pddl_filename):
-    print '= CONVERTING JSON TO PDDL ='
     pddl_filename.writelines(__generate_pddl_lines(json_filename))
     pddl_filename.close()
 
@@ -124,6 +123,5 @@ def get_new_stages_information(filepath):
             if junction_name not in to_return:
                 to_return[junction_name] = []
             to_return[junction_name].append(stage_timing)
-
     opened_file.close()
     return to_return

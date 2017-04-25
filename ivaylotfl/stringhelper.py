@@ -14,7 +14,6 @@ def parse_integer_from_string(search_in):
     if to_return is not None:
         return to_return
     else:
-        print "Array entry not an integer: " + search_in
         return -1
 
 
