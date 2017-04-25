@@ -1,6 +1,6 @@
 import re
 
-import jsonhelper
+import __jsonhelper
 import puahelper
 import vaphelper
 
