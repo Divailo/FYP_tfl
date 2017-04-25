@@ -101,10 +101,10 @@ ___
 from ivaylotfl import vaphelper
 
 get_cycle_length_from_vap(vap_filepath)
->>> 15
+>>> 72
 
 get_stage_lenghts_from_vap(vap_filepath)
->>> [10,25,45]
+>>> [9,24,56]
 ```
 
 ##### You can get the JSON keys from jsonhelper
