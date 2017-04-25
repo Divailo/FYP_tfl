@@ -1,11 +1,17 @@
 # FYP_tfl
 
+## External libraries
+
+[PyWin32](https://sourceforge.net/projects/pywin32) : to enable communicating with COM.
+
 # Install
-To install it you need:
+Before you install you need to make sure that:
 
-* Python isntalled
+* Running <b>Windows</b>, because COM works only on Windows.
 
-* Running <b>Windows</b>, because of [PyWin32](https://sourceforge.net/projects/pywin32).
+* <b>Python</b> is isntalled in your machine
+
+* <b>Pip</b> is added to your PATH system variable 
 
 Assuming that it true, put the command in terminal:
 
