@@ -32,13 +32,34 @@ There are two use cases of the project. You can either:
 
 ### Use as external libraries
 
+Puahelper
+
+___
+
+```python
+from ivaylotfl import puahelper
+
+read_and_map_signalgroups_from_pua(pua_filepath)
+>>> {'V1' : 1, 'V2' : 2}
+
+get_phases_in_stages_from_pua(pua_filepath)
+>>> { 1 : [1,3], 2 : [2] }
+
+get_starting_stage_from_pua(pua_filepath)
+>>> 1
+
+get_max_stage_from_pua(pua_helper)
+>>> 3
+```
+
 Vaphelper
 
 ___
 
-```
+```python
 from ivaylotfl import vaphelper
-vaphelper.get_cycle_length_from_vap(vap_filepath)
+
+get_cycle_length_from_vap(vap_filepath)
 >>> 15
 
 get_stage_lenghts_from_vap(vap_filepath)
