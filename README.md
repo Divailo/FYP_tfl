@@ -28,6 +28,23 @@ There are two use cases of the project. You can either:
 1. Used the built scripts , or
 2. Use the project as an external library
 
+### Run built-in scripts
+
+### Use as external libraries
+
+Vaphelper
+
+___
+
+```
+from ivaylotfl import vaphelper
+vaphelper.get_cycle_length_from_vap(vap_filepath)
+>>> 15
+
+get_stage_lenghts_from_vap(vap_filepath)
+>>> [10,25,45]
+```
+
 # Contribute
 
 # Future work
