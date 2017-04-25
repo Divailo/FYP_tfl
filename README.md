@@ -1,5 +1,7 @@
 # FYP_tfl
 
+A project which creates an interface between [Vissim](http://vision-traffic.ptvgroup.com/en-us/products/ptv-vissim/) and [PDDL+ planner](https://pdfs.semanticscholar.org/913e/89b74189b7b5221386671db8bb96916effc6.pdf). The classes of the project could also be used as an external library to extract properties of VAP signal controllers.
+
 ### External libraries
 
 [PyWin32](https://sourceforge.net/projects/pywin32) : to enable communicating with COM.
