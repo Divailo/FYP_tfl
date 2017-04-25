@@ -1,6 +1,7 @@
 import re  # regex library
 
 
+# Checks if a string contains substring
 def does_string_contain_substring(originalstring, substring_to_look):
     if originalstring.find(substring_to_look) == -1:
         return False
@@ -14,10 +15,10 @@ def parse_integer_from_string(search_in):
     if to_return is not None:
         return to_return
     else:
-        print "Array entry not an integer: " + search_in
         return -1
 
 
+# Formats single digit time to 0X
 def get_good_time_string(time_int):
     good_string = str(time_int)
     if (time_int) < 10:

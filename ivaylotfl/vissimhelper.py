@@ -1,6 +1,6 @@
 import re
 
-import jsonhelper
+import __jsonhelper
 import puahelper
 import vaphelper
 
@@ -37,7 +37,6 @@ def get_signal_controllers(vissim_object):
 def get_sc_by_id(vissim_object, sc_id):
     sc = vissim_object.Net.SignalControllers.ItemByKey(sc_id)
     if sc is None:
-        print 'No Signal Controller with id: ' + str(sc_id)
         return None
     else:
         return sc
@@ -117,5 +116,4 @@ def get_links(signal_group):
         # Put the name in the object
         sh_data['name'] = sh_link_name
         _links.append(sh_data)
-
     return _links
