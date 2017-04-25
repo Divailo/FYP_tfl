@@ -1,7 +1,13 @@
 # FYP_tfl
 
 # Install
-To install it you need Python isntalled. Also you have to be running <b>Windows</b>, because of [PyWin32](https://sourceforge.net/projects/pywin32). Assuming that it true, put the command in terminal:
+To install it you need:
+
+* Python isntalled
+
+* Running <b>Windows</b>, because of [PyWin32](https://sourceforge.net/projects/pywin32).
+
+Assuming that it true, put the command in terminal:
 
 ```
 $ pip install ivaylotfl
