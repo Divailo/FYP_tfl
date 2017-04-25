@@ -1,3 +1,3 @@
-from ivaylotfl.main_extract_data import main
+from ivaylotfl.__main_extract_data import main
 
 main()
