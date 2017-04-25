@@ -3,7 +3,7 @@ import os.path
 from datetime import datetime
 import logging
 
-import stringhelper
+import __stringhelper
 import dialoghelper
 
 # Constants
@@ -32,11 +32,11 @@ def __create_name_for_new_vap_file(name):
     name = re.sub(r'd\d+_t\d+_\d+_\d+', '', name)
     date_object = datetime.now().date()
     time_object = datetime.now().time()
-    month_string = stringhelper.get_good_time_string(date_object.month)
-    day_string = stringhelper.get_good_time_string(date_object.day)
-    hours_string = stringhelper.get_good_time_string(time_object.hour)
-    minutes_string = stringhelper.get_good_time_string(time_object.minute)
-    seconds_string = stringhelper.get_good_time_string(time_object.second)
+    month_string = __stringhelper.get_good_time_string(date_object.month)
+    day_string = __stringhelper.get_good_time_string(date_object.day)
+    hours_string = __stringhelper.get_good_time_string(time_object.hour)
+    minutes_string = __stringhelper.get_good_time_string(time_object.minute)
+    seconds_string = __stringhelper.get_good_time_string(time_object.second)
     date_string = 'd' + str(date_object.year) + month_string + day_string
     time_string = 't' + hours_string + '_' + minutes_string + '_' + seconds_string
     new_name = name + date_string + '_' + time_string + '.vap'
@@ -94,7 +94,7 @@ def __extract_timings_from_array_line(arrayline, stages):
     array_values_no_brackets = __remove_brackets_for_vap_array(array_values)
     to_extract = []
     # find x (the number of elements in each array a 2d array)
-    x = stringhelper.parse_integer_from_string(array_declaration_no_brackets.split(',')[1])
+    x = __stringhelper.parse_integer_from_string(array_declaration_no_brackets.split(',')[1])
     # check if the x is actually extracted
     if x == -1:
         return []
@@ -102,7 +102,7 @@ def __extract_timings_from_array_line(arrayline, stages):
     try:
         for i in range(stages):
             index = i * x
-            to_append = stringhelper.parse_integer_from_string(all_elements[index])
+            to_append = __stringhelper.parse_integer_from_string(all_elements[index])
             to_extract.append(to_append)
     except IndexError:
         return []
@@ -124,7 +124,7 @@ def get_cycle_length_from_vap(filepath):
     except ValueError:
         cycle_length = -1
     else:
-        cycle_length = stringhelper.parse_integer_from_string(value)
+        cycle_length = __stringhelper.parse_integer_from_string(value)
     return cycle_length
 
 

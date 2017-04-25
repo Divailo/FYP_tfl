@@ -1,15 +1,15 @@
 import re  # regex library
 
-import stringhelper
+import __stringhelper
 
 # Constants
-ACTUAL_CONTENT_SEPARATOR = '$'
-SIGNAL_GROUPS_KEY = '$SIGNAL_GROUPS'
-STAGES_KEY = '$STAGES'
-STAGE_PREFIX = 'Stage_'
-STARTING_STAGE_KEY = '$STARTING_STAGE'
+__ACTUAL_CONTENT_SEPARATOR = '$'
+__SIGNAL_GROUPS_KEY = '$SIGNAL_GROUPS'
+__STAGES_KEY = '$STAGES'
+__STAGE_PREFIX = 'Stage_'
+__STARTING_STAGE_KEY = '$STARTING_STAGE'
 
-SIGNAL_GROUP_RE = r'[a-zA-z]\S*\s+\d+'
+__SIGNAL_GROUP_RE = r'[a-zA-z]\S*\s+\d+'
 
 
 # Looks for a section which starts with the provided key
@@ -27,7 +27,7 @@ def __get_actual_content_to_extract_in_pua(filepath, key):
             # End of file reached
             file.close()
             return []
-    while line != ACTUAL_CONTENT_SEPARATOR:
+    while line != __ACTUAL_CONTENT_SEPARATOR:
         try:
             line = file.next().strip()
         except StopIteration:
@@ -38,7 +38,7 @@ def __get_actual_content_to_extract_in_pua(filepath, key):
     while True:
         try:
             line = file.next().strip()
-            if stringhelper.does_string_contain_substring(line, ACTUAL_CONTENT_SEPARATOR) == False:
+            if __stringhelper.does_string_contain_substring(line, __ACTUAL_CONTENT_SEPARATOR) == False:
                 line = re.sub(' +', ' ', line)
                 lines.append(line)
             else:
@@ -51,10 +51,10 @@ def __get_actual_content_to_extract_in_pua(filepath, key):
 
 
 def __filter_signal_group_lines(filepath):
-    lines = __get_actual_content_to_extract_in_pua(filepath, SIGNAL_GROUPS_KEY)
+    lines = __get_actual_content_to_extract_in_pua(filepath, __SIGNAL_GROUPS_KEY)
     to_return = []
     for line in lines:
-        if re.search(SIGNAL_GROUP_RE, line) is not None:
+        if re.search(__SIGNAL_GROUP_RE, line) is not None:
             to_return.append(line)
     return to_return
 
@@ -73,10 +73,10 @@ def read_and_map_signalgroups_from_pua(filepath):
 
 # Gets which phases are green when stage is reached
 def get_phases_in_stages_from_pua(filepath):
-    lines = __get_actual_content_to_extract_in_pua(filepath, STAGES_KEY)
+    lines = __get_actual_content_to_extract_in_pua(filepath, __STAGES_KEY)
     green_map = {}
     for line in lines:
-        if stringhelper.does_string_contain_substring(line, STAGE_PREFIX) == True:
+        if __stringhelper.does_string_contain_substring(line, __STAGE_PREFIX) == True:
             # Civil war
             line = line.replace('\t', ' ')
             string_split = line.split(' ')
@@ -92,21 +92,22 @@ def get_phases_in_stages_from_pua(filepath):
 
 # Returns integer, representing the first stage of the signal controller
 def get_starting_stage_from_pua(filepath):
-    lines = __get_actual_content_to_extract_in_pua(filepath, STARTING_STAGE_KEY)
+    lines = __get_actual_content_to_extract_in_pua(filepath, __STARTING_STAGE_KEY)
     for line in lines:
-        if stringhelper.does_string_contain_substring(line, STAGE_PREFIX) == True:
-            stage_number = stringhelper.parse_integer_from_string(line)
+        if __stringhelper.does_string_contain_substring(line, __STAGE_PREFIX) == True:
+            stage_number = __stringhelper.parse_integer_from_string(line)
             return stage_number
     return -1
 
 
+# Extracts the maximum stager from the pua file
 def get_max_stage_from_pua(filepath):
-    lines = __get_actual_content_to_extract_in_pua(filepath, STAGES_KEY)
+    lines = __get_actual_content_to_extract_in_pua(filepath, __STAGES_KEY)
     max_stage = -1
     for line in lines:
-        if stringhelper.does_string_contain_substring(line, STAGE_PREFIX) == True:
+        if __stringhelper.does_string_contain_substring(line, __STAGE_PREFIX) == True:
             # better with regex
-            stage_number = stringhelper.parse_integer_from_string(line)
+            stage_number = __stringhelper.parse_integer_from_string(line)
             if stage_number > max_stage:
                 max_stage = stage_number
     return max_stage
