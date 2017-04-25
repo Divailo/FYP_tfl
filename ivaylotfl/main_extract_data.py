@@ -23,6 +23,7 @@ def __close_program(message):
     print '\n== END OF SCRIPT =='
     sys.exit()
 
+
 def main():
     # initiliaze logger
     logger = logging.getLogger('tfl_ivaylo')

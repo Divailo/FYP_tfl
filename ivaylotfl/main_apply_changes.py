@@ -20,6 +20,7 @@ def __close_program(message):
 def __get_absolute_path_for_file(filepath):
     return __dialoghelper.get_absolute_path_for_file(filepath)
 
+
 def main():
     # initiliaze logger
     logger = logging.getLogger('tfl_ivaylo')
