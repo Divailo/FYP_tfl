@@ -1,19 +1,19 @@
 import json
 import re
 
-import __jsonhelper
+import jsonhelper
 
 # JSON keys
-__JSON_SC_ID_KEY = __jsonhelper.JSON_SC_ID_KEY
-__JSON_SC_NAME_KEY = __jsonhelper.JSON_SC_NAME_KEY
-__JSON_SC_TYPE_KEY = __jsonhelper.JSON_SC_TYPE_KEY
-__JSON_SC_SG_KEY = __jsonhelper.JSON_SC_SG_KEY
-__JSON_SC_INITIAL_STAGE_KEY = __jsonhelper.JSON_SC_INITIAL_STAGE_KEY
-__JSON_SC_MAX_STAGE_KEY = __jsonhelper.JSON_SC_MAX_STAGE_KEY
+__JSON_SC_ID_KEY = jsonhelper.JSON_SC_ID_KEY
+__JSON_SC_NAME_KEY = jsonhelper.JSON_SC_NAME_KEY
+__JSON_SC_TYPE_KEY = jsonhelper.JSON_SC_TYPE_KEY
+__JSON_SC_SG_KEY = jsonhelper.JSON_SC_SG_KEY
+__JSON_SC_INITIAL_STAGE_KEY = jsonhelper.JSON_SC_INITIAL_STAGE_KEY
+__JSON_SC_MAX_STAGE_KEY = jsonhelper.JSON_SC_MAX_STAGE_KEY
 
-__JSON_SG_PHASE_IN_STAGES_KEY = __jsonhelper.JSON_SG_PHASE_IN_STAGES_KEY
-__JSON_SG_LINKS_KEY = __jsonhelper.JSON_SG_LINKS_KEY
-__JSON_LINK_NAME_KEY = __jsonhelper.JSON_LINK_NAME_KEY
+__JSON_SG_PHASE_IN_STAGES_KEY = jsonhelper.JSON_SG_PHASE_IN_STAGES_KEY
+__JSON_SG_LINKS_KEY = jsonhelper.JSON_SG_LINKS_KEY
+__JSON_LINK_NAME_KEY = jsonhelper.JSON_LINK_NAME_KEY
 
 # PDDL function and property names
 __CURR_STAGE_KEY = 'current_stage '  # Parameters: intersection, value

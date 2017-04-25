@@ -134,7 +134,7 @@ class PuaHelperTest(unittest.TestCase):
         _filepath = os.path.abspath('goodpuafile.pua')
         phases_in_stages = puahelper.get_phases_in_stages_from_pua(_filepath)
         self.assertEqual(len(phases_in_stages), 3)
-        self.assertEqual(phases_in_stages['A'], [1])
+        self.assertEqual(phases_in_stages['A'], [1, 3])
         self.assertEqual(phases_in_stages['B'], [2])
         self.assertEqual(phases_in_stages['C'], [3])
 

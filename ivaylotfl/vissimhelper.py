@@ -1,6 +1,6 @@
 import re
 
-import __jsonhelper
+import jsonhelper
 import puahelper
 import vaphelper
 
@@ -14,6 +14,9 @@ SC_PUAFILE_ATTRIBUTE_KEY = 'SupplyFile2'
 SC_VAP_TYPE = 'VAP'
 # SG attribute keys
 SG_ID_KEY = 'No'
+# Link asttribute keys
+LINK_ID_KEY = 'No'
+LINK_NAME_KEY = 'Name'
 
 junction_prefix = '__junction_'
 
@@ -50,7 +53,7 @@ def save_network(vissim_object):
 #              Signal Controllers
 # ====================================
 def set_vap_file(signal_controller, filepath):
-    signal_controller.SetAttValue('SupplyFile1', filepath)
+    signal_controller.SetAttValue(SC_VAPFILE_ATTRIBUTE_KEY, filepath)
 
 
 def get_sc_id(signal_controller):
@@ -100,20 +103,17 @@ def get_sg_signalheads(signal_group):
     return signal_group.SigHeads.GetAll()
 
 
-def get_links(signal_group):
+# Retuns an array of
+def get_link_names(signal_group):
     signal_heads_collection = get_sg_signalheads(signal_group)
     _links = []
     for sh in signal_heads_collection:
         # create json object for the link
-        sh_data = {}  # get the sh's link
         sh_link = sh.Lane.Link
-        sh_link_name = sh_link.AttValue("Name")
+        sh_link_name = sh_link.AttValue(LINK_NAME_KEY)
         # Check if there is no name given to the link
         if sh_link_name == "":
             # Give unique name to the link
-            sh_link_name = "l_" + str(sh_link.AttValue("No"))
-
-        # Put the name in the object
-        sh_data['name'] = sh_link_name
-        _links.append(sh_data)
+            sh_link_name = "l_" + str(sh_link.AttValue(LINK_ID_KEY))
+        _links.append(sh_link_name)
     return _links

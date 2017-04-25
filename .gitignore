@@ -165,6 +165,9 @@ ENV/
 
 # End of https://www.gitignore.io/api/python,pycharm
 
+# jetbrains idea
+/.idea/
+
 # stupid debug stuff
 out.txt
 out.json

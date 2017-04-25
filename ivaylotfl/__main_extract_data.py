@@ -6,7 +6,7 @@ import puahelper
 import vaphelper
 import vissimhelper
 import pddlhelper
-import __jsonhelper
+import jsonhelper
 import __dialoghelper
 
 
@@ -74,15 +74,15 @@ def main():
             logger.info('Signal Controller Supply File 2: ' + str(pua_file_location))
             logger.info('Pua to global ids: ' + str(pua_to_global_ids))
             # serialize
-            sc_data[__jsonhelper.JSON_SC_ID_KEY] = str(sc_id)
-            sc_data[__jsonhelper.JSON_SC_NAME_KEY] = sc_name
-            sc_data[__jsonhelper.JSON_SC_VAPFILE_KEY] = vap_file_location
-            sc_data[__jsonhelper.JSON_SC_PUAFILE_KEY] = pua_file_location
-            sc_data[__jsonhelper.JSON_SC_INITIAL_STAGE_KEY] = initial_stage
-            sc_data[__jsonhelper.JSON_SC_MAX_STAGE_KEY] = max_stage
+            sc_data[jsonhelper.JSON_SC_ID_KEY] = str(sc_id)
+            sc_data[jsonhelper.JSON_SC_NAME_KEY] = sc_name
+            sc_data[jsonhelper.JSON_SC_VAPFILE_KEY] = vap_file_location
+            sc_data[jsonhelper.JSON_SC_PUAFILE_KEY] = pua_file_location
+            sc_data[jsonhelper.JSON_SC_INITIAL_STAGE_KEY] = initial_stage
+            sc_data[jsonhelper.JSON_SC_MAX_STAGE_KEY] = max_stage
             # specific for TFL models, will return -1 if it works with different models
-            sc_data[__jsonhelper.JSON_SC_CYCLE_LENGTH_KEY] = cycle_length
-            sc_data[__jsonhelper.JSON_SC_STAGE_TIMINGS_KEY] = stage_timings
+            sc_data[jsonhelper.JSON_SC_CYCLE_LENGTH_KEY] = cycle_length
+            sc_data[jsonhelper.JSON_SC_STAGE_TIMINGS_KEY] = stage_timings
         else:
             logger.info('Non-VAP signal controllers not supported!')
             continue
@@ -92,33 +92,37 @@ def main():
             sg_data = {}
             sg_id = vissimhelper.get_sg_id(sg)
             sg_id_string = str(sg_id)
-            sg_links = vissimhelper.get_links(sg)
+            sg_link_names = vissimhelper.get_link_names(sg)
+            sg_links = []
+            for link_name in sg_link_names:
+                sg_link = {}
+                sg_link['name'] = link_name
+                sg_links.append(sg_link)
             logger.info('Singal Group No: ' + sg_id_string)
             logger.info('Signal group from links: ' + str(sg_links))
-
             if pua_to_global_ids is not None:
                 if sg_id_string in pua_to_global_ids:
                     local_key = str(pua_to_global_ids[sg_id_string])
                     green_stages = []
                     if local_key in pua_stages:
                         green_stages = pua_stages[local_key]
-                    sg_data[__jsonhelper.JSON_SG_PHASE_IN_STAGES_KEY] = green_stages
-                sg_data[__jsonhelper.JSON_SG_ID_KEY] = sg_id
-                sg_data[__jsonhelper.JSON_SG_LINKS_KEY] = sg_links
+                    sg_data[jsonhelper.JSON_SG_PHASE_IN_STAGES_KEY] = green_stages
+                sg_data[jsonhelper.JSON_SG_ID_KEY] = sg_id
+                sg_data[jsonhelper.JSON_SG_LINKS_KEY] = sg_links
 
             sgs.append(sg_data)
             logger.info('= END OF SIGNAL GROUP = \n')
             # print '= END OF SIGNAL GROUP = \n'
 
-        sc_data[__jsonhelper.JSON_SC_SG_KEY] = sgs
+        sc_data[jsonhelper.JSON_SC_SG_KEY] = sgs
         sc_json_array.append(sc_data)
         logger.info('= END OF SIGNAL CONTROLLER =')
         # print '= END OF SIGNAL CONTROLLER ='
     logger.info('= ALL DATA COLLECTED =')
 
     # Create JSON file
-    json_file_path = __jsonhelper.create_json_filename_for_model(inpx_file)
-    __jsonhelper.write_data_to_json_file(json_file_path, sc_json_array)
+    json_file_path = jsonhelper.create_json_filename_for_model(inpx_file)
+    jsonhelper.write_data_to_json_file(json_file_path, sc_json_array)
     # Create PDDL file
     pddl_filename = __dialoghelper.ask_to_save()
     if pddl_filename is None:

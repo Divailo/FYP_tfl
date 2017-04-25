@@ -10,11 +10,11 @@ $
 
 Stage_1	A
 Stage_2	B
-Stage_3	C
+Stage_3	C A
 
 $STARTING_STAGE
 $
 
-Stage_1
+Stage_1 A
 
 $END
