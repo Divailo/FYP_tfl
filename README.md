@@ -9,11 +9,11 @@ Before you install you need to make sure that:
 
 * Running <b>Windows</b>, because COM works only on Windows.
 
-* <b>Python</b> is isntalled in your machine
+* <b>Python</b> is isntalled in your machine.
 
-* <b>Pip</b> is added to your PATH system variable 
+* <b>Pip</b> is added to your PATH system variable.
 
-Assuming that it true, put the command in terminal:
+To install the project all you have to do is run this command in terminal:
 
 ```
 $ pip install ivaylotfl
