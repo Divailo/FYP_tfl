@@ -43,10 +43,11 @@ def __create_name_for_new_vap_file(name):
     return new_name
 
 
+# Return the absolute path of the newly created VAP file
 def __create_vap_file(filepath):
     head, tail = os.path.split(filepath)
     name, extension = tail.split('.')
-    new_name_path = dialoghelper.get_absolute_path_for_file(__create_name_for_new_vap_file(name))
+    new_name_path = os.path.join(head, __create_name_for_new_vap_file(name))
     return new_name_path
 
 
@@ -86,6 +87,7 @@ def __extract_section_for_key(filepath, key):
             return lines
 
 
+# Extract the first element of the first m arrays
 def __extract_timings_from_array_line(arrayline, stages):
     array_declaration, array_values = arrayline.split('=')
     array_declaration_no_brackets = __remove_brackets_for_vap_array(array_declaration)
@@ -107,7 +109,7 @@ def __extract_timings_from_array_line(arrayline, stages):
     return to_extract
 
 
-# Looks for a single line that contains CycleLength
+# Looks for a single line that contains the CycleLength variable
 def get_cycle_length_from_vap(filepath):
     lines = __extract_section_for_key(filepath, CONSTANT_SECTION_KEY)
     foundline = ''
@@ -125,8 +127,9 @@ def get_cycle_length_from_vap(filepath):
         cycle_length = stringhelper.parse_integer_from_string(value)
     return cycle_length
 
+
 # Looks for a single line in the Array, named Plan
-# It will extract
+# It will extract the timings by looking at the first element of the maximum stages value
 def get_stage_lenghts_from_vap(filepath, number_of_stages):
     if number_of_stages < 0:
         return []
@@ -141,6 +144,9 @@ def get_stage_lenghts_from_vap(filepath, number_of_stages):
     return stages_timing
 
 
+# Copy the contents of the original PUA file
+# Substract the values in the Plan array
+# Set the new file to the loaded model
 def edit_timing_changes(filepath, timings):
     x = len(timings)
     # First match is the one in the declaration of the 2d array
@@ -162,9 +168,9 @@ def edit_timing_changes(filepath, timings):
                         old_time = old_timings[i]
                         new_time = new_timings_strings[i]
                         if new_time != '':
+                            line = line.replace(old_time, new_time)
                             logging.getLogger('tfl_ivaylo').info('Old time: ' + old_time)
                             logging.getLogger('tfl_ivaylo').info('New time: ' + new_time)
-                            line = line.replace(old_time, new_time)
                             logging.getLogger('tfl_ivaylo').info('New line: ' + line)
                     write_to.write('/* This was automatically edited by the PDDL plan */\n')
                 write_to.write(line)
