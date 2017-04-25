@@ -1,6 +1,6 @@
 # FYP_tfl
 
-## External libraries
+### External libraries
 
 [PyWin32](https://sourceforge.net/projects/pywin32) : to enable communicating with COM.
 
@@ -20,6 +20,11 @@ $ pip install ivaylotfl
 ```
 
 # Usage
+
+There are two use cases of the project. You can either:
+
+1. Used the built scripts , or
+2. Use the project as external libraries
 
 # Contribute
 
