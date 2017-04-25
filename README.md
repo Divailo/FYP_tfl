@@ -26,7 +26,7 @@ pip install ivaylotfl
 There are two use cases of the project. You can either:
 
 1. Used the built scripts , or
-2. Use the project as external libraries
+2. Use the project as an external library
 
 # Contribute
 
