@@ -16,18 +16,18 @@ PLAN_ARRAY_KEY = r'((Plan){1}\s*\[{1})\s*\d+\,{1}\s*\d+\s*\]{1}\s*={1}\s*\[{1}.*
 FIRST_ARRAY_ITEM = r'\[\s*\-?\d+\s*\,'
 
 
-def _escape_vap_comments(to_be_editted):
+def __escape_vap_comments(to_be_editted):
     return re.sub(r"(\/\*){1}([^\*\/])+(\*\/){1}", r"", to_be_editted)
 
 
 # Removes the '[' and ']' from the part after the '=' in an array element inside the vap file
-def _remove_brackets_for_vap_array(arraystring):
+def __remove_brackets_for_vap_array(arraystring):
     return arraystring.replace('[', '').replace(']', '')
 
 
 # Formats the file of a name to be the one provided in the parameter
 # A timestamp of format dYYYYMMDD_tHH_MM_SS is appended
-def _give_me_name_for_new_vap_file(name):
+def __create_name_for_new_vap_file(name):
     # escape ever appending
     name = re.sub(r'd\d+_t\d+_\d+_\d+', '', name)
     date_object = datetime.now().date()
@@ -43,15 +43,15 @@ def _give_me_name_for_new_vap_file(name):
     return new_name
 
 
-def _create_vap_file(filepath):
+def __create_vap_file(filepath):
     head, tail = os.path.split(filepath)
     name, extension = tail.split('.')
-    new_name_path = dialoghelper.get_absolute_path_for_file(_give_me_name_for_new_vap_file(name))
+    new_name_path = dialoghelper.get_absolute_path_for_file(__create_name_for_new_vap_file(name))
     return new_name_path
 
 
 # checks if the line is end of the section by checking if the line is or ends with ';'
-def _check_for_end_of_section(line):
+def __check_for_end_of_section(line):
     if line == SECTION_END_KEY or line[-1:] == SECTION_END_KEY:
         return True
     else:
@@ -59,7 +59,7 @@ def _check_for_end_of_section(line):
 
 
 # extracts the constants section of the vap file
-def _extract_section_for_key(filepath, key):
+def __extract_section_for_key(filepath, key):
     file = open(filepath)
     line = ""
     while line != key:
@@ -76,21 +76,21 @@ def _extract_section_for_key(filepath, key):
         try:
             line = file.next().strip()
             # check if the end of the section is reached
-            if _check_for_end_of_section(line) == True:
+            if __check_for_end_of_section(line) == True:
                 file.close()
                 return lines
             else:
-                lines.append(_escape_vap_comments(line))
+                lines.append(__escape_vap_comments(line))
         except StopIteration:
             # End of file reached
             file.close()
             return lines
 
 
-def _extract_timings_from_array_line(arrayline, stages):
+def __extract_timings_from_array_line(arrayline, stages):
     array_declaration, array_values = arrayline.split('=')
-    array_declaration_no_brackets = _remove_brackets_for_vap_array(array_declaration)
-    array_values_no_brackets = _remove_brackets_for_vap_array(array_values)
+    array_declaration_no_brackets = __remove_brackets_for_vap_array(array_declaration)
+    array_values_no_brackets = __remove_brackets_for_vap_array(array_values)
     to_extract = []
     # find x (the number of elements in each array a 2d array)
     x = stringhelper.parse_integer_from_string(array_declaration_no_brackets.split(',')[1])
@@ -110,7 +110,7 @@ def _extract_timings_from_array_line(arrayline, stages):
 
 # Looks for a single line that contains CycleLength
 def get_cycle_length_from_vap(filepath):
-    lines = _extract_section_for_key(filepath, CONSTANT_SECTION_KEY)
+    lines = __extract_section_for_key(filepath, CONSTANT_SECTION_KEY)
     foundline = ''
     for line in lines:
         line = line.strip()
@@ -132,13 +132,13 @@ def get_cycle_length_from_vap(filepath):
 def get_stage_lenghts_from_vap(filepath, number_of_stages):
     if number_of_stages < 0:
         return []
-    lines = _extract_section_for_key(filepath, ARRAY_SECTION_KEY)
+    lines = __extract_section_for_key(filepath, ARRAY_SECTION_KEY)
     stages_timing = []
     for line in lines:
         ignore_whitespace_line = line.replace("\s", '')
         if re.search(PLAN_ARRAY_KEY, ignore_whitespace_line) is not None:
             found_line = line
-            stages_timing = _extract_timings_from_array_line(found_line, number_of_stages)
+            stages_timing = __extract_timings_from_array_line(found_line, number_of_stages)
             break
     print 'END OF FINC CYCLE LENGTH'
     return stages_timing
@@ -153,7 +153,7 @@ def edit_timing_changes(filepath, timings):
         new_item = '[' + timings[i] + ','
         new_timings_strings.append(new_item)
     # create new file
-    new_file_path = _create_vap_file(filepath)
+    new_file_path = __create_vap_file(filepath)
     # print 'New array: ' + str(new_timings_strings) + ' to be put in new_file_path'
     # put content in the new file
     # 'with' operators close files as soon as they are done

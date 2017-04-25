@@ -22,7 +22,7 @@ PHASE_IN_STAGE_KEY = 'phase_in_stage '  # Parameters: link, intersection, value
 START_COMMENT_KEY = ';; '
 
 
-def _extract_phase_in_stages_map(sgsarray):
+def __extract_phase_in_stages_map(sgsarray):
     phase_in_stages = {}
     for sg in sgsarray:
         sg_stages = sg[JSON_SG_PHASE_IN_STAGES_KEY]
@@ -34,7 +34,7 @@ def _extract_phase_in_stages_map(sgsarray):
     return phase_in_stages
 
 
-def _generate_pddl_lines(json_filename):
+def __generate_pddl_lines(json_filename):
     lines = []
     json_file = open(json_filename)
     data = json.load(json_file)
@@ -46,23 +46,23 @@ def _generate_pddl_lines(json_filename):
         sc_sgs = signal_controller[JSON_SC_SG_KEY]
 
         # Start section
-        lines.append(_create_signal_controller_section(sc_name))
+        lines.append(__create_signal_controller_section(sc_name))
         # initial stage
-        lines.append(_make_current_stage_line(sc_curr_stage, sc_name))
+        lines.append(__make_current_stage_line(sc_curr_stage, sc_name))
         # max stage
-        lines.append(_make_max_stage_line(sc_max_stage, sc_name))
+        lines.append(__make_max_stage_line(sc_max_stage, sc_name))
         # phase in stage
-        lines.append(_make_phase_in_stage_lines(_extract_phase_in_stages_map(sc_sgs), sc_name))
+        lines.append(__make_phase_in_stage_lines(__extract_phase_in_stages_map(sc_sgs), sc_name))
 
     json_file.close()
     return lines
 
 
-def _create_signal_controller_section(name):
+def __create_signal_controller_section(name):
     return START_COMMENT_KEY + name + '\n'
 
 
-def _make_current_stage_line(initial_stage_value, intersection_name):
+def __make_current_stage_line(initial_stage_value, intersection_name):
     line = '\t'
     if initial_stage_value == -1:
         line = line + START_COMMENT_KEY + ' NO INFROMATION FOR ' + CURR_STAGE_KEY + intersection_name + '\n'
@@ -72,7 +72,7 @@ def _make_current_stage_line(initial_stage_value, intersection_name):
     return line
 
 
-def _make_max_stage_line(max_stage_value, intersection_name):
+def __make_max_stage_line(max_stage_value, intersection_name):
     line = '\t'
     if max_stage_value == -1:
         line = line + START_COMMENT_KEY + ' NO INFROMATION FOR ' + MAX_STAGE_KEY + intersection_name + '\n'
@@ -82,7 +82,7 @@ def _make_max_stage_line(max_stage_value, intersection_name):
     return line
 
 
-def _make_phase_in_stage_lines(phases_in_stages, intersection_name):
+def __make_phase_in_stage_lines(phases_in_stages, intersection_name):
     line = ''
     if phases_in_stages == {}:
         line = '\t' + START_COMMENT_KEY + ' NO INFROMATION FOR ' + PHASE_IN_STAGE_KEY + intersection_name + '\n'
@@ -101,7 +101,7 @@ def _make_phase_in_stage_lines(phases_in_stages, intersection_name):
 
 def convert_jsonfile_to_pddlproblem(json_filename, pddl_filename):
     print '= CONVERTING JSON TO PDDL ='
-    pddl_filename.writelines(_generate_pddl_lines(json_filename))
+    pddl_filename.writelines(__generate_pddl_lines(json_filename))
     pddl_filename.close()
 
 
@@ -118,7 +118,6 @@ def get_new_stages_information(filepath):
         if re.match(RELEVANT_LINE_REGEX, line) is not None:
             line = re.sub(IRRELEVANT_REGEX1, '', line)
             line = re.sub(IRRELEVANT_REGEX2, '', line)
-
             split_lne = re.split(' ', line)
             stage_timing = split_lne[0]
             junction_name = split_lne[1]
@@ -128,5 +127,3 @@ def get_new_stages_information(filepath):
 
     opened_file.close()
     return to_return
-
-# print _get_new_stages_information('C:\\Users\\Ivaylo\\Downloads\\plan_example.pddl')

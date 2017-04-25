@@ -17,7 +17,7 @@ SIGNAL_GROUP_RE = r'[a-zA-z]\S*\s+\d+'
 # Finishes extracting lines to read when sees another $
 # returns collection of lines to read from
 # on error (structure not satisfied) returns empty array
-def _get_actual_content_to_extract_in_pua(filepath, key):
+def __get_actual_content_to_extract_in_pua(filepath, key):
     file = open(filepath)
     line = ''
     while line != key:
@@ -50,8 +50,8 @@ def _get_actual_content_to_extract_in_pua(filepath, key):
     return lines
 
 
-def _filter_signal_group_lines(filepath):
-    lines = _get_actual_content_to_extract_in_pua(filepath, SIGNAL_GROUPS_KEY)
+def __filter_signal_group_lines(filepath):
+    lines = __get_actual_content_to_extract_in_pua(filepath, SIGNAL_GROUPS_KEY)
     to_return = []
     for line in lines:
         if re.search(SIGNAL_GROUP_RE, line) is not None:
@@ -61,7 +61,7 @@ def _filter_signal_group_lines(filepath):
 
 # Opens a file and finds all the local (the ones used in the pua file) and global (the ones used in the model) ids of signal groups
 def read_and_map_signalgroups_from_pua(filepath):
-    lines_to_read = _filter_signal_group_lines(filepath)
+    lines_to_read = __filter_signal_group_lines(filepath)
     map = {}
     for line in lines_to_read:
         # Civil war
@@ -74,7 +74,7 @@ def read_and_map_signalgroups_from_pua(filepath):
 
 # Gets which phases are green when stage is reached
 def get_phases_in_stages_from_pua(filepath):
-    lines = _get_actual_content_to_extract_in_pua(filepath, STAGES_KEY)
+    lines = __get_actual_content_to_extract_in_pua(filepath, STAGES_KEY)
     green_map = {}
     for line in lines:
         if stringhelper.does_string_contain_substring(line, STAGE_PREFIX) == True:
@@ -94,7 +94,7 @@ def get_phases_in_stages_from_pua(filepath):
 
 # Returns integer, representing the first stage of the signal controller
 def get_starting_stage_from_pua(filepath):
-    lines = _get_actual_content_to_extract_in_pua(filepath, STARTING_STAGE_KEY)
+    lines = __get_actual_content_to_extract_in_pua(filepath, STARTING_STAGE_KEY)
     for line in lines:
         if stringhelper.does_string_contain_substring(line, STAGE_PREFIX) == True:
             stage_number = stringhelper.parse_integer_from_string(line)
@@ -104,7 +104,7 @@ def get_starting_stage_from_pua(filepath):
 
 
 def get_max_stage_from_pua(filepath):
-    lines = _get_actual_content_to_extract_in_pua(filepath, STAGES_KEY)
+    lines = __get_actual_content_to_extract_in_pua(filepath, STAGES_KEY)
     max_stage = -1
     for line in lines:
         if stringhelper.does_string_contain_substring(line, STAGE_PREFIX) == True:

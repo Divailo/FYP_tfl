@@ -10,12 +10,12 @@ import jsonhelper
 import dialoghelper
 
 
-def _get_absolute_path_for_file(filepath):
+def __get_absolute_path_for_file(filepath):
     return dialoghelper.get_absolute_path_for_file(filepath)
 
 
 # Closes the COM connection and exits the program
-def _close_program(message):
+def __close_program(message):
     # Display error message in dialog if any
     if message != '':
         logging.getLogger('tfl_ivaylo').error('ERROR MESSAGE: ' + message)
@@ -35,14 +35,14 @@ def main():
 
     inpx_file = dialoghelper.ask_for_model()
     if not dialoghelper.is_file_chosen(inpx_file):
-        _close_program('Please choose a file')
+        __close_program('Please choose a file')
     if not dialoghelper.check_model_file(inpx_file):
-        _close_program('Please choose a valid Vissim model file/inpx file')
+        __close_program('Please choose a valid Vissim model file/inpx file')
 
     # create Vissim COM object
     vissim = vissimhelper.initialise_vissim(com)
     if vissim is None:
-        _close_program('Vissim program not found.'
+        __close_program('Vissim program not found.'
                        'It might be because the program is not installed on the machine')
 
     vissimhelper.bring_vissim_to_front(vissim)
@@ -60,8 +60,8 @@ def main():
         if sc_type == 'VAP':
             sc_id = vissimhelper.get_sc_id(sc)
             sc_name = vissimhelper.get_sc_name(sc)
-            vap_file_location = _get_absolute_path_for_file(str(vissimhelper.get_vapfile(sc)))
-            pua_file_location = _get_absolute_path_for_file(str(vissimhelper.get_puafile(sc)))
+            vap_file_location = __get_absolute_path_for_file(str(vissimhelper.get_vapfile(sc)))
+            pua_file_location = __get_absolute_path_for_file(str(vissimhelper.get_puafile(sc)))
             cycle_length = vaphelper.get_cycle_length_from_vap(vap_file_location)
             pua_to_global_ids = puahelper.read_and_map_signalgroups_from_pua(pua_file_location)
             pua_stages = puahelper.get_phases_in_stages_from_pua(pua_file_location)
@@ -121,6 +121,6 @@ def main():
     # Create PDDL file
     pddl_filename = dialoghelper.ask_to_save()
     if pddl_filename is None:
-        _close_program('')
+        __close_program('')
     pddlhelper.convert_jsonfile_to_pddlproblem(json_file_path, pddl_filename)
-    _close_program('')
+    __close_program('')

@@ -8,7 +8,7 @@ import vissimhelper
 import vaphelper
 
 
-def _close_program(message):
+def __close_program(message):
     # Display error message in dialog if any
     if message != '':
         logging.getLogger('tfl_ivaylo').error('ERROR MESSAGE: ' + message)
@@ -17,7 +17,7 @@ def _close_program(message):
     sys.exit()
 
 
-def _get_absolute_path_for_file(filepath):
+def __get_absolute_path_for_file(filepath):
     return dialoghelper.get_absolute_path_for_file(filepath)
 
 def main():
@@ -32,17 +32,17 @@ def main():
     # Load PDDL plan
     model_file = dialoghelper.ask_for_plan()
     if not dialoghelper.is_file_chosen(model_file):
-        _close_program('Please choose a file')
+        __close_program('Please choose a file')
 
     new_timing = pddlhelper.get_new_stages_information(model_file)
     if new_timing == {}:
-        _close_program('Could not read signal timing from ' + model_file)
+        __close_program('Could not read signal timing from ' + model_file)
 
     # Load Vissim
     inpx_file = dialoghelper.ask_for_model()
     vissim = vissimhelper.initialise_vissim(com)
     if vissim is None:
-        _close_program('Vissim program not found.'
+        __close_program('Vissim program not found.'
                        'It might be because the program is not installed on the machine')
 
     vissimhelper.bring_vissim_to_front(vissim)
@@ -60,7 +60,7 @@ def main():
         if vap_filepath == '':
             logger.info('No VAP file for key: ' + key)
         else:
-            vap_filepath = _get_absolute_path_for_file(vap_filepath)
+            vap_filepath = __get_absolute_path_for_file(vap_filepath)
             new_vap_file = vaphelper.edit_timing_changes(vap_filepath, value)
             vissimhelper.set_vap_file(signal_controller, new_vap_file)
             logger.info('Found VAP file for: ' + key + ' : ' + vap_filepath)
