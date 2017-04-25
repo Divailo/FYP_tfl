@@ -30,7 +30,7 @@ There are two use cases of the project. You can either:
 
 # Contribute
 
-# Stuff to do
+# Future work
 
 - Handle no such file I guess
 
