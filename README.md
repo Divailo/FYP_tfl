@@ -18,7 +18,7 @@ Before you install you need to make sure that:
 To install the project all you have to do is run this command in terminal:
 
 ```
-$ pip install ivaylotfl
+pip install ivaylotfl
 ```
 
 # Usage
