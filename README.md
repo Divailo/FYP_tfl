@@ -30,6 +30,25 @@ There are two use cases of the project. You can either:
 
 ### Run built-in scripts
 
+##### Gather Signal Controller Data in JSON and Construct PDDL file
+
+Run in terminal:
+
+```
+extract_data_vissim
+```
+
+First you will have to choose a network to run the script for. A JSON file will be created in the same folder as the chosen network with all the data it has gathered. 
+
+##### Apply PDDL Results to Network
+
+Run in terminal:
+
+```
+extract_data_vissim
+```
+First you will have to choose PDDL results file and then you will be asked for the network you want to edit. <b>Make sure that the network you've chosen is the same the PDDL results are made for.</b>
+
 ### Use as external libraries
 
 Puahelper
