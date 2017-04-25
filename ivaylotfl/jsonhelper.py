@@ -1,7 +1,7 @@
 import json  # json library
 import os.path
 
-import dialoghelper
+import __dialoghelper
 
 # JSON Keys
 # SC Keys
@@ -30,8 +30,9 @@ def write_data_to_json_file(json_filename, data):
     f.write(str(json_data))
     f.close()
 
+
 def create_json_filename_for_model(inpx_path):
     head, tail = os.path.split(inpx_path)
     name, extension = tail.split('.')
-    json_file_path = dialoghelper.get_absolute_path_for_file('DATA_' + name + '.json')
+    json_file_path = os.path.join(head, 'DATA_' + name + '.json')
     return json_file_path

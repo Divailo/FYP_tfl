@@ -7,11 +7,11 @@ import vaphelper
 import vissimhelper
 import pddlhelper
 import jsonhelper
-import dialoghelper
+import __dialoghelper
 
 
 def __get_absolute_path_for_file(filepath):
-    return dialoghelper.get_absolute_path_for_file(filepath)
+    return __dialoghelper.get_absolute_path_for_file(filepath)
 
 
 # Closes the COM connection and exits the program
@@ -19,7 +19,7 @@ def __close_program(message):
     # Display error message in dialog if any
     if message != '':
         logging.getLogger('tfl_ivaylo').error('ERROR MESSAGE: ' + message)
-        dialoghelper.show_error_box_with_message(message)
+        __dialoghelper.show_error_box_with_message(message)
     print '\n== END OF SCRIPT =='
     sys.exit()
 
@@ -33,10 +33,10 @@ def main():
 
     logger.info('== START OF SCRIPT ==')
 
-    inpx_file = dialoghelper.ask_for_model()
-    if not dialoghelper.is_file_chosen(inpx_file):
+    inpx_file = __dialoghelper.ask_for_model()
+    if not __dialoghelper.is_file_chosen(inpx_file):
         __close_program('Please choose a file')
-    if not dialoghelper.check_model_file(inpx_file):
+    if not __dialoghelper.check_model_file(inpx_file):
         __close_program('Please choose a valid Vissim model file/inpx file')
 
     # create Vissim COM object
@@ -119,7 +119,7 @@ def main():
     json_file_path = jsonhelper.create_json_filename_for_model(inpx_file)
     jsonhelper.write_data_to_json_file(json_file_path, sc_json_array)
     # Create PDDL file
-    pddl_filename = dialoghelper.ask_to_save()
+    pddl_filename = __dialoghelper.ask_to_save()
     if pddl_filename is None:
         __close_program('')
     pddlhelper.convert_jsonfile_to_pddlproblem(json_file_path, pddl_filename)

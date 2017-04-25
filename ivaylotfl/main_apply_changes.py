@@ -2,7 +2,7 @@ import sys
 import win32com.client as com  # com library
 import logging  # logging library
 
-import dialoghelper
+import __dialoghelper
 import pddlhelper
 import vissimhelper
 import vaphelper
@@ -12,13 +12,13 @@ def __close_program(message):
     # Display error message in dialog if any
     if message != '':
         logging.getLogger('tfl_ivaylo').error('ERROR MESSAGE: ' + message)
-        dialoghelper.show_error_box_with_message(message)
+        __dialoghelper.show_error_box_with_message(message)
     print '\n== END OF SCRIPT =='
     sys.exit()
 
 
 def __get_absolute_path_for_file(filepath):
-    return dialoghelper.get_absolute_path_for_file(filepath)
+    return __dialoghelper.get_absolute_path_for_file(filepath)
 
 def main():
     # initiliaze logger
@@ -30,8 +30,8 @@ def main():
 
     logger.info('== START OF SCRIPT ==')
     # Load PDDL plan
-    model_file = dialoghelper.ask_for_plan()
-    if not dialoghelper.is_file_chosen(model_file):
+    model_file = __dialoghelper.ask_for_plan()
+    if not __dialoghelper.is_file_chosen(model_file):
         __close_program('Please choose a file')
 
     new_timing = pddlhelper.get_new_stages_information(model_file)
@@ -39,7 +39,7 @@ def main():
         __close_program('Could not read signal timing from ' + model_file)
 
     # Load Vissim
-    inpx_file = dialoghelper.ask_for_model()
+    inpx_file = __dialoghelper.ask_for_model()
     vissim = vissimhelper.initialise_vissim(com)
     if vissim is None:
         __close_program('Vissim program not found.'

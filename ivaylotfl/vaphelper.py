@@ -4,7 +4,7 @@ from datetime import datetime
 import logging
 
 import __stringhelper
-import dialoghelper
+import __dialoghelper
 
 # Constants
 CONSTANT_SECTION_KEY = 'CONST'
