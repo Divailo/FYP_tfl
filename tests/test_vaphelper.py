@@ -21,7 +21,8 @@ class VapHelperTest(unittest.TestCase):
 
     #
 
-    # Tests the vaphelper functions when handling files with the desired keys but no values provided
+    # Tests the vaphelper functions when handling files
+    # with the desired keys but no values provided
     # Should return error codes : -1 or empty object/arrays
     def test_no_value_for_cyclelength(self):
         _filepath = os.path.abspath('vap_with_keys_no_values.vap')
@@ -36,7 +37,8 @@ class VapHelperTest(unittest.TestCase):
 
     #
 
-    # Tests the vaphelper functions when the file has data keys and values, but are not inside the required sections
+    # Tests the vaphelper functions when the file has data
+    # keys and values, but are not inside the required sections
     # That's why nothing should be returned
     # Should return error codes : -1 or empty objects/arrays
     def test_cyclelength_no_content_with_comments(self):
@@ -52,7 +54,8 @@ class VapHelperTest(unittest.TestCase):
 
     #
 
-    # Tests the vaphelper functions when the file has the data required, but it is commented out
+    # Tests the vaphelper functions when the file
+    # has the data required, but it is commented out
     # Should return error codes : -1 or empty objects/arrays
     def test_cyclelength_commented_nocontent(self):
         _filepath = os.path.abspath('commented_badvapfile.vap')
@@ -67,7 +70,8 @@ class VapHelperTest(unittest.TestCase):
 
     #
 
-    # Tests the vaphelper functions when the file has double of the data required, one commented, one not
+    # Tests the vaphelper functions when the file
+    # has double of the data required, one commented, one not
     # In the specific test the values that have to be returned are:
     # CycleLength = 40
     # Plans = [4, 16, 28]

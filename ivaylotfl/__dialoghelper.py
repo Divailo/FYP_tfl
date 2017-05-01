@@ -6,6 +6,7 @@ import os.path # to create paths the smart way
 folderpath = ''
 
 
+# Code taken from StackOverflow
 def open_dialog_and_gain_focus():
     # Make a top-level instance and hide since it is ugly and big.
     root = Tk()

@@ -26,7 +26,6 @@ def main():
     new_timing = pddlhelper.get_new_stages_information(model_file)
     if new_timing == {}:
         close_program(logger, 'Could not read signal timing from ' + model_file)
-
     # Load Vissim
     inpx_file = __dialoghelper.ask_for_model()
     vissim = vissimhelper.initialise_vissim(com)
@@ -35,7 +34,6 @@ def main():
                        'It might be because the program is not installed on the machine')
     vissimhelper.bring_vissim_to_front(vissim)
     vissimhelper.load_vissim_network(vissim, inpx_file)
-
     # Apply changes
     for key, value in new_timing.items():
         logger.info('Looking for: ' + key)
@@ -54,3 +52,4 @@ def main():
             logger.info('Found VAP file for: ' + key + ' : ' + vap_filepath)
             logger.info('New VAP file set: ' + signal_controller.AttValue('SupplyFile1'))
             vissimhelper.save_network(vissim)
+            __dialoghelper.show_info_box_with_message('New vapfile created')
