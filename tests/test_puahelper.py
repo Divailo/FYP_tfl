@@ -26,7 +26,7 @@ class PuaHelperTest(unittest.TestCase):
     #
 
     # Tests for unbreakable loops again
-    # This time tests work with files that have the keys required of each scrappable section
+    # This time tests work with files that have the keys required of each section
     # but no key to show where the actual content starts
     # Should return empty objects or error codes (-1)
 
@@ -86,7 +86,8 @@ class PuaHelperTest(unittest.TestCase):
 
     #
 
-    # Tests if the functions return the correct content on double (first in comments, then actual good content)
+    # Tests if the functions return the correct content on double
+    # (first in comments, then actual good content)
     # Expected results
     # 3 signal groups: A->1; B->2; C->3;
     # 3 stages: 1->A; 2->B; 3->C

@@ -1,20 +1,19 @@
 from Tkinter import Tk  # gui library
 import tkFileDialog  # file dialog library
-from tkMessageBox import showerror
-import os.path
+from tkMessageBox import showerror, showinfo # dialog boxes library
+import os.path # to create paths the smart way
 
 folderpath = ''
 
 
+# Code taken from StackOverflow
 def open_dialog_and_gain_focus():
     # Make a top-level instance and hide since it is ugly and big.
     root = Tk()
     root.withdraw()
-
     # Make it almost invisible - no decorations, 0 size, top left corner.
     root.overrideredirect(True)
     root.geometry('0x0+0+0')
-
     # Show window again and lift it to top so it can get focus,
     # otherwise dialogs will end up behind the terminal.
     root.deiconify()
@@ -29,8 +28,13 @@ def destroy_root_view(view):
 
 
 def show_error_box_with_message(message):
-    Tk().withdraw()  # we don't want a full GUI, so keep the root window from appearing
+    Tk().withdraw()
     showerror('Error', message)
+
+
+def show_info_box_with_message(message):
+    Tk().withdraw()
+    showinfo('Extraction done', message)
 
 
 # initializes a file chooser to load the desired model
@@ -46,6 +50,7 @@ def ask_for_model():
     return filename.replace('/', '\\')
 
 
+# initializes a file chooser to load the desired PDDL file
 def ask_for_plan():
     root = open_dialog_and_gain_focus()
     FILE_DIALOG_OPTIONS = {'filetypes': [('PDDL plan files', '*.pddl'), ('All files', '*.*')],
@@ -56,6 +61,7 @@ def ask_for_plan():
     return filename.replace('/', '\\')
 
 
+# initializes a file chooser to save the new problem file
 def ask_to_save():
     root = open_dialog_and_gain_focus()
     filename = tkFileDialog.asksaveasfile(mode='w',
