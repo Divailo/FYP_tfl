@@ -1,6 +1,4 @@
-from datetime import datetime
 import win32com.client as com  # com library
-from sys import exit
 
 import logging
 
@@ -10,36 +8,7 @@ import vissimhelper
 import pddlhelper
 import jsonhelper
 import __dialoghelper
-import __stringhelper
-
-
-def __get_absolute_path_for_file(filepath):
-    return __dialoghelper.get_absolute_path_for_file(filepath)
-
-
-# Closes the COM connection and exits the program
-def __close_program(message):
-    # Display error message in dialog if any
-    if message != '':
-        logging.getLogger('tfl_ivaylo').error('ERROR MESSAGE: ' + message)
-        __dialoghelper.show_error_box_with_message(message)
-    print '\n== END OF SCRIPT =='
-    exit()
-
-
-# Gets a timestamp to append it to the log file
-def __get_timestamp_string():
-    date_object = datetime.now().date()
-    time_object = datetime.now().time()
-    month_string = __stringhelper.get_good_time_string(date_object.month)
-    day_string = __stringhelper.get_good_time_string(date_object.day)
-    hours_string = __stringhelper.get_good_time_string(time_object.hour)
-    minutes_string = __stringhelper.get_good_time_string(time_object.minute)
-    seconds_string = __stringhelper.get_good_time_string(time_object.second)
-    date_string = 'D:' + day_string + '/' + month_string + '/' + str(date_object.year)
-    time_string = '\tT:' + hours_string + ':' + minutes_string + ':' + seconds_string
-    return date_string + time_string
-
+from __main_base_functions import close_program, get_absolute_path_for_file, get_timestamp_string
 
 def main():
     sc_counter = 0
@@ -49,18 +18,18 @@ def main():
     fh = logging.FileHandler('extract_data.log')
     fh.setLevel(logging.INFO)
     logger.addHandler(fh)
-    logger.info('==' + __get_timestamp_string() + '==')
+    logger.info('==' + get_timestamp_string() + '==')
     logger.info('START OF SCRIPT')
     inpx_file = __dialoghelper.ask_for_model()
     if not __dialoghelper.is_file_chosen(inpx_file):
-        __close_program('Please choose a file')
+        close_program(logger, 'Please choose a file')
     if not __dialoghelper.check_model_file(inpx_file):
-        __close_program('Please choose a valid Vissim model file/inpx file')
+        close_program(logger, 'Please choose a valid Vissim model file/inpx file')
 
     # create Vissim COM object
     vissim = vissimhelper.initialise_vissim(com)
     if vissim is None:
-        __close_program('Vissim program not found.'
+        close_program(logger, 'Vissim program not found.'
                        'It might be because the program is not installed on the machine')
 
     vissimhelper.bring_vissim_to_front(vissim)
@@ -79,8 +48,8 @@ def main():
         if sc_type == 'VAP':
             sc_id = vissimhelper.get_sc_id(sc)
             sc_name = vissimhelper.get_sc_name(sc)
-            vap_file_location = __get_absolute_path_for_file(str(vissimhelper.get_vapfile(sc)))
-            pua_file_location = __get_absolute_path_for_file(str(vissimhelper.get_puafile(sc)))
+            vap_file_location = get_absolute_path_for_file(str(vissimhelper.get_vapfile(sc)))
+            pua_file_location = get_absolute_path_for_file(str(vissimhelper.get_puafile(sc)))
             cycle_length = vaphelper.get_cycle_length_from_vap(vap_file_location)
             pua_to_global_ids = puahelper.read_and_map_signalgroups_from_pua(pua_file_location)
             pua_stages = puahelper.get_phases_in_stages_from_pua(pua_file_location)
@@ -143,10 +112,10 @@ def main():
     # Create PDDL file
     pddl_filename = __dialoghelper.ask_to_save()
     if pddl_filename is None:
-        __close_program('')
+        close_program(logger, '')
     pddlhelper.convert_jsonfile_to_pddlproblem(json_file_path, pddl_filename)
     sc_dialog_line = str(sc_counter) + '/' + str(scs_in_total) + ' signal controllers data exported\n'
     json_dialog_line = 'JSON file saved to: ' + json_file_path + '\n'
     pddl_dialog_line = 'PDDL file saved to' + pddl_filename
     __dialoghelper.show_info_box_with_message(sc_dialog_line + json_dialog_line + pddl_dialog_line)
-    __close_program('')
+    close_program(logger, '')

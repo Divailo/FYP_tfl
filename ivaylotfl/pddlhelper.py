@@ -1,5 +1,5 @@
-import json
-import re
+import json # json library
+import re # regex library
 
 import jsonhelper
 

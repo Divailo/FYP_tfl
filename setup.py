@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='ivaylotfl',
-    version='1.0',
+    version='1.0.1',
     packages=find_packages(),
     install_requires=['pywin32'],
     entry_points={
@@ -16,13 +16,12 @@ setup(
     author_email='ivaylokhr@gmail.com',
     license='MIT',
     py_modules = [
-        'ivaylotfl.main_apply_changes',
-        'ivaylotfl.main_extract_data',
+        'ivaylotfl.__main_base_functions',
         'ivaylotfl.__dialoghelper',
         'ivaylotfl.__jsonhelper',
+        'ivaylotfl.__stringhelper',
         'ivaylotfl.pddlhelper',
         'ivaylotfl.puahelper',
-        'ivaylotfl.stringhelper',
         'ivaylotfl.vaphelper',
         'ivaylotfl.vissimhelper'
     ]

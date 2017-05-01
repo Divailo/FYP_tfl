@@ -64,7 +64,6 @@ def read_and_map_signalgroups_from_pua(filepath):
     lines_to_read = __filter_signal_group_lines(filepath)
     map = {}
     for line in lines_to_read:
-        # Civil war
         line = line.replace('\t', ' ')
         key, value = line.split(' ')
         map[value] = key
@@ -77,7 +76,6 @@ def get_phases_in_stages_from_pua(filepath):
     green_map = {}
     for line in lines:
         if __stringhelper.does_string_contain_substring(line, __STAGE_PREFIX) == True:
-            # Civil war
             line = line.replace('\t', ' ')
             string_split = line.split(' ')
             stage_pointer = int(re.search(r'\d+', line).group())
@@ -106,7 +104,6 @@ def get_max_stage_from_pua(filepath):
     max_stage = -1
     for line in lines:
         if __stringhelper.does_string_contain_substring(line, __STAGE_PREFIX) == True:
-            # better with regex
             stage_number = __stringhelper.parse_integer_from_string(line)
             if stage_number > max_stage:
                 max_stage = stage_number
