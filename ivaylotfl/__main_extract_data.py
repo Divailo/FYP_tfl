@@ -1,13 +1,16 @@
+from datetime import datetime
 import win32com.client as com  # com library
-import sys  # all kinds of shit library
+from sys import exit
 
 import logging
+
 import puahelper
 import vaphelper
 import vissimhelper
 import pddlhelper
 import jsonhelper
 import __dialoghelper
+import __stringhelper
 
 
 def __get_absolute_path_for_file(filepath):
@@ -21,19 +24,33 @@ def __close_program(message):
         logging.getLogger('tfl_ivaylo').error('ERROR MESSAGE: ' + message)
         __dialoghelper.show_error_box_with_message(message)
     print '\n== END OF SCRIPT =='
-    sys.exit()
+    exit()
+
+
+# Gets a timestamp to append it to the log file
+def __get_timestamp_string():
+    date_object = datetime.now().date()
+    time_object = datetime.now().time()
+    month_string = __stringhelper.get_good_time_string(date_object.month)
+    day_string = __stringhelper.get_good_time_string(date_object.day)
+    hours_string = __stringhelper.get_good_time_string(time_object.hour)
+    minutes_string = __stringhelper.get_good_time_string(time_object.minute)
+    seconds_string = __stringhelper.get_good_time_string(time_object.second)
+    date_string = 'D:' + day_string + '/' + month_string + '/' + str(date_object.year)
+    time_string = '\tT:' + hours_string + ':' + minutes_string + ':' + seconds_string
+    return date_string + time_string
 
 
 def main():
+    sc_counter = 0
     # initiliaze logger
     logger = logging.getLogger('tfl_ivaylo')
     logger.setLevel(logging.INFO)
     fh = logging.FileHandler('extract_data.log')
     fh.setLevel(logging.INFO)
     logger.addHandler(fh)
-
-    logger.info('== START OF SCRIPT ==')
-
+    logger.info('==' + __get_timestamp_string() + '==')
+    logger.info('START OF SCRIPT')
     inpx_file = __dialoghelper.ask_for_model()
     if not __dialoghelper.is_file_chosen(inpx_file):
         __close_program('Please choose a file')
@@ -49,6 +66,7 @@ def main():
     vissimhelper.bring_vissim_to_front(vissim)
     vissimhelper.load_vissim_network(vissim, inpx_file)
     signal_controller_collection = vissimhelper.get_signal_controllers(vissim)
+    scs_in_total = len(signal_controller_collection)
     sc_json_array = []
 
     for sc in signal_controller_collection:
@@ -83,6 +101,7 @@ def main():
             # specific for TFL models, will return -1 if it works with different models
             sc_data[jsonhelper.JSON_SC_CYCLE_LENGTH_KEY] = cycle_length
             sc_data[jsonhelper.JSON_SC_STAGE_TIMINGS_KEY] = stage_timings
+            sc_counter += 1
         else:
             logger.info('Non-VAP signal controllers not supported!')
             continue
@@ -98,7 +117,7 @@ def main():
                 sg_link = {}
                 sg_link['name'] = link_name
                 sg_links.append(sg_link)
-            logger.info('Singal Group No: ' + sg_id_string)
+            logger.info('Signal Group No: ' + sg_id_string)
             logger.info('Signal group from links: ' + str(sg_links))
             if pua_to_global_ids is not None:
                 if sg_id_string in pua_to_global_ids:
@@ -112,12 +131,10 @@ def main():
 
             sgs.append(sg_data)
             logger.info('= END OF SIGNAL GROUP = \n')
-            # print '= END OF SIGNAL GROUP = \n'
 
         sc_data[jsonhelper.JSON_SC_SG_KEY] = sgs
         sc_json_array.append(sc_data)
         logger.info('= END OF SIGNAL CONTROLLER =')
-        # print '= END OF SIGNAL CONTROLLER ='
     logger.info('= ALL DATA COLLECTED =')
 
     # Create JSON file
@@ -128,4 +145,8 @@ def main():
     if pddl_filename is None:
         __close_program('')
     pddlhelper.convert_jsonfile_to_pddlproblem(json_file_path, pddl_filename)
+    sc_dialog_line = str(sc_counter) + '/' + str(scs_in_total) + ' signal controllers data exported\n'
+    json_dialog_line = 'JSON file saved to: ' + json_file_path + '\n'
+    pddl_dialog_line = 'PDDL file saved to' + pddl_filename
+    __dialoghelper.show_info_box_with_message(sc_dialog_line + json_dialog_line + pddl_dialog_line)
     __close_program('')

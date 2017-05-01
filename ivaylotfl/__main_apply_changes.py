@@ -1,3 +1,4 @@
+from datetime import datetime
 import sys
 import win32com.client as com  # com library
 import logging  # logging library
@@ -6,6 +7,7 @@ import __dialoghelper
 import pddlhelper
 import vissimhelper
 import vaphelper
+import __stringhelper
 
 
 def __close_program(message):
@@ -21,6 +23,20 @@ def __get_absolute_path_for_file(filepath):
     return __dialoghelper.get_absolute_path_for_file(filepath)
 
 
+# Gets a timestamp to append it to the log file
+def __get_timestamp_string():
+    date_object = datetime.now().date()
+    time_object = datetime.now().time()
+    month_string = __stringhelper.get_good_time_string(date_object.month)
+    day_string = __stringhelper.get_good_time_string(date_object.day)
+    hours_string = __stringhelper.get_good_time_string(time_object.hour)
+    minutes_string = __stringhelper.get_good_time_string(time_object.minute)
+    seconds_string = __stringhelper.get_good_time_string(time_object.second)
+    date_string = 'D:' + day_string + '/' + month_string + '/' + str(date_object.year)
+    time_string = '\tT:' + hours_string + ':' + minutes_string + ':' + seconds_string
+    return date_string + time_string
+
+
 def main():
     # initiliaze logger
     logger = logging.getLogger('tfl_ivaylo')
@@ -29,7 +45,8 @@ def main():
     fh.setLevel(logging.INFO)
     logger.addHandler(fh)
 
-    logger.info('== START OF SCRIPT ==')
+    logger.info('==' + __get_timestamp_string() + '==')
+    logger.info('START OF SCRIPT')
     # Load PDDL plan
     model_file = __dialoghelper.ask_for_plan()
     if not __dialoghelper.is_file_chosen(model_file):
@@ -57,9 +74,9 @@ def main():
         logger.info('Looking for signal controller key: ' + str(sc_id))
         signal_controller = vissimhelper.get_sc_by_id(vissim, sc_id)
         vap_filepath = vissimhelper.get_vapfile(signal_controller)
-        # vap_filepath = 'C:\\Users\\Ivaylo\\Desktop\\A3 FT Model v2\\33.vap'
         if vap_filepath == '':
             logger.info('No VAP file for key: ' + key)
+            __close_program('No VAP file for key: ' + key)
         else:
             vap_filepath = __get_absolute_path_for_file(vap_filepath)
             new_vap_file = vaphelper.edit_timing_changes(vap_filepath, value)

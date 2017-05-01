@@ -1,6 +1,6 @@
 from Tkinter import Tk  # gui library
 import tkFileDialog  # file dialog library
-from tkMessageBox import showerror
+from tkMessageBox import showerror, showinfo
 import os.path
 
 folderpath = ''
@@ -29,8 +29,13 @@ def destroy_root_view(view):
 
 
 def show_error_box_with_message(message):
-    Tk().withdraw()  # we don't want a full GUI, so keep the root window from appearing
+    Tk().withdraw()
     showerror('Error', message)
+
+
+def show_info_box_with_message(message):
+    Tk().withdraw()
+    showinfo('Extraction done', message)
 
 
 # initializes a file chooser to load the desired model
