@@ -69,7 +69,7 @@ load_vissim_network(vissim, path_to_network)
 # bring to front
 bring_vissim_to_front(vissim)
 
-# get_signal_controllers(vissim)
+get_signal_controllers(vissim)
 >>> Collection of signal controllers 
 ```
 
